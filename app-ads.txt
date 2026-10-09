@@ -1,2 +1,2 @@
 # app-ads.txt for WaveWorks
-# The AdMob publisher line will be added here after the AdMob account is set up.
+google.com, pub-1671484022198681, DIRECT, f08c47fec0942fa0
