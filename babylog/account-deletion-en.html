@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delete your Oh My Baby account and cloud backup</title>
+<style>
+:root{color-scheme:light dark;--fg:#1c1c1e;--bg:#fff;--muted:#6b7280;--line:#e5e7eb}
+@media (prefers-color-scheme:dark){:root{--fg:#f2f2f7;--bg:#111;--muted:#9ca3af;--line:#333}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,'Noto Sans KR','Noto Sans JP','Noto Sans SC',sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.5rem;margin:0 0 8px}h2{font-size:1.25rem;margin:32px 0 8px}h3{font-size:1.05rem;margin:24px 0 4px}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+code{background:rgba(127,127,127,.15);padding:0 4px;border-radius:4px}
+nav{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 24px;font-size:.92rem}a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+<nav><a href="account-deletion-ko.html">한국어</a><a href="account-deletion-en.html">English</a></nav>
+<h1>Delete your Oh My Baby account and cloud backup</h1>
+<p>Oh My Baby works without signing in. The app asks you to sign in with Apple or Google when you turn on cloud backup, and that creates an account. Deleting the account deletes the backup copy on the server and the sign-in account.</p>
+<h3>If the app is on your phone</h3>
+<ol><li>Open the menu at the top right of the home screen and tap "Backup". Settings opens at the "Cloud backup" card.</li><li>Tap "Turn off and delete". "Delete account" at the bottom of Settings opens the same screen.</li><li>In "Delete backup and account?", tap "Delete".</li><li>Apple or Google shows its sign-in sheet a second time to confirm it is you. Use the account you turned backup on with.</li><li>The app deletes the server copy and the sign-in account in that step and shows "Backup and account deleted".</li></ol>
+<p>If the connection drops before it finishes, the card shows "Deleting your backup" and the app finishes the job the next time you open it. The app does not delete the records on your phone. To remove those too, delete the app.</p>
+<h3>If you signed out or reinstalled the app</h3>
+<p>Settings shows "Delete account" at the bottom even when you are not signed in. If you deleted the app, reinstall it and tap "Start" on the first screen to go in without signing in.</p>
+<ol><li>Open the menu at the top right of the home screen, go to Settings and tap "Delete account" at the bottom.</li><li>In "Delete an account?", tap the Apple or Google button and sign in with the account you want to delete.</li><li>"Delete this account?" shows the email address of the account you signed in with. If it is the right one, tap "Delete".</li><li>The app deletes that account's server backup and sign-in account, signs out and shows "Account deleted. Records on this phone stay".</li></ol>
+<p>If you tap "Cancel" in step 3, the app signs out of that account and deletes nothing. The app keeps the records on this phone and does not upload them during these steps. The app hides "Delete account" while you use caregiver sharing without signing in and while you wait to join a family. In that case, end sharing on the sharing screen first. If you use cloud backup and caregiver sharing together, "Delete account" stays visible.</p>
+<h3>If the app can't delete it</h3>
+<p>If you can't reinstall the app, or the app says "We couldn't verify this app, so it couldn't delete here", ask by email.</p>
+<p>If you tap "Turn off and delete", "Delete account" or "Try again" with backup on and the app can't verify itself, it shows "Couldn't delete your account". "Turn off backup on this phone" in that sheet makes the app sign out without contacting the server. After that, the app clears only this phone's backup and sharing settings and the list of records waiting to upload. The records on your phone stay. Your server backup and account stay too, so ask by email as described below. "Close" leaves "Deleting your backup" on the card, and "Try again" retries the deletion. After you choose "Turn off backup on this phone" and update the app, you can delete the account again with "Delete account" in Settings (the steps under "If you signed out or reinstalled the app").</p>
+<p>From the email address of the Apple or Google account you signed in with, send "Delete my Oh My Baby account" to <code>&lt;SUPPORT EMAIL&gt;</code>. The sender address must match the account email. This check keeps people from deleting someone else's account.</p>
+<p>If you chose "Hide My Email" for Sign in with Apple, your account email ends in <code>@privaterelay.appleid.com</code> and differs from the address you send from. On your iPhone, open your Apple Account settings, go to the "Sign in with Apple" list and tap Oh My Baby to see that address. Put it in your email, and we will send a confirmation to that address and delete the account after you reply.</p>
+<h3>What we delete</h3>
+<ul><li>The backup copy on the server: your baby's name, birthday, name type and sex, all records and notes, and deletion marks</li><li>If you used backup on your own, the whole family entry and its invite codes</li><li>The account entry that points to your backup, and the record that limits how often a phone checks the family purchase</li><li>The sign-in account (Firebase Authentication): your email address, and for Google sign-in your display name and profile photo URL</li><li>If you delete in the iPhone app after signing in with Apple, the app also revokes the Apple sign-in link, and Oh My Baby leaves the "Sign in with Apple" list in your Apple Account settings. Deleting in the Android app or by email does not revoke it. In that case you can remove Oh My Baby yourself from the "Sign in with Apple" list in iPhone Settings or on the Apple Account website. If revoking fails, the app still goes on to delete the account. In the rare case that the App Check blocks the server deletion, the app has already revoked the Apple link, and the account stays in "Deleting your backup". When you delete again, Apple asks for your sign-in consent once more</li></ul>
+<h3>What stays</h3>
+<ul><li>The records on this phone, until you delete the app</li><li>If you shared with other caregivers, the records you left in the family. They keep using them. Only your account leaves the family, and shared records may keep the ID of the account that last changed them</li><li>Family purchase records (a one-way hash of the purchase number, the family ID, check and refund times), kept so that refunds reach the right family</li><li>Backup and CSV files you exported, wherever you saved them</li><li>Information that the ad, analytics and crash services (Google) and the payment service (RevenueCat) collected, kept under each company's policy</li></ul>
+<h3>How long it takes</h3>
+<ul><li>Deleting in the app finishes on the spot.</li><li>We delete within 30 days of receiving an email request and reply to the address that sent it.</li><li>WaveWorks keeps a recovery copy of the server database (Firestore point-in-time recovery) in case of an operating error. Deleted data stays in that copy for 7 days and then disappears. The app cannot show it during that time.</li></ul>
+<h3>If you only used caregiver sharing without signing in</h3>
+<p>Caregiver sharing without sign-in uses an anonymous account with no email. In the app, Settings &gt; "Caregiver sharing" &gt; "Stop sharing" deletes that anonymous account. If you deleted the app, the caregiver who manages the family can remove your phone in the app. If no member of the family signed in with Apple or Google and no phone in the family uses sharing for a year, the server deletes the family information. For anything else, write to <code>&lt;SUPPORT EMAIL&gt;</code>.</p>
+</main>
+</body>
+</html>
