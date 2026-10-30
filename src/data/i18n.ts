@@ -109,5 +109,10 @@ export const COMPANY = {
   email: 'hongp0508@gmail.com',
 } as const;
 
+// 스토어 개발자 페이지. App Store는 첫 앱이 공개돼야 개발자 페이지가 생기므로 그때 주소를 넣는다
+export const DEVELOPER_STORES: { readonly play?: string; readonly appStore?: string } = {
+  play: 'https://play.google.com/store/apps/developer?id=%ED%99%8D%EB%A7%88%EC%B4%88',
+};
+
 // ko는 루트, en은 /en/ 아래에 같은 구조로 둔다
 export const localePath = (lang: Lang, path: string): string => (lang === 'ko' ? path : `/en${path}`);
