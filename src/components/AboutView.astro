@@ -101,11 +101,15 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
     border-radius: 99px; padding: 6px 18px; box-shadow: 3px 3px 0 var(--ink);
   }
   h1 { margin: 0; font: 400 clamp(60px, 9.4vw, 148px)/.98 var(--font-ko-display); }
+  :global(html[lang='en']) h1 { font-size: clamp(40px, 5.6vw, 92px); }
   h1 span { display: block; }
+  /* 글꼴마다 위아래 여백 값이 달라 강조 상자 안 글자가 위나 아래로 쏠린다. 글자 높이만 남기고 여백을 똑같이 준다 */
   h1 .l1 {
-    display: inline-block; margin: .06em 0; padding: 0 .14em; color: #fff; background: var(--wave);
+    display: inline-block; margin: .1em 0; padding: .14em .14em; text-box: trim-both cap alphabetic; color: #fff; background: var(--wave);
     border: var(--line); border-radius: 24px; box-shadow: var(--pop); transform: rotate(-2deg);
   }
+  /* 영어 소문자는 g·y·p 꼬리가 기준선 아래로 내려가 아래 여백을 그만큼 더 준다 */
+  :global(html[lang='en']) h1 .l1 { padding: .1em .14em .3em; }
   .lead { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 26px 0 0; max-width: 24em; }
   .studio { width: 100%; max-width: 640px; justify-self: center; animation: drift 5s ease-in-out infinite; }
   @keyframes drift { 50% { transform: translateY(-14px) rotate(-1.5deg); } }

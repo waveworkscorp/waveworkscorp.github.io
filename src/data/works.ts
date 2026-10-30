@@ -45,7 +45,7 @@ export const WORKS: readonly Work[] = [
     banner: '/img/fg-busjam.png',
     privacy: { ko: '/privacy/', en: '/en/privacy/' },
     terms: { ko: '/terms/', en: '/en/terms/' },
-    stores: {},
+    stores: { play: 'https://play.google.com/store/apps/details?id=com.waveworks.busloopescape' },
   },
   {
     slug: 'unscrew',

@@ -79,8 +79,9 @@ const backLabel = page.lang === 'ko' ? '이전으로' : 'Back';
   }
   .sheet :global(> :first-child) { margin-top: 0; }
   .sheet :global(h2) {
-    display: inline-block; margin: 48px 0 8px; padding: 0 .3em; font: 400 clamp(26px, 3vw, 36px)/1.3 var(--font-ko-display);
-    background: linear-gradient(transparent 58%, var(--sun) 58%);
+    /* 형광펜을 배경 대신 굵은 밑줄로 그어 두 줄로 넘어가는 긴 영어 제목도 줄마다 칠해지게 한다 */
+    margin: 48px 0 8px; font: 400 clamp(26px, 3vw, 36px)/1.3 var(--font-ko-display);
+    text-decoration: underline var(--sun); text-decoration-thickness: .42em; text-underline-offset: -.3em; text-decoration-skip-ink: none;
   }
   :global(html[lang='en']) .sheet :global(h2) { font-family: var(--font-en-display); font-weight: 700; }
   .sheet :global(h3) { position: relative; margin: 32px 0 6px; padding-left: 22px; font-size: 19px; font-weight: 800; }

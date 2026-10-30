@@ -61,9 +61,11 @@ const menu = [
   }
   .hero-copy { position: relative; z-index: 1; max-width: 600px; }
   h1 { margin: 0; font: 400 clamp(56px, 8.6vw, 132px)/.98 var(--font-ko-display); color: var(--ink); }
-  :global(html[lang='en']) h1 { font-family: var(--font-en-display); font-weight: 700; letter-spacing: -.02em; }
+  /* 영어 줄은 한글보다 길어 같은 크기면 'round with'가 두 줄로 쪼개진다. 줄마다 한 덩어리로 들어가게 줄인다 */
+  :global(html[lang='en']) h1 { font-family: var(--font-en-display); font-weight: 700; letter-spacing: -.02em; font-size: clamp(44px, 6.4vw, 104px); white-space: nowrap; }
+  /* 글꼴마다 위아래 여백 값이 달라 강조 상자 안 글자가 위나 아래로 쏠린다. 글자 높이만 남기고 여백을 똑같이 준다 */
   .brand {
-    display: inline-block; margin-top: .12em; padding: 0 .16em; font-size: .82em; white-space: nowrap;
+    display: inline-block; margin-top: .16em; padding: .14em .16em; text-box: trim-both cap alphabetic; font-size: .82em; white-space: nowrap;
     background: var(--sun); border: var(--line); border-radius: 22px; box-shadow: var(--pop); transform: rotate(-2deg);
   }
   .hero p { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 28px 0 32px; max-width: 21em; }

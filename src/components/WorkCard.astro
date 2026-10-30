@@ -13,7 +13,7 @@ const t = STRINGS[lang];
       : <img class="float" src={w.icon} alt="" width="512" height="512" loading="lazy" style={`view-transition-name:work-${w.slug}`} />}
   </div>
   <div class="txt">
-    <small>{t.comingSoon}</small>
+    <small>{w.stores.play || w.stores.appStore ? t.released : t.comingSoon}</small>
     <h3>{w.name[lang]}</h3>
     <p>{w.tagline[lang]}</p>
     <span class="pill">{t.viewDetail}</span>
