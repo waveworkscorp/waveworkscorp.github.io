@@ -47,11 +47,14 @@ const t = STRINGS[lang];
   .wide { grid-column: 1 / -1; flex-direction: row-reverse; }
   .wide .pic { flex: 1.4; aspect-ratio: auto; min-height: 380px; border-bottom: 0; border-left: 4px solid var(--ink); }
   .wide .txt { flex: 1; justify-content: center; padding: 40px; }
+  /* 배너 그림은 원래 비율(1200×586)로 넓게 보여 줘 양옆이 잘리지 않게 한다. 높이가 모자라면 왼쪽(아이콘·이름)을 살린다 */
+  .wide.art .pic { flex: 2; min-height: 0; aspect-ratio: 1200 / 586; }
+  .wide.art .pic img { object-position: left center; }
   .wide h3 { font-size: clamp(36px, 4.4vw, 60px); }
 
   @media (max-width: 860px) {
     .wide { flex-direction: column; }
-    .wide .pic { aspect-ratio: 2 / 1; min-height: 0; border-left: 0; border-bottom: 4px solid var(--ink); }
+    .wide .pic, .wide.art .pic { flex: none; aspect-ratio: 1200 / 586; min-height: 0; border-left: 0; border-bottom: 4px solid var(--ink); }
     .wide .txt { padding: 22px 28px 28px; }
   }
 </style>

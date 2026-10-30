@@ -7,7 +7,6 @@ const { lang } = Astro.props;
 const t = STRINGS[lang];
 ---
 <footer class="site-footer">
-  <img class="peek" src="/img/mascot-about.png" alt="" width="640" height="640" aria-hidden="true" />
   <div class="inner">
     <img class="logo" src="/img/logo1.png" alt="WaveWorks" width="600" height="390" />
     <nav class="links" aria-label={t.company}>
@@ -21,15 +20,17 @@ const t = STRINGS[lang];
       <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
     </p>
     <p class="copy">© 2026 WaveWorks</p>
+    <img class="peek" src="/img/mascot-about.png" alt="" width="640" height="640" aria-hidden="true" />
   </div>
 </footer>
 
 <style>
   .site-footer { position: relative; margin-top: 140px; background: var(--ink); color: #fff; font-size: 14px; }
-  /* 파도 캐릭터가 바닥 위로 고개를 내민다 */
-  .peek { position: absolute; right: clamp(16px, 8vw, 120px); top: -96px; width: 130px; animation: peek 3s ease-in-out infinite; }
+  /* 파도 캐릭터는 푸터 오른쪽 끝, 글 묶음 세로 가운데에 둔다 */
+  .peek { grid-column: 2; grid-row: 1 / span 4; align-self: center; width: clamp(90px, 11vw, 140px); animation: peek 3s ease-in-out infinite; }
   @keyframes peek { 50% { transform: translateY(-10px) rotate(4deg); } }
-  .inner { max-width: 1240px; margin: 0 auto; padding: 48px 20px 56px; display: grid; gap: 18px; }
+  .inner { max-width: 1240px; margin: 0 auto; padding: 48px 20px 56px; display: grid; grid-template-columns: 1fr auto; gap: 18px 24px; }
+  .inner > :not(.peek) { grid-column: 1; }
   .logo { height: 52px; width: auto; }
   .links { display: flex; flex-wrap: wrap; gap: 8px 26px; font: 600 17px var(--font-en-display); }
   .links a { text-decoration: none; }
