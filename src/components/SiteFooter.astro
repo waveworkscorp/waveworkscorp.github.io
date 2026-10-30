@@ -49,14 +49,14 @@ const stores = [
   @keyframes peek { 50% { transform: translateY(-10px) rotate(4deg); } }
   .inner { max-width: 1240px; margin: 0 auto; padding: 48px 20px 56px; display: grid; grid-template-columns: 1fr auto; gap: 18px 24px; }
   .inner > :not(.side) { grid-column: 1; }
-  /* 오른쪽 아래: 왼쪽 열에 스토어 버튼 두 개, 위 버튼 오른쪽에 파도 캐릭터 */
+  /* 오른쪽 아래: 왼쪽 열에 스토어 버튼 두 개, 오른쪽에 두 버튼 높이만 한 파도 캐릭터 */
   .side {
     grid-column: 2; grid-row: 1 / span 4; align-self: end;
-    display: grid; grid-template-columns: auto auto; grid-template-areas: 'play peek' 'apple .'; gap: 16px 18px; align-items: end;
+    display: grid; grid-template-columns: auto auto; grid-template-areas: 'play peek' 'apple peek'; gap: 16px 18px; align-items: center;
   }
   .play { grid-area: play; }
   .apple { grid-area: apple; }
-  .peek { grid-area: peek; width: clamp(90px, 10vw, 130px); animation: peek 3s ease-in-out infinite; }
+  .peek { grid-area: peek; width: auto; height: 164px; animation: peek 3s ease-in-out infinite; }
   .store {
     display: flex; align-items: center; gap: 14px; width: 240px; padding: 9px 18px 9px 9px;
     text-decoration: none; color: var(--ink); background: #fff;
