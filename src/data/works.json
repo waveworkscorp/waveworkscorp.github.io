@@ -257,10 +257,6 @@
       {
         "ko": "완성한 모형이 진열장에 모입니다",
         "en": "Finished models fill your showcase"
-      },
-      {
-        "ko": "순위는 스토어 게임 앱에서 확인합니다",
-        "en": "Rankings open in the store game app"
       }
     ],
     "info": [
@@ -371,7 +367,7 @@
         ]
       }
     ],
-    "shots": 4,
+    "shots": 3,
     "icon": "/works/unscrew/icon.png",
     "accent": "#9b8cff",
     "privacy": {
@@ -796,6 +792,10 @@
       {
         "ko": "키·몸무게·머리둘레 그래프",
         "en": "Height, weight and head"
+      },
+      {
+        "ko": "보호자와 함께 기록",
+        "en": "Log together with family"
       }
     ],
     "info": [
@@ -906,7 +906,7 @@
         ]
       }
     ],
-    "shots": 4,
+    "shots": 5,
     "icon": "/works/babylog/icon.png",
     "accent": "#ff9ec4",
     "banner": "/works/babylog/banner.png",
