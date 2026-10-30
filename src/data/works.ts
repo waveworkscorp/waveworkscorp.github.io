@@ -135,6 +135,7 @@ export const WORKS: readonly Work[] = [
     accent: '#ff9ec4',
     banner: '/img/fg-babylog.png',
     privacy: { ko: '/babylog/privacy/', en: '/en/babylog/privacy/' },
+    terms: { ko: '/babylog/terms/', en: '/en/babylog/terms/' },
     deletion: { ko: '/babylog/deletion/', en: '/en/babylog/deletion/' },
     stores: {},
   },
