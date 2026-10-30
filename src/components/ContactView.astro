@@ -3,87 +3,163 @@ import type { Lang } from '../data/works';
 import { WORKS } from '../data/works';
 import { COMPANY } from '../data/i18n';
 import { CONTACT } from '../data/pages';
-import PageHero from './PageHero.astro';
 import SiteFooter from './SiteFooter.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = CONTACT[lang];
+
+const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'];
 ---
 <main>
-  <PageHero title={c.title} lead={c.lead} tone="var(--coral)" art="/img/island-contact.png" mascot="/img/mascot-contact.png" dark />
+  <section class="hero">
+    <div class="copy">
+      <p class="kicker">{c.title}</p>
+      <h1>{c.hero.map((line, i) => <span class={`l${i}`}>{line}</span>)}</h1>
+      <p class="lead">{c.lead}</p>
+    </div>
+    <img class="flyer" src="/img/contact-hero.png" alt="" width="720" height="720" />
+    <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
+    </svg>
+  </section>
 
-  <div class="body">
-    <!-- 정적 사이트라 서버 없이 메일 앱으로 넘긴다. 스크립트가 없어도 mailto로 보내진다 -->
-    <form class="form" action={`mailto:${COMPANY.email}`} method="post" enctype="text/plain"
-      data-to={COMPANY.email} data-prefix={c.subjectPrefix}>
-      <fieldset>
-        <legend>{c.kindLabel}</legend>
-        <div class="kinds">
-          {c.kinds.map((k, i) => (
-            <label class="kind"><input type="radio" name="kind" value={k} checked={i === 0} /><span>{k}</span></label>
+  <!-- 정적 사이트라 서버 없이 메일 앱으로 넘긴다. 스크립트가 없어도 mailto로 보내진다 -->
+  <form class="form" action={`mailto:${COMPANY.email}`} method="post" enctype="text/plain"
+    data-to={COMPANY.email} data-prefix={c.subjectPrefix}>
+    <h2 id="kind-head">{c.kindLabel}</h2>
+    <!-- 고른 카드가 아래 폼에 붙은 탭이 된다. 그림자는 탭과 폼을 한 덩어리로 감싸 준다 -->
+    <div class="connect">
+    <fieldset class="kinds-set" aria-labelledby="kind-head">
+      <div class="kinds">
+        {c.kinds.map((k, i) => (
+          <label class={`kind k${i}`}>
+            <input type="radio" name="kind" value={k.title} checked={i === 0} />
+            <span class="card">
+              <img src={kindImgs[i]} alt="" width="720" height="720" loading="lazy" />
+              <b>{k.title}</b>
+              <small>{k.sub}</small>
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <!-- data-show: 이 묶음을 보여 줄 문의 종류 번호. 숨긴 묶음은 disabled로 검사와 메일 본문에서 빠진다 -->
+    <div class="sheet"><div class="panel">
+      <fieldset class="group" data-show="0">
+        <legend class="label">{c.workLabel}</legend>
+        <div class="works">
+          <label class="tile">
+            <input type="radio" name="work" value="" data-name="" checked />
+            <span class="none">{c.workNone}</span>
+          </label>
+          {WORKS.map((w) => (
+            <label class="tile" title={w.name[lang]}>
+              <input type="radio" name="work" value={w.slug} data-name={w.name[lang]} />
+              <img src={w.icon} alt={w.name[lang]} width="512" height="512" loading="lazy" />
+            </label>
           ))}
         </div>
       </fieldset>
 
-      <label class="field">
-        <span>{c.workLabel}</span>
-        <select name="work">
-          <option value="">{c.workNone}</option>
-          {WORKS.map((w) => <option value={w.slug} data-name={w.name[lang]}>{w.name[lang]}</option>)}
-        </select>
-      </label>
+      <fieldset class="group row" data-show="0">
+        <label class="field"><span class="label">{c.deviceLabel}</span><input name="device" data-label={c.deviceLabel} placeholder={c.devicePlaceholder} /></label>
+        <label class="field"><span class="label">{c.versionLabel}</span><input name="version" data-label={c.versionLabel} placeholder={c.versionPlaceholder} /></label>
+      </fieldset>
+
+      <fieldset class="group" data-show="1">
+        <legend class="label">{c.topicLabel}</legend>
+        <div class="topics">
+          {c.topics.map((tp, i) => (
+            <label class="topic"><input type="radio" name="topic" value={tp} checked={i === 0} /><span>{tp}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="group" data-show="1">
+        <label class="field"><span class="label">{c.companyLabel}</span><input name="company" data-label={c.companyLabel} autocomplete="organization" required /></label>
+      </fieldset>
 
       <div class="row">
-        <label class="field"><span>{c.nameLabel}</span><input name="name" autocomplete="name" /></label>
-        <label class="field"><span>{c.replyLabel}</span><input name="reply" type="email" autocomplete="email" required /></label>
+        <label class="field"><span class="label">{c.nameLabel}</span><input name="name" autocomplete="name" /></label>
+        <label class="field"><span class="label">{c.replyLabel}</span><input name="reply" type="email" autocomplete="email" required /></label>
       </div>
 
       <label class="field">
-        <span>{c.messageLabel}</span>
+        <span class="label">{c.messageLabel}</span>
         <textarea name="message" rows="7" required aria-describedby="msg-hint"></textarea>
-        <small id="msg-hint">{c.messageHint}</small>
+        <small id="msg-hint" data-hints={JSON.stringify(c.messageHints)}>{c.messageHints[0]}</small>
       </label>
 
-      <button type="submit">{c.send}</button>
-      <p class="note">{c.sendNote}</p>
-    </form>
+      <div class="actions">
+        <p class="note">{c.sendNote}</p>
+        <button type="submit">{c.send}<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z M11.3 13.7 21 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /></svg></button>
+      </div>
+    </div></div>
+    </div>
 
-    <aside class="direct">
-      <img src="/img/mascot-contact.png" alt="" width="640" height="640" loading="lazy" />
-      <h2>{c.directHead}</h2>
-      <a class="mail" href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
-      <button type="button" class="copy" data-copy={COMPANY.email} data-done={c.copied}>{c.copy}</button>
-    </aside>
-  </div>
+    <div class="direct">
+      <img src="/img/envelope.png" alt="" width="720" height="720" loading="lazy" />
+      <div class="direct-copy">
+        <h3>{c.directTitle}</h3>
+        <div class="address">
+          <a class="mail" href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+          <button type="button" class="copy-btn" data-copy={COMPANY.email} data-done={c.copied}>{c.copy}</button>
+        </div>
+      </div>
+    </div>
+  </form>
 </main>
 <SiteFooter lang={lang} />
 
 <script>
   const form = document.querySelector<HTMLFormElement>('.form');
-  const select = form?.querySelector<HTMLSelectElement>('select[name=work]');
 
-  // 작품 상세의 고객지원 링크(?app=<slug>)로 들어오면 작품과 문의 종류를 미리 고른다
+  // 게임·앱 상세의 고객지원 링크(?app=<slug>)로 들어오면 해당 게임·앱을 미리 고른다
   const app = new URLSearchParams(location.search).get('app');
-  if (select && app && [...select.options].some((o) => o.value === app)) select.value = app;
+  const preset = form?.querySelector<HTMLInputElement>(`input[name=work][value="${CSS.escape(app ?? '')}"]`);
+  if (app && preset) preset.checked = true;
+
+  // 문의 종류에 맞는 입력 묶음만 보이고, 내용 안내 문구도 바꾼다
+  const kinds = [...(form?.querySelectorAll<HTMLInputElement>('input[name=kind]') ?? [])];
+  const hint = form?.querySelector<HTMLElement>('#msg-hint');
+  const hints: string[] = JSON.parse(hint?.dataset.hints ?? '[]');
+  const applyKind = () => {
+    const k = String(kinds.findIndex((r) => r.checked));
+    form?.querySelectorAll<HTMLFieldSetElement>('.group').forEach((g) => {
+      const on = (g.dataset.show ?? '').split(' ').includes(k);
+      g.hidden = !on;
+      g.disabled = !on;
+    });
+    if (hint) hint.textContent = hints[Number(k)] ?? '';
+  };
+  kinds.forEach((r) => r.addEventListener('change', applyKind));
+  applyKind();
 
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
     const data = new FormData(form);
-    const work = select?.selectedOptions[0]?.dataset.name ?? '';
+    const work = form.querySelector<HTMLInputElement>('.group:not([disabled]) input[name=work]:checked')?.dataset.name ?? '';
     const kind = String(data.get('kind') ?? '');
-    const subject = [form.dataset.prefix, kind, work].filter(Boolean).join(' ');
+    const topic = data.has('topic') ? String(data.get('topic')) : '';
+    const subject = [form.dataset.prefix, kind, topic || work].filter(Boolean).join(' ');
+    // 보이는 칸 중 값이 있는 것만 "이름: 값"으로 덧붙인다
+    const extras = [...form.querySelectorAll<HTMLInputElement>('.group:not([disabled]) input[data-label]')]
+      .filter((i) => i.value.trim())
+      .map((i) => `${i.dataset.label}: ${i.value.trim()}`);
     const body = [
       String(data.get('message') ?? ''),
       '',
       '---',
-      `${kind}${work ? ` / ${work}` : ''}`,
+      [kind, topic, work].filter(Boolean).join(' / '),
+      ...extras,
       `${String(data.get('name') ?? '')} <${String(data.get('reply') ?? '')}>`,
     ].join('\n');
     location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 
-  document.querySelector<HTMLButtonElement>('.copy')?.addEventListener('click', async (e) => {
+  document.querySelector<HTMLButtonElement>('.copy-btn')?.addEventListener('click', async (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
     try {
       await navigator.clipboard.writeText(btn.dataset.copy ?? '');
@@ -97,52 +173,174 @@ const c = CONTACT[lang];
 </script>
 
 <style>
-  .body { max-width: 1240px; margin: 0 auto; padding: 40px 20px 0; display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: start; }
-  .form { display: grid; gap: 24px; background: #fff; border: var(--line); border-radius: 36px; box-shadow: var(--pop); padding: clamp(24px, 4vw, 44px); }
-  fieldset { border: 0; margin: 0; padding: 0; }
-  legend, .field > span { font-weight: 800; font-size: 17px; margin-bottom: 10px; }
-  .kinds { display: flex; flex-wrap: wrap; gap: 10px; }
-  .kind input { position: absolute; opacity: 0; }
-  .kind span {
-    display: inline-block; cursor: pointer; font-weight: 700; border: var(--line); border-radius: 99px; padding: 8px 18px;
-    box-shadow: 3px 3px 0 var(--ink); transition: transform .12s ease-out;
+  h1, h2 { font-family: var(--font-ko-display); font-weight: 400; }
+  :global(html[lang='en']) h1, :global(html[lang='en']) h2 { font-family: var(--font-en-display); font-weight: 700; letter-spacing: -.02em; }
+
+  /* 첫 화면: 큰 세 줄 문장과 종이비행기를 탄 마스코트 */
+  .hero {
+    position: relative; overflow: hidden; display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 20px;
+    padding: 120px clamp(20px, 6vw, 96px) 130px; min-height: min(86svh, 800px); color: #fff;
+    background:
+      radial-gradient(rgba(255,255,255,.22) 2.5px, transparent 3.5px) 0 0 / 26px 26px,
+      radial-gradient(circle at 75% 45%, rgba(255,214,102,.55), transparent 45%),
+      var(--coral);
   }
-  .kind span:hover { transform: translateY(-2px); }
-  .kind input:checked + span { background: var(--ink); color: #fff; }
-  .kind input:focus-visible + span { outline: 3px solid var(--wave); outline-offset: 3px; }
+  .copy { position: relative; z-index: 1; }
+  .kicker {
+    display: inline-block; margin: 0 0 18px; font-weight: 800; color: var(--ink); background: #fff; border: var(--line);
+    border-radius: 99px; padding: 6px 18px; box-shadow: 3px 3px 0 var(--ink);
+  }
+  h1 { margin: 0; font-size: clamp(60px, 9.4vw, 148px); line-height: .98; text-shadow: 5px 5px 0 var(--ink); }
+  h1 span { display: block; }
+  h1 .l1 {
+    display: inline-block; margin: .06em 0; padding: 0 .14em; color: var(--ink); text-shadow: none; background: var(--sun);
+    border: var(--line); border-radius: 24px; box-shadow: var(--pop); transform: rotate(2deg);
+  }
+  .lead { font-size: clamp(17px, 1.6vw, 21px); font-weight: 700; margin: 26px 0 0; max-width: 24em; }
+  .flyer { width: 100%; max-width: 640px; justify-self: center; animation: glide 6s ease-in-out infinite; }
+  @keyframes glide { 50% { transform: translate(-18px, -22px) rotate(-4deg); } }
+  .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
+
+  .form { max-width: 1040px; margin: 0 auto; padding: 70px 20px 0; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { padding: 0; }
+  h2 { margin: 0 0 32px; font-size: clamp(36px, 5vw, 68px); line-height: 1.08; }
+
+  /* 문의 종류: 폴더 탭. 고른 탭이 폼 위로 이어지고 폼은 그 탭 색을 입는다 */
+  .connect { max-width: 1000px; margin: 0 auto; }
+  .form { --tab: var(--sky); }
+  .form:has(.k1 input:checked) { --tab: #ffd0b8; }
+  .form:has(.k2 input:checked) { --tab: #dff1ff; }
+  .kinds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: end; }
+  .kind input, .tile input { position: absolute; opacity: 0; pointer-events: none; }
+  .card {
+    display: grid; justify-items: center; text-align: center; gap: 4px; cursor: pointer;
+    padding: 14px 18px 18px; border: 4px solid var(--ink); border-bottom: 0; border-radius: 32px 32px 0 0;
+    filter: saturate(.75) brightness(.97); transition: filter .2s;
+  }
+  .k0 .card { background: var(--sky); }
+  .k1 .card { background: #ffd0b8; }
+  .k2 .card { background: #dff1ff; }
+  .card img { width: 46%; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+  .card b { font: 400 clamp(20px, 2vw, 26px)/1.2 var(--font-ko-display); word-break: keep-all; }
+  :global(html[lang='en']) .card b { font-family: var(--font-en-display); font-weight: 700; }
+  .card small { font-weight: 700; font-size: 15px; opacity: .75; }
+  .card:hover { filter: none; }
+  .card:hover img { transform: translateY(-6px) rotate(-4deg); }
+  /* 고른 탭만 아래로 4px 내려 폼 윗선을 덮어 한 덩어리가 되고, 나머지 탭은 폼 윗선 위에 얹힌다 */
+  .kind input:checked + .card { position: relative; z-index: 1; filter: none; margin-bottom: -4px; padding-top: 26px; padding-bottom: 26px; }
+  .kind input:checked + .card img { transform: scale(1.1) rotate(-3deg); }
+  .kind input:focus-visible + .card { outline: 3px dashed var(--ink); outline-offset: -12px; }
+  .tile input:focus-visible + * { outline: 3px solid var(--wave); outline-offset: 4px; }
+
+  .sheet {
+    background: var(--tab); border: 4px solid var(--ink); border-radius: 0 0 40px 40px; padding: clamp(12px, 2vw, 22px);
+    box-shadow: 8px 8px 0 var(--ink);
+    transition: background-color .2s;
+  }
+  .panel {
+    display: grid; gap: 26px; background: #fff; border: 3px solid var(--ink); border-radius: 28px;
+    padding: clamp(22px, 4vw, 44px);
+  }
+  .label { display: block; font-weight: 800; font-size: 17px; margin-bottom: 10px; }
+
+  /* 관련 게임·앱: 아이콘을 눌러 고른다 */
+  .works { display: flex; flex-wrap: wrap; gap: 12px; }
+  .tile { cursor: pointer; }
+  .tile img, .tile .none {
+    display: grid; place-items: center; width: 68px; height: 68px; border: 3px solid var(--ink); border-radius: 22px;
+    box-shadow: 3px 3px 0 var(--ink); transition: transform .15s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .tile .none { width: auto; padding: 0 16px; font-weight: 800; font-size: 15px; background: var(--foam); }
+  .tile:hover img, .tile:hover .none { transform: translateY(-3px); }
+  .tile input:checked + * { transform: translateY(-4px) rotate(-4deg); box-shadow: 0 0 0 4px var(--wave), 5px 6px 0 var(--ink); }
+
   .field { display: grid; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  input:not([type=radio]), select, textarea {
+  input:not([type=radio]), textarea {
     font: 500 17px var(--font-body); color: var(--ink); background: var(--foam);
     border: var(--line); border-radius: 16px; padding: 12px 16px;
   }
   textarea { resize: vertical; line-height: 1.55; }
-  input:focus, select:focus, textarea:focus { outline: 3px solid var(--wave); outline-offset: 2px; }
+  input:focus, textarea:focus { outline: 3px solid var(--wave); outline-offset: 2px; }
   small { margin-top: 8px; font-weight: 600; opacity: .7; }
+  /* 맨 아래 줄: 안내 문구는 왼쪽, 전송 버튼은 오른쪽 끝 */
+  .actions {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px;
+    border-top: 3px dashed color-mix(in srgb, var(--ink) 25%, transparent); padding-top: 26px;
+  }
+  .note { margin: 0; flex: 1 1 240px; font-size: 15px; font-weight: 600; opacity: .65; }
   button[type=submit] {
-    justify-self: start; cursor: pointer; font: 800 18px var(--font-body); color: #fff;
-    background: var(--wave); border: var(--line); border-radius: 18px; padding: 15px 30px; box-shadow: var(--pop);
-    transition: transform .12s ease-out;
+    display: inline-flex; align-items: center; gap: 12px; cursor: pointer; color: #fff;
+    font: 400 26px/1 var(--font-ko-display); letter-spacing: .04em;
+    background: var(--wave); border: 4px solid var(--ink); border-radius: 99px; padding: 16px 30px 16px 40px; box-shadow: var(--pop);
+    transition: transform .12s ease-out, box-shadow .12s ease-out;
   }
-  button[type=submit]:hover { transform: translate(-3px, -3px); }
-  .note { margin: -12px 0 0; font-size: 14px; font-weight: 600; opacity: .65; }
+  :global(html[lang='en']) button[type=submit] { font: 700 24px/1 var(--font-en-display); letter-spacing: 0; }
+  button[type=submit] svg { transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+  button[type=submit]:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--ink); }
+  button[type=submit]:hover svg { transform: translate(4px, -4px) rotate(-8deg); }
+  button[type=submit]:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
 
+  .group { display: grid; }
+  .group[hidden] { display: none; }
+  .topics { display: flex; flex-wrap: wrap; gap: 10px; }
+  .topic input { position: absolute; opacity: 0; pointer-events: none; }
+  .topic span {
+    display: inline-block; cursor: pointer; font-weight: 700; border: var(--line); border-radius: 99px; padding: 8px 18px;
+    box-shadow: 3px 3px 0 var(--ink); transition: transform .12s ease-out;
+  }
+  .topic span:hover { transform: translateY(-2px); }
+  .topic input:checked + span { background: var(--ink); color: #fff; }
+  .topic input:focus-visible + span { outline: 3px solid var(--wave); outline-offset: 3px; }
+
+  /* 폼 아래 메일 주소 안내: 우표 테두리를 두른 엽서처럼 */
   .direct {
-    position: sticky; top: 110px; display: grid; justify-items: center; text-align: center; gap: 10px;
-    background: var(--sun); border: var(--line); border-radius: 36px; box-shadow: var(--pop); padding: 32px 24px 36px;
+    position: relative; max-width: 1000px; margin: 56px auto 0; display: flex; align-items: center; gap: clamp(16px, 3vw, 36px);
+    background: var(--sun); border: 4px solid var(--ink); border-radius: 32px; box-shadow: var(--pop);
+    padding: clamp(20px, 3vw, 30px) clamp(20px, 4vw, 44px);
   }
-  .direct img { width: 150px; animation: hop 2.8s ease-in-out infinite; }
-  @keyframes hop { 50% { transform: translateY(-14px) rotate(4deg); } }
-  .direct h2 { margin: 0; font: 400 clamp(26px, 2.6vw, 34px)/1.2 var(--font-ko-display); }
-  :global(html[lang='en']) .direct h2 { font-family: var(--font-en-display); font-weight: 700; }
-  .mail { font-weight: 800; font-size: 19px; word-break: break-all; }
-  .copy {
-    cursor: pointer; font: 800 15px var(--font-body); color: var(--ink); background: #fff;
-    border: var(--line); border-radius: 99px; padding: 7px 18px; box-shadow: 3px 3px 0 var(--ink);
+  .direct::before {
+    content: ''; position: absolute; inset: 9px; border: 3px dashed color-mix(in srgb, var(--ink) 35%, transparent);
+    border-radius: 24px; pointer-events: none;
   }
+  .direct img { flex: 0 0 auto; width: clamp(72px, 10vw, 112px); transform: rotate(-6deg); }
+  /* 넓은 화면은 제목과 주소를 한 줄 양 끝에, 좁은 화면은 가운데로 쌓는다 */
+  .direct-copy { flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; min-width: 0; }
+  .direct h3 { margin: 0; font: 400 clamp(24px, 2.6vw, 32px)/1.2 var(--font-ko-display); }
+  :global(html[lang='en']) .direct h3 { font-family: var(--font-en-display); font-weight: 700; }
+  .address {
+    display: inline-flex; align-items: center; gap: 8px; max-width: 100%;
+    background: #fff; border: 3px solid var(--ink); border-radius: 99px; padding: 6px 6px 6px 20px;
+  }
+  .mail { font: 700 clamp(16px, 1.8vw, 20px) var(--font-en-display); color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+  .mail:hover { text-decoration: underline; }
+  .copy-btn {
+    cursor: pointer; font: 800 14px var(--font-body); color: #fff; background: var(--ink);
+    border: 0; border-radius: 99px; padding: 9px 16px;
+  }
+  .copy-btn:hover { background: var(--wave); }
 
+  @media (prefers-reduced-motion: reduce) {
+    .flyer { animation: none; }
+  }
   @media (max-width: 860px) {
-    .body, .row { grid-template-columns: 1fr; }
-    .direct { position: static; }
+    .hero { grid-template-columns: 1fr; min-height: 0; padding: 100px 24px 100px; }
+    .flyer { width: 80%; }
+    .row { grid-template-columns: 1fr; }
+    .kinds { gap: 6px; }
+    .card { padding: 10px 6px 12px; border-radius: 20px 20px 0 0; }
+    .card img { width: 64%; }
+    .card b { font-size: 15px; }
+    .card small { display: none; }
+    .kind input:checked + .card { padding-top: 16px; padding-bottom: 18px; }
+    .sheet { border-radius: 0 0 28px 28px; }
+    button[type=submit] { width: 100%; justify-content: center; }
+    .direct { flex-direction: column; text-align: center; gap: 10px; }
+    .direct img { width: 80px; }
+    .direct-copy { flex-direction: column; }
+    .address { padding-left: 16px; }
+    .mail { font-size: 15px; }
+    .copy-btn { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
   }
 </style>

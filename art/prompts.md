@@ -52,3 +52,17 @@ Use your image generation tool to create 5 separate wide landscape background im
 5) bg-babylog: a soft pastel pink cozy nursery, white crib with a mobile, baby bottle, rubber duck, diapers stacked, a big window with a gentle moon and stars, warm and calm. Left side: plain soft pink wall with subtle light.
 When done, print the absolute file paths of the 5 generated images in the order above.
 ```
+
+## Contact 그림 5장 (2026-10-30)
+
+원본 `art/master/{contact-hero,kind-help,kind-biz,kind-etc,envelope}.png` 1024px 투명, 사이트에는 720px. 참고 이미지 mascot-contact, studio.
+
+```text
+Use your image generation tool to create 5 separate images (do not write code, do not draw with SVG or PIL). Match exactly the art style of the attached images: glossy cartoon sticker style, thick dark navy outline (#16224F, about 14px at 1024px), saturated cheerful colors, soft highlights, transparent background, no text, no letters, no logos. Each image is 1024x1024 PNG with a transparent background, the subject centered with some margin.
+1) contact-hero: the attached water-drop wave mascot 'Wavy' (same character design) riding a big white paper airplane through the sky, waving happily, a mail bag over the shoulder, colorful envelopes and little hearts flying behind in a trail. Dynamic diagonal pose, different from the attached poses.
+2) kind-help: NO mascot. A chunky blue game controller and a smartphone with a big yellow question-mark speech bubble and a small wrench, sparkles.
+3) kind-biz: NO mascot. Two friendly cartoon hands doing a high-five or handshake with a ribbon-wrapped gift box and confetti, coral and orange tones.
+4) kind-etc: NO mascot. A cluster of three colorful speech bubbles (pink, mint, yellow) with a heart, a star and a musical note floating, playful.
+5) envelope: NO mascot. A big open envelope with a letter peeking out, a scalloped postage stamp showing a blue wave, a red wax seal shaped like a heart, two small paper planes around it.
+When done, print the absolute file paths of the 5 generated images in order. Save copies into art/master/ named contact-hero.png, kind-help.png, kind-biz.png, kind-etc.png, envelope.png.
+```
