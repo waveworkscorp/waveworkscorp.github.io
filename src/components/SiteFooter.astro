@@ -16,6 +16,7 @@ const t = STRINGS[lang];
     </nav>
     <p class="biz">
       {COMPANY.name}, {t.rep} {COMPANY.rep[lang]}, {t.bizNo} {COMPANY.bizNo}<br />
+      {t.mailOrder} {COMPANY.mailOrderNo}<br />
       {COMPANY.address[lang]}<br />
       <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
     </p>

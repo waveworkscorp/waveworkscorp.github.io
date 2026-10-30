@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import LegalView from '../components/LegalView.astro';
+import { LEGAL_PAGES, type LegalPage } from '../data/legal';
+
+export function getStaticPaths() {
+  return LEGAL_PAGES.map((page) => ({ params: { legal: page.route }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: LegalPage };
+---
+<Base lang={page.lang} title={`${page.title} | WaveWorks`} description={page.description}>
+  <LegalView page={page} />
+</Base>

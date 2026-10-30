@@ -6,7 +6,7 @@ interface Props { lang: Lang; work: Work; wide?: boolean }
 const { lang, work: w, wide = false } = Astro.props;
 const t = STRINGS[lang];
 ---
-<a class:list={['card', { wide, art: !!w.banner }]} href={localePath(lang, `/works/${w.slug}/`)} style={`--accent:${w.accent}`}>
+<a class:list={['card', { wide, art: !!w.banner }]} href={localePath(lang, `/${w.slug}/`)} style={`--accent:${w.accent}`}>
   <div class="pic">
     {w.banner
       ? <img src={w.banner} alt="" width="1024" height="500" loading="lazy" style={`view-transition-name:work-${w.slug}`} />

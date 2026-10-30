@@ -7,7 +7,7 @@ interface Props {
   lang: Lang;
   title: string;
   description: string;
-  path: string; // 언어 접두어 없는 경로, 언어 전환 링크에 씀
+  path?: string; // 언어 접두어 없는 경로, 언어 전환 링크에 씀. 언어판이 하나뿐인 법적 고지는 비운다
   bodyClass?: string;
 }
 const { lang, title, description, path, bodyClass } = Astro.props;
@@ -20,8 +20,8 @@ const other: Lang = lang === 'ko' ? 'en' : 'ko';
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content={description}>
-  <link rel="alternate" hreflang="ko" href={new URL(localePath('ko', path), Astro.site)}>
-  <link rel="alternate" hreflang="en" href={new URL(localePath('en', path), Astro.site)}>
+  {path && <link rel="alternate" hreflang="ko" href={new URL(localePath('ko', path), Astro.site)}>}
+  {path && <link rel="alternate" hreflang="en" href={new URL(localePath('en', path), Astro.site)}>}
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:image" content={new URL('/img/logo1.png', Astro.site)}>
@@ -38,7 +38,7 @@ const other: Lang = lang === 'ko' ? 'en' : 'ko';
       <a href={localePath(lang, '/about/')}>About</a>
       <a href={localePath(lang, '/contact/')}>Contact</a>
     </nav>
-    <a class="lang-switch" href={localePath(other, path)} hreflang={other} lang={other}>{other === 'en' ? 'EN' : '한국어'}</a>
+    {path && <a class="lang-switch" href={localePath(other, path)} hreflang={other} lang={other}>{other === 'en' ? 'EN' : '한국어'}</a>}
   </header>
   <slot />
   <script>
