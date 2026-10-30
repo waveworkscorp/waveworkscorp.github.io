@@ -6,9 +6,10 @@ import StoreIcon from './StoreIcon.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = STRINGS[lang];
+// 스토어 개발자 페이지 버튼. 작품 상세의 스토어 카드를 작게 줄인 모양이다
 const stores = [
-  { key: 'appStore', label: 'App Store', href: DEVELOPER_STORES.appStore },
   { key: 'play', label: 'Google Play', href: DEVELOPER_STORES.play },
+  { key: 'apple', label: 'App Store', href: DEVELOPER_STORES.appStore },
 ] as const;
 ---
 <footer class="site-footer">
@@ -26,36 +27,56 @@ const stores = [
       <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
     </p>
     <p class="copy">© 2026 WaveWorks</p>
-    <div class="stores">
-      {stores.map((s) => s.href
-        ? <a class="store" href={s.href} target="_blank" rel="noopener" aria-label={s.label}><StoreIcon store={s.key} /></a>
-        : <span class="store off" role="img" aria-label={`${s.label} ${t.comingSoon}`} title={t.comingSoon}><StoreIcon store={s.key} /></span>)}
+    <div class="side">
+      {stores.map((s) => {
+        const Tag = s.href ? 'a' : 'span';
+        return (
+          <Tag class:list={['store', s.key, { off: !s.href }]} href={s.href} target={s.href ? '_blank' : undefined}
+            rel={s.href ? 'noopener' : undefined} title={s.href ? undefined : t.comingSoon}>
+            <span class="tile"><StoreIcon store={s.key} /></span>
+            <b>{s.label}</b>
+            {s.href && <span class="arr" aria-hidden="true">↗</span>}
+          </Tag>
+        );
+      })}
+      <img class="peek" src="/img/mascot-about.png" alt="" width="640" height="640" aria-hidden="true" />
     </div>
-    <img class="peek" src="/img/mascot-about.png" alt="" width="640" height="640" aria-hidden="true" />
   </div>
 </footer>
 
 <style>
   .site-footer { position: relative; margin-top: 140px; background: var(--ink); color: #fff; font-size: 14px; }
-  /* 파도 캐릭터는 푸터 오른쪽 끝, 글 묶음 세로 가운데에 둔다 */
-  .peek { grid-column: 2; grid-row: 1 / span 3; align-self: center; justify-self: end; width: clamp(90px, 11vw, 140px); animation: peek 3s ease-in-out infinite; }
   @keyframes peek { 50% { transform: translateY(-10px) rotate(4deg); } }
   .inner { max-width: 1240px; margin: 0 auto; padding: 48px 20px 56px; display: grid; grid-template-columns: 1fr auto; gap: 18px 24px; }
-  .inner > :not(.peek, .stores) { grid-column: 1; }
-  /* 오른쪽 아래, 저작권 줄과 같은 높이 */
-  .stores { grid-column: 2; grid-row: 4; justify-self: end; align-self: center; display: flex; gap: 14px; }
+  .inner > :not(.side) { grid-column: 1; }
+  /* 오른쪽 아래: 왼쪽 열에 스토어 버튼 두 개, 위 버튼 오른쪽에 파도 캐릭터 */
+  .side {
+    grid-column: 2; grid-row: 1 / span 4; align-self: end;
+    display: grid; grid-template-columns: auto auto; grid-template-areas: 'play peek' 'apple .'; gap: 16px 18px; align-items: end;
+  }
+  .play { grid-area: play; }
+  .apple { grid-area: apple; }
+  .peek { grid-area: peek; width: clamp(90px, 10vw, 130px); animation: peek 3s ease-in-out infinite; }
   .store {
-    display: grid; place-items: center; width: 104px; height: 58px; color: #1f6bf0; background: #fff;
-    border-radius: 18px; box-shadow: 5px 5px 0 var(--wave);
+    display: flex; align-items: center; gap: 14px; width: 240px; padding: 9px 18px 9px 9px;
+    text-decoration: none; color: var(--ink); background: #fff;
+    border: 3px solid var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--wave);
     transition: transform .12s ease-out, box-shadow .12s ease-out;
   }
-  .store :global(svg) { width: 32px; height: 32px; }
   a.store:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--wave); }
   a.store:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
-  .store.off { opacity: .45; box-shadow: none; }
-  /* 좁은 화면에서는 글 묶음 폭을 지키려고 저작권 줄 아래 왼쪽으로 내린다 */
-  @media (max-width: 640px) {
-    .stores { grid-column: 1; grid-row: auto; justify-self: start; }
+  .store.off { opacity: .55; box-shadow: none; }
+  .tile { display: grid; flex: none; width: 46px; height: 46px; padding: 8px; background: #fff; border: 2px solid var(--ink); border-radius: 13px; }
+  .apple .tile { padding: 9px 9px 10px; color: #000; }
+  .store b { flex: 1; font: 700 19px/1.2 var(--font-en-display); white-space: nowrap; }
+  .arr { font-size: 22px; font-weight: 800; opacity: .5; }
+  /* 좁은 화면에서는 글 묶음 아래로 내린다 */
+  @media (max-width: 760px) {
+    .side { grid-column: 1; grid-row: auto; justify-self: start; }
+  }
+  @media (max-width: 420px) {
+    .store { width: 220px; gap: 12px; }
+    .store b { font-size: 16px; }
   }
   .logo { height: 52px; width: auto; }
   .links { display: flex; flex-wrap: wrap; gap: 8px 26px; font: 600 17px var(--font-en-display); }
