@@ -41,6 +41,8 @@ a { color: inherit; }
   font-family: var(--font-en-display); font-size: 14px; text-decoration: none;
   border: var(--line); border-radius: 99px; padding: 4px 14px; background: #fff;
 }
+/* Fredoka에 한글이 없어 '한국어'는 기본 글꼴로 그려지므로, 굵기를 올려 옆 메뉴와 맞춘다 */
+.lang-switch:lang(ko) { font-weight: 800; }
 
 @media (max-width: 720px) {
   .topbar-nav { display: none; }
