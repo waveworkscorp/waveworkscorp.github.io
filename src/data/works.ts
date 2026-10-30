@@ -43,7 +43,8 @@ export const WORKS: readonly Work[] = [
     icon: '/img/icon-busjam.png',
     accent: '#ffc21a',
     banner: '/img/fg-busjam.png',
-    privacy: { ko: '/privacy/', en: '/en/privacy/' },
+    privacy: { ko: '/bus-jam/privacy/', en: '/en/bus-jam/privacy/' },
+    terms: { ko: '/bus-jam/terms/', en: '/en/bus-jam/terms/' },
     stores: { play: 'https://play.google.com/store/apps/details?id=com.waveworks.busloopescape' },
   },
   {
@@ -110,8 +111,8 @@ export const WORKS: readonly Work[] = [
     shots: 3,
     icon: '/img/icon-cheepdoku.png',
     accent: '#ffe36b',
-    privacy: { ko: '/privacy/', en: '/en/privacy/' },
-    terms: { ko: '/terms/', en: '/en/terms/' },
+    privacy: { ko: '/cheepdoku/privacy/', en: '/en/cheepdoku/privacy/' },
+    terms: { ko: '/cheepdoku/terms/', en: '/en/cheepdoku/terms/' },
     stores: {},
   },
   {

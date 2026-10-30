@@ -34,6 +34,9 @@ const LEGACY_LEGAL = {
   '/yokai-hunters/terms.html': '/yokai-hunters/terms/',
   '/yokai-hunters/en/privacy.html': '/en/yokai-hunters/privacy/',
   '/yokai-hunters/en/terms.html': '/en/yokai-hunters/terms/',
+  // 삐약도쿠 앱 설정 화면이 여는 옛 약관 주소. 개인정보 처리방침(/privacy/)은 두 게임 앱·스토어가 함께 걸어 두어 문서째 남긴다
+  '/terms/': '/cheepdoku/terms/',
+  '/en/terms/': '/en/cheepdoku/terms/',
 };
 
 export default defineConfig({
