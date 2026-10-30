@@ -18,11 +18,10 @@ const menu = [
 <main class="home">
   <section class="hero">
     <div class="hero-copy">
-      <h1>{t.heroLine1}<br />{t.heroLine2}<br /><span class="brand">{t.heroBrand}</span></h1>
+      <h1>{t.heroLine1}<br />{t.heroLine2}<img class="rider" src="/img/mascot-works.png" alt="" width="640" height="640" aria-hidden="true" /><br /><span class="brand">{t.heroBrand}</span></h1>
       <p>{t.homeDesc}</p>
       <a class="btn" href={localePath(lang, '/works/')}>{t.seeWorks}</a>
     </div>
-    <img class="rider" src="/img/mascot-works.png" alt="" width="640" height="640" aria-hidden="true" />
     <svg class="hero-edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
     </svg>
@@ -74,8 +73,9 @@ const menu = [
     transition: transform .12s ease-out, box-shadow .12s ease-out;
   }
   .btn:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--ink); }
+  /* 파도 캐릭터는 '한 판 더,' 줄 끝에 붙어 함께 들썩인다 */
   .rider {
-    position: absolute; z-index: 1; left: 50%; bottom: 60px; width: clamp(150px, 15vw, 240px);
+    display: inline-block; width: 1.25em; height: auto; margin: -.3em 0 -.2em .08em; vertical-align: middle;
     animation: ride 3.4s ease-in-out infinite;
   }
   @keyframes ride { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-22px) rotate(5deg); } }
@@ -109,7 +109,6 @@ const menu = [
     .hero { background: url('/img/hero-wave.jpg') 72% bottom / auto 380px no-repeat, #4cb6f2; }
     .hero { align-items: flex-start; min-height: 0; padding: 96px 24px 380px; }
     .hero p { margin: 20px 0 24px; }
-    .rider { left: 6%; bottom: 70px; width: 120px; }
     .grid, .menu { grid-template-columns: 1fr; }
     .mcard { min-height: 240px; }
     .mcard img { width: 46%; }
