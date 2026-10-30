@@ -18,9 +18,9 @@ const menu = [
 <main class="home">
   <section class="hero">
     <div class="hero-copy">
-      <h1>{t.heroLine1}<br />{t.heroLine2}<img class="rider" src="/img/mascot-works.png" alt="" width="640" height="640" aria-hidden="true" /><br /><span class="brand">{t.heroBrand}</span></h1>
+      <h1>{t.heroLine1}<br />{t.heroLine2}<br /><span class="brand">{t.heroBrand}</span></h1>
       <p>{t.homeDesc}</p>
-      <a class="btn" href={localePath(lang, '/works/')}>{t.seeWorks}</a>
+      <a class="btn" href={localePath(lang, '/works/')}><img class="rider" src="/img/mascot-works.png" alt="" width="640" height="640" aria-hidden="true" /><span>{t.seeWorks}</span></a>
     </div>
     <svg class="hero-edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
@@ -68,17 +68,16 @@ const menu = [
   }
   .hero p { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 28px 0 32px; max-width: 21em; }
   .btn {
-    display: inline-block; font-weight: 800; font-size: 18px; text-decoration: none; color: #fff;
-    background: var(--wave); border: var(--line); border-radius: 18px; padding: 16px 30px; box-shadow: var(--pop);
+    display: inline-flex; flex-direction: column; align-items: center; gap: 2px; font-weight: 800; font-size: 18px; text-decoration: none; color: #fff;
+    background: var(--wave); border: var(--line); border-radius: 18px; padding: 0 34px 14px; box-shadow: var(--pop);
     transition: transform .12s ease-out, box-shadow .12s ease-out;
   }
   .btn:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--ink); }
-  /* 파도 캐릭터는 '한 판 더,' 줄 끝에 붙어 함께 들썩인다 */
-  .rider {
-    display: inline-block; width: 1.25em; height: auto; margin: -.3em 0 -.2em .08em; vertical-align: middle;
-    animation: ride 3.4s ease-in-out infinite;
-  }
-  @keyframes ride { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-22px) rotate(5deg); } }
+  /* 영문 버튼 글은 상단 메뉴와 같은 글꼴로 맞춘다. Fredoka에는 한글이 없어 한국어는 본문 글꼴 그대로 둔다 */
+  :global(html[lang='en']) .btn span { font: 700 20px var(--font-en-display); letter-spacing: .04em; }
+  /* 파도 캐릭터가 버튼 위칸에 올라타 들썩인다. 머리가 버튼 위로 삐져나와 누르고 싶게 만든다 */
+  .rider { width: 120px; height: auto; margin: -34px 0 -6px; animation: ride 3.4s ease-in-out infinite; }
+  @keyframes ride { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-8px) rotate(6deg); } }
   .hero-edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
 
   /* 작품 */
