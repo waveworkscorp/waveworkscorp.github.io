@@ -33,10 +33,21 @@ const columns = Array.from({ length: ICON_COLUMNS }, (_, c) =>
 
 <script>
   const intro = document.getElementById('intro');
-  document.getElementById('enter')?.addEventListener('click', () => {
-    intro?.classList.add('out');
+  const SWIPE_MIN = 40;
+
+  function enter() {
+    if (!intro || intro.classList.contains('out') || document.documentElement.classList.contains('entered')) return;
+    intro.classList.add('out');
     try { sessionStorage.setItem('ww-entered', '1'); } catch { /* 저장 못 해도 입장은 된다 */ }
-  });
+  }
+
+  document.getElementById('enter')?.addEventListener('click', enter);
+  // 버튼 말고도 아래로 스크롤·쓸어 올리기·아래 방향 키로 들어간다
+  addEventListener('wheel', (e) => { if (e.deltaY > 0) enter(); }, { passive: true });
+  let touchY = 0;
+  addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', (e) => { if (touchY - e.touches[0].clientY > SWIPE_MIN) enter(); }, { passive: true });
+  addEventListener('keydown', (e) => { if (['ArrowDown', 'PageDown', ' '].includes(e.key) && e.target === document.body) enter(); });
 </script>
 
 <style>
@@ -48,6 +59,8 @@ const columns = Array.from({ length: ICON_COLUMNS }, (_, c) =>
   }
   .intro.out, :global(html.entered) .intro { transform: translateY(-100%); }
   :global(html.entered) .intro { transition: none; }
+  /* 입장 화면이 덮여 있는 동안은 뒤쪽 홈 화면 스크롤바를 숨긴다 */
+  :global(html:not(.entered):has(.intro:not(.out))) { overflow: hidden; }
   .wall { position: absolute; inset: -25%; display: flex; gap: 18px; justify-content: center; transform: rotate(-12deg); opacity: .5; }
   .col { display: flex; flex-direction: column; gap: 18px; animation: up 30s linear infinite; }
   .col:nth-child(even) { animation-name: down; }
