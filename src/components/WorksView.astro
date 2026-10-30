@@ -1,6 +1,6 @@
 ---
 import type { Category, Lang } from '../data/works';
-import { WORKS, worksBy } from '../data/works';
+import { WORKS, isAvailable, worksBy } from '../data/works';
 import { STRINGS } from '../data/i18n';
 import WorkCard from './WorkCard.astro';
 import SiteFooter from './SiteFooter.astro';
@@ -9,12 +9,20 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = STRINGS[lang];
 
+// 공개한 웹 작품이 생기기 전까지 웹 탭은 숨기고 목록 아래 안내 카드로만 알린다
+const hasWeb = worksBy('web').length > 0;
 const tabs: readonly { key: Category | 'all'; label: string }[] = [
   { key: 'all', label: t.tabAll },
   { key: 'game', label: t.tabGame },
   { key: 'app', label: t.tabApp },
-  { key: 'web', label: t.tabWeb },
+  ...(hasWeb ? [{ key: 'web' as const, label: t.tabWeb }] : []),
 ];
+// 지금 받을 수 있는 작품과 준비 중인 작품을 나눠 설치하러 온 사람이 바로 찾게 한다
+const groupsOf = (list: typeof WORKS) =>
+  [
+    { head: t.availableHead, items: list.filter(isAvailable) },
+    { head: t.comingSoon, items: list.filter((w) => !isAvailable(w)) },
+  ].filter((g) => g.items.length > 0);
 ---
 <main>
   <section class="hero">
@@ -44,18 +52,26 @@ const tabs: readonly { key: Category | 'all'; label: string }[] = [
       const list = tab.key === 'all' ? WORKS : worksBy(tab.key);
       return (
         <section class="panel" id={tab.key} role="tabpanel" aria-labelledby={`tab-${tab.key}`}>
-          {list.length > 0
-            ? <div class="grid">{list.map((w, i) => <WorkCard lang={lang} work={w} wide={i === 0 && list.length % 2 === 1} />)}</div>
-            : (
-              <div class="empty">
-                <img src="/img/mascot-about.png" alt="" width="640" height="640" />
-                <h2>{t.webEmptyTitle}</h2>
-                <p>{t.webEmptyBody}</p>
-              </div>
-            )}
+          {groupsOf(list).map((g) => (
+            <div class="group">
+              <h2 class="group-head">{g.head}<span>{g.items.length}</span></h2>
+              <div class="grid">{g.items.map((w, i) => <WorkCard lang={lang} work={w} wide={i === 0 && g.items.length % 2 === 1} />)}</div>
+            </div>
+          ))}
         </section>
       );
     })}
+
+    {!hasWeb && (
+      <aside class="web-note">
+        <img src="/img/mascot-about.png" alt="" width="640" height="640" />
+        <div>
+          <h2>{t.webEmptyTitle}</h2>
+          <p>{t.webEmptyBody}</p>
+          <p class="links"><a href="#game">{t.seeGames}</a><a href="#app">{t.seeApps}</a></p>
+        </div>
+      </aside>
+    )}
   </div>
 </main>
 <SiteFooter lang={lang} />
@@ -76,6 +92,8 @@ const tabs: readonly { key: Category | 'all'; label: string }[] = [
     show(key);
   }));
   show(location.hash.slice(1));
+  // 안내 카드의 게임 보기·앱 보기 링크도 탭을 바꾼다
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
 </script>
 
 <style>
@@ -125,14 +143,18 @@ const tabs: readonly { key: Category | 'all'; label: string }[] = [
   .panel + .panel { margin-top: 60px; }
   .panel[hidden] + .panel, .panel + .panel[hidden] { margin-top: 0; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-  .empty {
-    display: grid; justify-items: center; text-align: center; gap: 6px;
-    border: 3px dashed var(--ink); border-radius: 36px; padding: 48px 20px 56px; background: var(--foam);
+  .group + .group { margin-top: 56px; }
+  .group-head { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; font: 800 24px/1.2 var(--font-body); }
+  .group-head span { font-size: 15px; border: 2px solid var(--ink); border-radius: 99px; padding: 1px 10px; }
+  .web-note {
+    display: flex; align-items: center; gap: 20px; margin-top: 64px; padding: 20px 26px;
+    border: 3px dashed var(--ink); border-radius: 28px; background: var(--foam);
   }
-  .empty img { width: 150px; animation: hop 2.8s ease-in-out infinite; }
-  .empty h2 { margin: 8px 0 0; font: 400 clamp(26px, 3vw, 36px)/1.2 var(--font-ko-display); }
-  :global(html[lang='en']) .empty h2 { font-family: var(--font-en-display); font-weight: 700; }
-  .empty p { margin: 0; font-weight: 600; opacity: .75; }
+  .web-note img { width: 84px; flex: none; }
+  .web-note h2 { margin: 0; font: 800 20px/1.3 var(--font-body); }
+  .web-note p { margin: 4px 0 0; font-weight: 600; opacity: .8; }
+  .web-note .links { display: flex; gap: 10px; margin-top: 12px; opacity: 1; }
+  .web-note .links a { font-weight: 800; text-decoration: none; border: var(--line); border-radius: 99px; padding: 4px 16px; background: #fff; box-shadow: 3px 3px 0 var(--ink); }
   @keyframes hop { 50% { transform: translateY(-16px) rotate(4deg); } }
 
   @media (max-width: 860px) {

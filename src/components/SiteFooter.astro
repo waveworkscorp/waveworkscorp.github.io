@@ -2,6 +2,7 @@
 import type { Lang } from '../data/works';
 import { STRINGS, COMPANY, DEVELOPER_STORES, localePath } from '../data/i18n';
 import StoreIcon from './StoreIcon.astro';
+import { WORKS } from '../data/works';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -11,6 +12,8 @@ const stores = [
   { key: 'play', label: 'Google Play', href: DEVELOPER_STORES.play },
   { key: 'apple', label: 'App Store', href: DEVELOPER_STORES.appStore },
 ] as const;
+// 이용자와 스토어 심사자가 상세를 다시 찾지 않고 작품별 문서로 바로 가게 한다
+const withDeletion = WORKS.filter((w) => w.deletion);
 ---
 <footer class="site-footer">
   <div class="inner">
@@ -20,6 +23,14 @@ const stores = [
       <a href={localePath(lang, '/about/')}>About</a>
       <a href={localePath(lang, '/contact/')}>Contact</a>
     </nav>
+    <section class="help">
+      <h2>{t.help}</h2>
+      <a class="help-main" href={localePath(lang, '/contact/')}>{t.helpSupport}</a>
+      <p><span>{t.helpDocs}</span>{WORKS.map((w) => <a href={`${localePath(lang, `/${w.slug}/`)}#docs`}>{w.name[lang]}</a>)}</p>
+      {withDeletion.length > 0 && (
+        <p><span>{t.helpDeletion}</span>{withDeletion.map((w) => <a href={w.deletion?.[lang]}>{w.name[lang]}</a>)}</p>
+      )}
+    </section>
     <p class="biz">
       {COMPANY.name}, {t.rep} {COMPANY.rep[lang]}, {t.bizNo} {COMPANY.bizNo}<br />
       {t.mailOrder} {COMPANY.mailOrderNo}<br />
@@ -32,9 +43,9 @@ const stores = [
         const Tag = s.href ? 'a' : 'span';
         return (
           <Tag class:list={['store', s.key, { off: !s.href }]} href={s.href} target={s.href ? '_blank' : undefined}
-            rel={s.href ? 'noopener' : undefined} title={s.href ? undefined : t.comingSoon}>
+            rel={s.href ? 'noopener' : undefined}>
             <span class="tile"><StoreIcon store={s.key} /></span>
-            <b>{s.label}</b>
+            <span class="txt"><b>{s.label}</b>{!s.href && <small>{t.comingSoon}</small>}</span>
             {s.href && <span class="arr" aria-hidden="true">↗</span>}
           </Tag>
         );
@@ -51,7 +62,7 @@ const stores = [
   .inner > :not(.side) { grid-column: 1; }
   /* 오른쪽 아래: 왼쪽 열에 스토어 버튼 두 개, 오른쪽에 두 버튼 높이만 한 파도 캐릭터 */
   .side {
-    grid-column: 2; grid-row: 1 / span 4; align-self: end;
+    grid-column: 2; grid-row: 1 / span 5; align-self: end;
     display: grid; grid-template-columns: auto auto; grid-template-areas: 'play peek' 'apple peek'; gap: 16px 18px; align-items: center;
   }
   .play { grid-area: play; }
@@ -65,10 +76,12 @@ const stores = [
   }
   a.store:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--wave); }
   a.store:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
-  .store.off { opacity: .55; box-shadow: none; }
+  .store.off { opacity: .7; box-shadow: none; }
   .tile { display: grid; flex: none; width: 46px; height: 46px; padding: 8px; background: #fff; border: 2px solid var(--ink); border-radius: 13px; }
   .apple .tile { padding: 9px 9px 10px; color: #000; }
-  .store b { flex: 1; font: 700 19px/1.2 var(--font-en-display); white-space: nowrap; }
+  .store .txt { flex: 1; display: grid; }
+  .store b { font: 700 19px/1.2 var(--font-en-display); white-space: nowrap; }
+  .store small { font-weight: 700; font-size: 13px; }
   .arr { font-size: 22px; font-weight: 800; opacity: .5; }
   /* 좁은 화면에서는 글 묶음 아래로 내린다 */
   @media (max-width: 760px) {
@@ -82,6 +95,12 @@ const stores = [
   .links { display: flex; flex-wrap: wrap; gap: 8px 26px; font: 600 17px var(--font-en-display); }
   .links a { text-decoration: none; }
   .links a:hover { color: var(--sun); }
+  .help h2 { margin: 0 0 8px; font-size: 16px; }
+  .help p { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 4px 14px; line-height: 1.6; }
+  .help p span { opacity: .65; flex-basis: 100%; }
+  .help a { color: #fff; }
+  .help a:hover { color: var(--sun); }
+  .help-main { font-weight: 800; font-size: 16px; }
   .biz { margin: 0; opacity: .75; line-height: 1.8; }
   .copy { margin: 0; opacity: .55; }
 </style>

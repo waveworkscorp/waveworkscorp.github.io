@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../data/works';
-import { WORKS } from '../data/works';
+import { WORKS, isAvailable } from '../data/works';
 import { localePath } from '../data/i18n';
 import { ABOUT } from '../data/pages';
 import SiteFooter from './SiteFooter.astro';
@@ -11,6 +11,25 @@ const a = ABOUT[lang];
 
 const momentImgs = ['/img/moment-subway.png', '/img/moment-night.png', '/img/moment-lunch.png'];
 const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
+
+// 큰 숫자가 확정 실적으로 읽히지 않게 출시·준비 상태를 함께 적는다
+const statusOf = (list: typeof WORKS) => {
+  const out = list.filter(isAvailable).length;
+  if (out === 0) return a.stats.allReady;
+  const ready = list.length - out;
+  return lang === 'ko'
+    ? `${out}개 ${a.stats.released}${ready > 0 ? ` · ${ready}개 ${a.stats.ready}` : ''}`
+    : `${out} ${a.stats.released}${ready > 0 ? ` · ${ready} ${a.stats.ready}` : ''}`;
+};
+const games = WORKS.filter((w) => w.category === 'game');
+const apps = WORKS.filter((w) => w.category === 'app');
+// 원칙마다 실제 작품 하나를 붙여 추상적인 다짐으로 끝나지 않게 한다
+// 예시가 가리키는 작품이 있으면 그 상세로 잇는다
+const exHref = (slug: string): string => localePath(lang, `/${slug}/`);
+const stats = [
+  { value: games.length, label: a.stats.games, note: statusOf(games) },
+  { value: apps.length, label: a.stats.apps, note: statusOf(apps) },
+];
 ---
 <main>
   <section class="hero">
@@ -19,7 +38,10 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
       <h1>{a.hero.map((line, i) => <span class={`l${i}`}>{line}</span>)}</h1>
       <p class="lead">{a.lead}</p>
     </div>
-    <img class="studio" src="/img/studio.png" alt="" width="1024" height="1024" />
+    <figure class="maker">
+      <img class="studio" src="/img/studio.png" alt="" width="1024" height="1024" />
+      <figcaption class="sign"><p>{a.sign.body}</p><b>{a.sign.name}</b></figcaption>
+    </figure>
     <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="var(--ink)" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
     </svg>
@@ -48,27 +70,28 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
   </section>
 
   <section class="stats" aria-label={a.title}>
-    {a.stats.map((s) => (
-      <div class="stat"><b>{s.value}</b><span>{s.label}</span></div>
+    {stats.map((s) => (
+      <div class="stat"><b>{s.value}</b><span>{s.label}</span><small>{s.note}</small></div>
     ))}
+    <div class="stat goal"><b>5</b><span>{a.stats.langs}</span><small>{a.stats.goal}</small></div>
   </section>
 
   <section class="ways">
     <article class="way w0">
-      <div class="txt"><h2>{a.ways[0].title}</h2><p>{a.ways[0].body}</p></div>
+      <div class="txt"><h2>{a.ways[0].title}</h2><p>{a.ways[0].body}</p>{a.examples[0].slug ? <a class="ex" href={exHref(a.examples[0].slug)}>{a.examples[0].text}</a> : <span class="ex">{a.examples[0].text}</span>}</div>
       <div class="vis phones" aria-hidden="true">
         <img src={`/works/cheepdoku/shots/${lang}-2.jpg`} alt="" width="480" height="853" loading="lazy" />
         <img src={`/works/bus-jam/shots/${lang}-1.jpg`} alt="" width="480" height="853" loading="lazy" />
       </div>
     </article>
     <article class="way w1">
-      <div class="txt"><h2>{a.ways[1].title}</h2><p>{a.ways[1].body}</p></div>
+      <div class="txt"><h2>{a.ways[1].title}</h2><p>{a.ways[1].body}</p>{a.examples[1].slug ? <a class="ex" href={exHref(a.examples[1].slug)}>{a.examples[1].text}</a> : <span class="ex">{a.examples[1].text}</span>}</div>
       <div class="vis" aria-hidden="true">
         <img class="banner" src="/works/babylog/banner.png" alt="" width="1024" height="500" loading="lazy" />
       </div>
     </article>
     <article class="way w2">
-      <div class="txt"><h2>{a.ways[2].title}</h2><p>{a.ways[2].body}</p></div>
+      <div class="txt"><h2>{a.ways[2].title}</h2><p>{a.ways[2].body}</p>{a.examples[2].slug ? <a class="ex" href={exHref(a.examples[2].slug)}>{a.examples[2].text}</a> : <span class="ex">{a.examples[2].text}</span>}</div>
       <div class="vis bubbles" aria-hidden="true">
         {a.hello.map((h, i) => <span class={`b${i}`}>{h}</span>)}
       </div>
@@ -111,7 +134,15 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
   /* 영어 소문자는 g·y·p 꼬리가 기준선 아래로 내려가 아래 여백을 그만큼 더 준다 */
   :global(html[lang='en']) h1 .l1 { padding: .1em .14em .3em; }
   .lead { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 26px 0 0; max-width: 24em; }
-  .studio { width: 100%; max-width: 640px; justify-self: center; animation: drift 5s ease-in-out infinite; }
+  .maker { margin: 0; justify-self: center; display: grid; justify-items: center; max-width: 640px; }
+  .studio { width: 100%; animation: drift 5s ease-in-out infinite; }
+  .sign {
+    margin-top: -40px; position: relative; max-width: 25em; padding: 16px 22px; background: #fff;
+    border: var(--line); border-radius: 22px; box-shadow: 5px 5px 0 var(--ink); transform: rotate(-1.5deg);
+  }
+  .sign p { margin: 0; font-weight: 600; line-height: 1.55; }
+  .sign b { display: block; margin-top: 8px; text-align: right; font-size: 15px; }
+  .sign b::before { content: '— '; }
   @keyframes drift { 50% { transform: translateY(-14px) rotate(-1.5deg); } }
   .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
 
@@ -149,6 +180,10 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
   .stat:nth-child(2) b { background: var(--coral); transform: rotate(6deg); }
   .stat:nth-child(3) b { background: var(--tang); transform: rotate(-5deg); }
   .stat span { margin-top: 18px; font-weight: 800; font-size: 19px; }
+  .stat small { margin-top: 4px; font-size: 16px; font-weight: 600; opacity: .75; }
+  /* 언어 수는 실적이 아니라 목표라 속을 비워 다르게 보인다 */
+  .stat.goal b { background: #fff; color: var(--ink); border-style: dashed; box-shadow: none; transform: rotate(-5deg); }
+  .stat.goal small { display: inline-block; padding: 2px 12px; border: 2px dashed var(--ink); border-radius: 99px; opacity: 1; }
 
   /* 원칙 셋을 좌우로 번갈아 크게 */
   .ways { display: grid; gap: 40px; margin-top: 140px; }
@@ -161,6 +196,12 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
   .w1 { background: #ff9ec4; }
   .w2 { background: var(--foam); }
   .way p { margin: 18px 0 0; font-size: clamp(18px, 1.7vw, 22px); font-weight: 600; line-height: 1.6; max-width: 22em; }
+  .ex {
+    display: inline-block; margin-top: 18px; padding: 8px 16px; font-weight: 800; color: var(--ink); text-decoration: none;
+    background: #fff; border: var(--line); border-radius: 14px; box-shadow: 3px 3px 0 var(--ink);
+  }
+  a.ex::after { content: ' ↗'; }
+  a.ex:hover { transform: translate(-2px, -2px); }
   .vis { display: flex; justify-content: center; }
   .phones img {
     width: 40%; height: auto; border: 5px solid var(--ink); border-radius: 26px; box-shadow: 8px 8px 0 var(--ink); background: var(--ink);
@@ -199,7 +240,7 @@ const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
   }
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; min-height: 0; padding: 100px 24px 100px; }
-    .studio { width: 78%; }
+    .maker { width: 88%; }
     .scenes, .stats, .way { grid-template-columns: 1fr; }
     .s1 { transform: none; }
     .way:nth-child(even) .txt { order: 0; }

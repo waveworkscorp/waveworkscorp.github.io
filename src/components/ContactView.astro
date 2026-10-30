@@ -25,7 +25,7 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   </section>
 
   <!-- 정적 사이트라 서버 없이 메일 앱으로 넘긴다. 스크립트가 없어도 mailto로 보내진다 -->
-  <form class="form" action={`mailto:${COMPANY.email}`} method="post" enctype="text/plain"
+  <form class="form" novalidate data-err-required={c.errRequired} data-err-email={c.errEmail} action={`mailto:${COMPANY.email}`} method="post" enctype="text/plain"
     data-to={COMPANY.email} data-prefix={c.subjectPrefix}>
     <h2 id="kind-head">{c.kindLabel}</h2>
     <!-- 고른 카드가 아래 폼에 붙은 탭이 된다. 그림자는 탭과 폼을 한 덩어리로 감싸 준다 -->
@@ -48,24 +48,25 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
     <!-- data-show: 이 묶음을 보여 줄 문의 종류 번호. 숨긴 묶음은 disabled로 검사와 메일 본문에서 빠진다 -->
     <div class="sheet"><div class="panel">
       <fieldset class="group" data-show="0">
-        <legend class="label">{c.workLabel}</legend>
+        <legend class="label">{c.workLabel} <em class="mark">{c.optional}</em></legend>
         <div class="works">
           <label class="tile">
             <input type="radio" name="work" value="" data-name="" checked />
-            <span class="none">{c.workNone}</span>
+            <span class="pic none">{c.workNone}</span>
           </label>
           {WORKS.map((w) => (
-            <label class="tile" title={w.name[lang]}>
+            <label class="tile">
               <input type="radio" name="work" value={w.slug} data-name={w.name[lang]} />
-              <img src={w.icon} alt={w.name[lang]} width="512" height="512" loading="lazy" />
+              <span class="pic"><img src={w.icon} alt="" width="512" height="512" loading="lazy" /></span>
+              <span class="name">{w.name[lang]}</span>
             </label>
           ))}
         </div>
       </fieldset>
 
       <fieldset class="group row" data-show="0">
-        <label class="field"><span class="label">{c.deviceLabel}</span><input name="device" data-label={c.deviceLabel} placeholder={c.devicePlaceholder} /></label>
-        <label class="field"><span class="label">{c.versionLabel}</span><input name="version" data-label={c.versionLabel} placeholder={c.versionPlaceholder} /></label>
+        <label class="field"><span class="label">{c.deviceLabel} <em class="mark">{c.optional}</em></span><input name="device" data-label={c.deviceLabel} placeholder={c.devicePlaceholder} /></label>
+        <label class="field"><span class="label">{c.versionLabel} <em class="mark">{c.optional}</em></span><input name="version" data-label={c.versionLabel} placeholder={c.versionPlaceholder} /></label>
       </fieldset>
 
       <fieldset class="group" data-show="1">
@@ -78,22 +79,24 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
       </fieldset>
 
       <fieldset class="group" data-show="1">
-        <label class="field"><span class="label">{c.companyLabel}</span><input name="company" data-label={c.companyLabel} autocomplete="organization" required /></label>
+        <label class="field"><span class="label">{c.companyLabel} <em class="mark on">{c.required}</em></span><input name="company" data-label={c.companyLabel} autocomplete="organization" required /><small class="err" hidden></small></label>
       </fieldset>
 
       <div class="row">
-        <label class="field"><span class="label">{c.nameLabel}</span><input name="name" autocomplete="name" /></label>
-        <label class="field"><span class="label">{c.replyLabel}</span><input name="reply" type="email" autocomplete="email" required /></label>
+        <label class="field"><span class="label">{c.nameLabel} <em class="mark">{c.optional}</em></span><input name="name" autocomplete="name" /></label>
+        <label class="field"><span class="label">{c.replyLabel} <em class="mark on">{c.required}</em></span><input name="reply" type="email" autocomplete="email" required /><small class="err" hidden></small></label>
       </div>
 
       <label class="field">
-        <span class="label">{c.messageLabel}</span>
+        <span class="label">{c.messageLabel} <em class="mark on">{c.required}</em></span>
         <textarea name="message" rows="7" required aria-describedby="msg-hint"></textarea>
+        <small class="err" hidden></small>
         <small id="msg-hint" data-hints={JSON.stringify(c.messageHints)}>{c.messageHints[0]}</small>
       </label>
 
       <div class="actions">
         <p class="note">{c.sendNote}</p>
+        <div class="after" role="status" hidden>{c.afterSend.map((line) => <p>{line}</p>)}</div>
         <button type="submit">{c.send}<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z M11.3 13.7 21 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /></svg></button>
       </div>
     </div></div>
@@ -107,6 +110,7 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
           <a class="mail" href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
           <button type="button" class="copy-btn" data-copy={COMPANY.email} data-done={c.copied}>{c.copy}</button>
         </div>
+        <p class="copy-failed" role="status" hidden>{c.copyFailed}</p>
       </div>
     </div>
   </form>
@@ -137,8 +141,28 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   kinds.forEach((r) => r.addEventListener('change', applyKind));
   applyKind();
 
+  // 브라우저 기본 말풍선 대신 칸 바로 아래 한 줄로 알린다
+  const fieldError = (el: HTMLInputElement | HTMLTextAreaElement): string => {
+    if (el.validity.valueMissing) return form?.dataset.errRequired ?? '';
+    if (el.validity.typeMismatch) return form?.dataset.errEmail ?? '';
+    return '';
+  };
+  const showError = (el: HTMLInputElement | HTMLTextAreaElement): boolean => {
+    const msg = fieldError(el);
+    const err = el.parentElement?.querySelector<HTMLElement>('.err');
+    if (err) { err.textContent = msg; err.hidden = !msg; }
+    el.toggleAttribute('aria-invalid', Boolean(msg));
+    return !msg;
+  };
+  const required = () => [...(form?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]') ?? [])]
+    .filter((el) => !el.closest('fieldset[disabled]'));
+  form?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]').forEach((el) =>
+    el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) showError(el); }));
+
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
+    const invalid = required().filter((el) => !showError(el));
+    if (invalid.length > 0) { invalid[0]?.focus(); return; }
     const data = new FormData(form);
     const work = form.querySelector<HTMLInputElement>('.group:not([disabled]) input[name=work]:checked')?.dataset.name ?? '';
     const kind = String(data.get('kind') ?? '');
@@ -157,6 +181,9 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
       `${String(data.get('name') ?? '')} <${String(data.get('reply') ?? '')}>`,
     ].join('\n');
     location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // 메일 앱이 열렸는지, 실제로 보냈는지는 알 수 없으므로 완료라고 하지 않고 다음 할 일을 알린다
+    const after = form.querySelector<HTMLElement>('.after');
+    if (after) after.hidden = false;
   });
 
   document.querySelector<HTMLButtonElement>('.copy-btn')?.addEventListener('click', async (e) => {
@@ -168,6 +195,8 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
       // 클립보드 권한이 없으면 주소를 선택해 두어 직접 복사하게 한다
       const mail = document.querySelector('.mail');
       if (mail) getSelection()?.selectAllChildren(mail);
+      const failed = document.querySelector<HTMLElement>('.copy-failed');
+      if (failed) failed.hidden = false;
     }
   });
 </script>
@@ -250,13 +279,31 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   /* 관련 게임·앱: 아이콘을 눌러 고른다 */
   .works { display: flex; flex-wrap: wrap; gap: 12px; }
   .tile { cursor: pointer; }
-  .tile img, .tile .none {
-    display: grid; place-items: center; width: 68px; height: 68px; border: 3px solid var(--ink); border-radius: 22px;
+  .tile { display: grid; justify-items: center; align-content: start; gap: 6px; width: 84px; text-align: center; }
+  .tile:has(.none) { width: auto; }
+  .pic {
+    position: relative; display: grid; place-items: center; width: 68px; height: 68px; border: 3px solid var(--ink); border-radius: 22px;
     box-shadow: 3px 3px 0 var(--ink); transition: transform .15s cubic-bezier(.3, 1.6, .5, 1);
   }
-  .tile .none { width: auto; padding: 0 16px; font-weight: 800; font-size: 15px; background: var(--foam); }
-  .tile:hover img, .tile:hover .none { transform: translateY(-3px); }
-  .tile input:checked + * { transform: translateY(-4px) rotate(-4deg); box-shadow: 0 0 0 4px var(--wave), 5px 6px 0 var(--ink); }
+  .pic img { width: 100%; height: 100%; border-radius: 19px; }
+  .pic.none { width: auto; padding: 0 16px; font-weight: 800; font-size: 15px; background: var(--foam); }
+  .name { font-size: 13px; font-weight: 700; line-height: 1.3; word-break: keep-all; }
+  .tile:hover .pic { transform: translateY(-3px); }
+  .tile input:checked + .pic { transform: translateY(-4px) rotate(-4deg); box-shadow: 0 0 0 4px var(--wave), 5px 6px 0 var(--ink); }
+  /* 색만으로 고른 것을 알리지 않게 굵은 체크를 붙인다 */
+  .tile input:checked + .pic::after {
+    content: '✓'; position: absolute; right: -10px; top: -10px; width: 26px; height: 26px; display: grid; place-items: center;
+    background: var(--wave); color: #fff; border: 3px solid var(--ink); border-radius: 50%; font-weight: 900; font-size: 14px;
+  }
+  .tile input:checked ~ .name { font-weight: 900; }
+  .mark { font-style: normal; font-size: 12px; font-weight: 700; vertical-align: 2px; padding: 2px 8px; border-radius: 99px; background: var(--foam); border: 1.5px solid color-mix(in srgb, var(--ink) 30%, transparent); }
+  .mark.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .err { margin-top: 6px; color: #c62828; font-weight: 700; opacity: 1; }
+  [aria-invalid] { border-color: #c62828 !important; }
+  .after { flex-basis: 100%; order: 3; background: var(--sky); border: 2px solid var(--ink); border-radius: 16px; padding: 12px 16px; font-weight: 700; }
+  .after p { margin: 0; }
+  .after p + p { margin-top: 4px; font-weight: 600; }
+  .copy-failed { flex-basis: 100%; margin: 0; font-weight: 700; font-size: 15px; }
 
   .field { display: grid; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }

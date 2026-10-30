@@ -3,6 +3,7 @@ import type { Lang, Work } from '../data/works';
 import { STRINGS, localePath } from '../data/i18n';
 import SiteFooter from './SiteFooter.astro';
 import StoreIcon from './StoreIcon.astro';
+import InfoCard from './InfoCard.astro';
 
 interface Props { lang: Lang; work: Work }
 const { lang, work: w } = Astro.props;
@@ -14,11 +15,14 @@ const hex = w.accent.slice(1);
 const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
 const isDark = 0.2126 * r + 0.7152 * g + 0.0722 * b < DARK_LUMA;
 
-// 스토어 앱 아이콘 타일을 크게 둔 카드. 아직 공개 전인 스토어는 흐리게 두고 누를 수 없게 한다
+// 누를 수 있는 스토어만 큰 카드로 두고, 아직 공개 전인 스토어는 상태 배지로 내려 행동과 안내를 나눈다
 const stores = [
   { key: 'play', label: 'Google Play', href: w.stores.play },
   { key: 'appStore', label: 'App Store', href: w.stores.appStore },
 ] as const;
+const openStores = stores.filter((s) => s.href);
+const soonStores = stores.filter((s) => !s.href);
+const [checkBox, ...moreInfo] = w.info ?? [];
 
 const listHref = localePath(lang, '/works/');
 
@@ -39,18 +43,22 @@ const docs = [
       <img class="icon" src={w.icon} alt="" width="512" height="512" style={`view-transition-name:work-${w.slug}`} />
       <h1>{w.name[lang]}</h1>
       <p class="tagline">{w.tagline[lang]}</p>
-      <div class="stores" aria-label={t.getOn}>
-        {stores.map((s) => {
-          const Tag = s.href ? 'a' : 'span';
-          return (
-            <Tag class:list={['store', { off: !s.href }]} href={s.href} rel={s.href ? 'noopener' : undefined}>
+      {openStores.length > 0 && (
+        <div class="stores" aria-label={t.getOn}>
+          {openStores.map((s) => (
+            <a class="store" href={s.href} rel="noopener">
               <span class={`tile ${s.key === 'appStore' ? 'apple' : 'play'}`}><StoreIcon store={s.key} /></span>
-              <span class="txt"><b>{s.label}</b><small>{s.href ? t.goStore : t.comingSoon}</small></span>
-              {s.href && <span class="arr" aria-hidden="true">↗</span>}
-            </Tag>
-          );
-        })}
-      </div>
+              <span class="txt"><b>{s.label}</b><small>{t.goStore}</small></span>
+              <span class="arr" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      )}
+      {soonStores.length > 0 && (
+        <ul class="soon">
+          {soonStores.map((s) => <li><StoreIcon store={s.key} />{t.storeSoon.replace('{p}', s.label)}</li>)}
+        </ul>
+      )}
     </div>
     <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
@@ -58,28 +66,44 @@ const docs = [
   </section>
 
   <div class="body">
+    {checkBox && <InfoCard box={checkBox} lang={lang} />}
     <section class="intro" aria-labelledby="feat-head">
       <p class="about">{w.about[lang]}</p>
+      {w.steps && (
+        <>
+          <h3 class="steps-head">{t.stepsHead}</h3>
+          <ol class="steps" style={`--accent:${w.accent}`}>
+            {w.steps.map((s) => <li>{s[lang]}</li>)}
+          </ol>
+        </>
+      )}
       <h2 id="feat-head">{t.featuresHead}</h2>
       <ul class="features" style={`--accent:${w.accent}`}>
         {w.features.map((f) => (
           <li><b>{f.title[lang]}</b><span>{f.body[lang]}</span></li>
         ))}
       </ul>
+      {moreInfo.map((box) => <InfoCard box={box} lang={lang} />)}
     </section>
 
     {w.shots > 0 && (
       <section class="screens" aria-labelledby="shots-head">
         <h2 id="shots-head">{t.screensHead}</h2>
         <div class="strip">
-          {Array.from({ length: w.shots }, (_, i) => (
-            <img src={`/works/${w.slug}/shots/${lang}-${i + 1}.jpg`} alt={`${w.name[lang]} ${i + 1}`} width="480" loading="lazy" />
-          ))}
+          {Array.from({ length: w.shots }, (_, i) => {
+            const caption = w.captions?.[i]?.[lang];
+            return (
+              <figure>
+                <img src={`/works/${w.slug}/shots/${lang}-${i + 1}.jpg`} alt={caption ?? `${w.name[lang]} ${i + 1}`} width="480" height="853" loading="lazy" />
+                {caption && <figcaption>{caption}</figcaption>}
+              </figure>
+            );
+          })}
         </div>
       </section>
     )}
 
-    <section aria-labelledby="docs-head">
+    <section id="docs" aria-labelledby="docs-head">
       <h2 id="docs-head">{t.docs}</h2>
       <div class="docs">
         {docs.map((d) => (
@@ -138,7 +162,12 @@ const docs = [
     transition: transform .12s ease-out, box-shadow .12s ease-out;
   }
   a.store:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); }
-  .store.off { opacity: .6; box-shadow: none; }
+  .soon { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; }
+  .soon li {
+    display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px 7px 10px;
+    background: #fff; color: var(--ink); border: 2px solid var(--ink); border-radius: 99px; font-weight: 700; font-size: 15px;
+  }
+  .soon :global(svg) { width: 20px; height: 20px; }
   .tile { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border: 2px solid var(--ink); border-radius: 14px; }
   .tile.play { background: #fff; }
   .tile.apple { color: #fff; background: linear-gradient(180deg, #1ec8ff, #1f6bf0); }
@@ -162,20 +191,30 @@ const docs = [
     content: ''; position: absolute; left: 22px; top: 24px; width: 30px; height: 30px; border-radius: 50%;
     background: var(--accent); border: 3px solid var(--ink);
   }
-  .features b { font-size: 21px; }
-  .features span { font-weight: 600; opacity: .78; }
+  .features b { font-size: 25px; line-height: 1.25; }
+  .features span { font-size: 16px; font-weight: 600; opacity: .72; }
+  .about + .steps-head { margin-top: -40px; }
+  .steps-head { margin: 0 0 14px; font-size: 20px; }
+  .steps { margin: 0 0 70px; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 10px; max-width: 40em; }
+  .steps li { counter-increment: step; position: relative; padding: 4px 0 4px 50px; font-size: 18px; font-weight: 600; }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 0; width: 34px; height: 34px; display: grid; place-items: center;
+    background: var(--accent); border: 3px solid var(--ink); border-radius: 50%; font-weight: 800; font-size: 16px;
+  }
 
   /* 스토어 화면을 폰처럼 늘어놓고 옆으로 넘긴다 */
   .strip {
     display: flex; gap: 26px; overflow-x: auto; scroll-snap-type: x mandatory;
     padding: 12px 6px 34px; margin: 0 -6px;
   }
+  .strip figure { flex: 0 0 auto; width: clamp(200px, 22vw, 270px); margin: 0; scroll-snap-align: start; }
   .strip img {
-    flex: 0 0 auto; width: clamp(200px, 22vw, 270px); height: auto; scroll-snap-align: start;
+    display: block; width: 100%; height: auto;
     border: 5px solid var(--ink); border-radius: 30px; box-shadow: 8px 8px 0 var(--ink); background: var(--ink);
   }
-  .strip img:nth-child(odd) { transform: rotate(-1.5deg); }
-  .strip img:nth-child(even) { transform: rotate(1.5deg) translateY(14px); }
+  .strip figure:nth-child(odd) img { transform: rotate(-1.5deg); }
+  .strip figure:nth-child(even) img { transform: rotate(1.5deg) translateY(14px); }
+  .strip figcaption { margin-top: 26px; font-weight: 700; font-size: 16px; line-height: 1.45; text-align: center; }
   h2 { margin: 0 0 30px; font: 400 clamp(34px, 4.4vw, 60px)/1.1 var(--font-ko-display); }
   :global(html[lang='en']) h2 { font-family: var(--font-en-display); font-weight: 700; }
   .docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; }
@@ -196,7 +235,8 @@ const docs = [
 
   @media (max-width: 860px) {
     .features { grid-template-columns: 1fr; }
-    .strip img { width: 62vw; }
+    /* 다음 화면이 조금 보이게 해서 옆으로 넘길 수 있음을 알린다 */
+    .strip figure { width: 64vw; }
     /* 좁은 화면은 그림을 위로 보이고 아래쪽을 대표색으로 덮어 글을 얹는다 */
     .hero {
       align-items: flex-end; min-height: 92svh; padding: 96px 24px 110px;

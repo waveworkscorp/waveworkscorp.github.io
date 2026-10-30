@@ -27,6 +27,7 @@ const columns = Array.from({ length: ICON_COLUMNS }, (_, c) =>
   </div>
   <div class="gate">
     <img class="gate-logo" src="/img/logo1.png" alt="WaveWorks" width="600" height="390" />
+    <p class="gate-line">{t.tagline}</p>
     <button class="enter" id="enter" type="button">{t.enter}</button>
   </div>
 </div>
@@ -69,6 +70,10 @@ const columns = Array.from({ length: ICON_COLUMNS }, (_, c) =>
   @keyframes down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
   .gate { position: relative; text-align: center; }
   .gate-logo { width: min(440px, 78vw); margin: 0 auto 22px; animation: bob 3.2s ease-in-out infinite; }
+  .gate-line {
+    width: fit-content; max-width: min(30em, calc(100vw - 48px)); margin: 0 auto 24px; text-wrap: balance; padding: 8px 18px; font-weight: 800; font-size: clamp(15px, 1.8vw, 19px); line-height: 1.5;
+    color: var(--ink); background: #fff; border: var(--line); border-radius: 18px; word-break: keep-all;
+  }
   .enter {
     font: 700 22px var(--font-en-display); color: var(--ink); cursor: pointer;
     background: var(--sun); border: var(--line); border-radius: 99px; padding: 12px 44px;

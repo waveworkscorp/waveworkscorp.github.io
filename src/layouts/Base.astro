@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../data/works';
-import { localePath } from '../data/i18n';
+import { STRINGS, localePath } from '../data/i18n';
 import '../styles/global.css';
 
 interface Props {
@@ -12,6 +12,14 @@ interface Props {
 }
 const { lang, title, description, path, bodyClass } = Astro.props;
 const other: Lang = lang === 'ko' ? 'en' : 'ko';
+const t = STRINGS[lang];
+// 현재 위치는 색과 함께 aria-current로도 알린다. 작품 상세는 게임과 앱 아래로 본다
+const here = path ?? '';
+const nav = [
+  { href: '/works/', label: 'Works', full: t.works, on: here !== '' && !['/', '/about/', '/contact/'].includes(here) },
+  { href: '/about/', label: 'About', full: t.about, on: here === '/about/' },
+  { href: '/contact/', label: 'Contact', full: t.contact, on: here === '/contact/' },
+];
 ---
 <!doctype html>
 <html lang={lang}>
@@ -34,10 +42,15 @@ const other: Lang = lang === 'ko' ? 'en' : 'ko';
   <header class="topbar">
     <a href={localePath(lang, '/')} class="topbar-logo"><img src="/img/logo1.png" alt="WaveWorks" width="600" height="390"></a>
     <nav class="topbar-nav">
-      <a href={localePath(lang, '/works/')}>Works</a>
-      <a href={localePath(lang, '/about/')}>About</a>
-      <a href={localePath(lang, '/contact/')}>Contact</a>
+      {nav.map((n) => <a href={localePath(lang, n.href)} aria-current={n.on ? 'page' : undefined}>{n.label}</a>)}
     </nav>
+    <!-- 좁은 화면은 위 메뉴 대신 접히는 메뉴. 스크립트 없이 열고 닫힌다 -->
+    <details class="topbar-menu">
+      <summary>{t.menu}<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg></summary>
+      <nav>
+        {nav.map((n) => <a href={localePath(lang, n.href)} aria-current={n.on ? 'page' : undefined}>{n.full}</a>)}
+      </nav>
+    </details>
     {path && <a class="lang-switch" href={localePath(other, path)} hreflang={other} lang={other}>{other === 'en' ? 'EN' : '한국어'}</a>}
   </header>
   <slot />

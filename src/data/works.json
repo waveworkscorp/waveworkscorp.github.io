@@ -56,6 +56,108 @@
         }
       }
     ],
+    "steps": [
+      {
+        "ko": "주차장에서 나갈 수 있는 버스를 탭해 빼냅니다",
+        "en": "Tap a bus that has a clear way out"
+      },
+      {
+        "ko": "같은 색 승객이 버스에 올라탑니다",
+        "en": "Passengers of the same color climb aboard"
+      },
+      {
+        "ko": "모든 승객을 태워 보내면 클리어입니다",
+        "en": "Send every passenger off to clear the stage"
+      }
+    ],
+    "captions": [
+      {
+        "ko": "막히지 않은 버스부터 탭해 빼냅니다",
+        "en": "Tap out the buses that are free to move"
+      },
+      {
+        "ko": "가려진 버스는 앞 차를 빼면 색이 드러납니다",
+        "en": "Hidden buses show their color once the way opens"
+      },
+      {
+        "ko": "막히면 부스터로 버스를 골라 뺍니다",
+        "en": "Stuck? Use a booster to pick a bus"
+      },
+      {
+        "ko": "클리어하면 코인을 받습니다",
+        "en": "Clear a stage to earn coins"
+      }
+    ],
+    "info": [
+      {
+        "title": {
+          "ko": "다운로드 전 확인",
+          "en": "Before you download"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "지원 기기",
+              "en": "Devices"
+            },
+            "value": {
+              "ko": "Android 7.0 이상 (iOS 준비 중)",
+              "en": "Android 7.0+ (iOS in progress)"
+            }
+          },
+          {
+            "label": {
+              "ko": "연령 등급",
+              "en": "Age rating"
+            },
+            "value": {
+              "ko": "Google Play 전체이용가",
+              "en": "Google Play: Everyone"
+            }
+          },
+          {
+            "label": {
+              "ko": "광고",
+              "en": "Ads"
+            },
+            "value": {
+              "ko": "보상형 광고, 11레벨부터 전면 광고",
+              "en": "Rewarded ads, plus interstitials from stage 11"
+            }
+          },
+          {
+            "label": {
+              "ko": "앱 내 구매",
+              "en": "In-app purchases"
+            },
+            "value": {
+              "ko": "광고 제거, 코인, 묶음 상품",
+              "en": "Ad removal, coins and bundles"
+            }
+          },
+          {
+            "label": {
+              "ko": "인터넷 연결",
+              "en": "Internet"
+            },
+            "value": {
+              "ko": "광고 보기와 구매에 필요",
+              "en": "Needed for ads and purchases"
+            }
+          },
+          {
+            "label": {
+              "ko": "지원 언어",
+              "en": "Languages"
+            },
+            "value": {
+              "ko": "한국어, 영어, 일본어, 중국어 간체·번체",
+              "en": "Korean, English, Japanese, Simplified and Traditional Chinese"
+            }
+          }
+        ]
+      }
+    ],
     "shots": 4,
     "icon": "/works/bus-jam/icon.png",
     "accent": "#ffc21a",
@@ -114,8 +216,8 @@
           "en": "Showcase and rankings"
         },
         "body": {
-          "ko": "푼 모형을 모으고 업적과 순위를 겨룹니다",
-          "en": "Collect finished models and chase achievements"
+          "ko": "완성한 모형을 모으고, 업적을 달성하고 순위에 도전합니다",
+          "en": "Collect finished models, earn achievements and climb the rankings"
         }
       },
       {
@@ -124,9 +226,149 @@
           "en": "Progress backup"
         },
         "body": {
-          "ko": "Game Center와 Google Play 게임으로 이어서 합니다",
-          "en": "Game Center and Google Play Games"
+          "ko": "Game Center 또는 Google Play 게임으로 진행 상황을 백업합니다",
+          "en": "Back up progress with Game Center or Google Play Games"
         }
+      }
+    ],
+    "steps": [
+      {
+        "ko": "모형을 드래그해 돌려 나사를 찾습니다",
+        "en": "Drag to spin the model and find the screws"
+      },
+      {
+        "ko": "나사를 탭하면 같은 색 상자로 날아갑니다",
+        "en": "Tap a screw and it flies to the box of its color"
+      },
+      {
+        "ko": "대기 구멍이 다 차기 전에 나사를 모두 빼면 클리어입니다",
+        "en": "Pull every screw before the spare holes fill up"
+      }
+    ],
+    "captions": [
+      {
+        "ko": "모형을 돌려 가며 나사를 뽑습니다",
+        "en": "Spin the model and pull the screws"
+      },
+      {
+        "ko": "홈에서 다음 모형에 도전합니다",
+        "en": "Start the next model from home"
+      },
+      {
+        "ko": "완성한 모형이 진열장에 모입니다",
+        "en": "Finished models fill your showcase"
+      },
+      {
+        "ko": "순위는 스토어 게임 앱에서 확인합니다",
+        "en": "Rankings open in the store game app"
+      }
+    ],
+    "info": [
+      {
+        "title": {
+          "ko": "다운로드 전 확인",
+          "en": "Before you download"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "지원 기기",
+              "en": "Devices"
+            },
+            "value": {
+              "ko": "Android 7.0 이상, iOS 15 이상",
+              "en": "Android 7.0+, iOS 15+"
+            }
+          },
+          {
+            "label": {
+              "ko": "연령 등급",
+              "en": "Age rating"
+            },
+            "value": {
+              "ko": "Google Play 전체이용가",
+              "en": "Google Play: Everyone"
+            }
+          },
+          {
+            "label": {
+              "ko": "광고",
+              "en": "Ads"
+            },
+            "value": {
+              "ko": "보상형, 11레벨부터 전면, 판 화면 배너",
+              "en": "Rewarded, interstitials from level 11, a banner during play"
+            }
+          },
+          {
+            "label": {
+              "ko": "앱 내 구매",
+              "en": "In-app purchases"
+            },
+            "value": {
+              "ko": "광고 제거, 코인 팩, 묶음 상품",
+              "en": "Ad removal, coin packs and bundles"
+            }
+          },
+          {
+            "label": {
+              "ko": "인터넷 연결",
+              "en": "Internet"
+            },
+            "value": {
+              "ko": "광고, 구매, 백업, 순위에 필요",
+              "en": "Needed for ads, purchases, backup and rankings"
+            }
+          },
+          {
+            "label": {
+              "ko": "지원 언어",
+              "en": "Languages"
+            },
+            "value": {
+              "ko": "한국어, 영어, 일본어, 중국어 간체·번체, 스페인어, 포르투갈어(브라질), 독일어, 프랑스어, 인도네시아어",
+              "en": "Korean, English, Japanese, Simplified and Traditional Chinese, Spanish, Brazilian Portuguese, German, French and Indonesian"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "ko": "기기를 바꾸기 전 확인",
+          "en": "Before switching devices"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "백업되는 항목",
+              "en": "What is backed up"
+            },
+            "value": {
+              "ko": "진행, 코인, 아이템, 해금, 구매 기록, 통계, 업적",
+              "en": "Progress, coins, items, unlocks, purchases, stats and achievements"
+            }
+          },
+          {
+            "label": {
+              "ko": "복원 방법",
+              "en": "How to restore"
+            },
+            "value": {
+              "ko": "iPhone은 Game Center, Android는 Google Play 게임에 로그인한 채 앱을 열면 이어집니다. 설정의 [지금 백업]으로 바로 올릴 수도 있습니다",
+              "en": "Sign in to Game Center on iPhone or Google Play Games on Android and open the game. You can also tap Back up now in Settings"
+            }
+          },
+          {
+            "label": {
+              "ko": "iOS와 Android 간 이전",
+              "en": "Between iOS and Android"
+            },
+            "value": {
+              "ko": "지원하지 않습니다. 같은 OS 기기끼리만 이어집니다",
+              "en": "Not supported. Progress moves only between devices on the same OS"
+            }
+          }
+        ]
       }
     ],
     "shots": 4,
@@ -203,6 +445,88 @@
         }
       }
     ],
+    "steps": [
+      {
+        "ko": "영웅이 성벽 앞에서 알아서 싸웁니다",
+        "en": "Your hero fights at the wall on its own"
+      },
+      {
+        "ko": "웨이브가 끝날 때마다 카드 3장 중 하나를 고릅니다",
+        "en": "After each wave, pick one of three cards"
+      },
+      {
+        "ko": "웨이브 20개를 버티면 클리어입니다",
+        "en": "Hold out for 20 waves to clear the stage"
+      }
+    ],
+    "captions": [
+      {
+        "ko": "전장과 성벽 상태를 한눈에 봅니다",
+        "en": "See the battlefield and your wall at a glance"
+      },
+      {
+        "ko": "웨이브마다 카드 3장 중 하나를 고릅니다",
+        "en": "Choose one of three cards each wave"
+      },
+      {
+        "ko": "다섯 영웅을 키웁니다",
+        "en": "Level up five heroes"
+      },
+      {
+        "ko": "부적 책으로 판 밖에서도 강해집니다",
+        "en": "Grow stronger between runs with the talisman book"
+      }
+    ],
+    "info": [
+      {
+        "title": {
+          "ko": "다운로드 전 확인",
+          "en": "Before you download"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "지원 기기",
+              "en": "Devices"
+            },
+            "value": {
+              "ko": "Android 7.0 이상, iPhone(iOS 15 이상). iPad는 지원하지 않습니다",
+              "en": "Android 7.0+, iPhone (iOS 15+). iPad not supported"
+            }
+          },
+          {
+            "label": {
+              "ko": "광고",
+              "en": "Ads"
+            },
+            "value": {
+              "ko": "원할 때만 보는 보상형 광고. 전면 광고는 없습니다",
+              "en": "Optional rewarded ads only. No interstitials"
+            }
+          },
+          {
+            "label": {
+              "ko": "앱 내 구매",
+              "en": "In-app purchases"
+            },
+            "value": {
+              "ko": "영웅 패키지, 광고 제거, 월 정기 패스 (출시 준비 중)",
+              "en": "Hero packs, ad removal and a monthly pass (in progress)"
+            }
+          },
+          {
+            "label": {
+              "ko": "지원 언어",
+              "en": "Languages"
+            },
+            "value": {
+              "ko": "한국어, 영어, 일본어, 중국어 간체·번체",
+              "en": "Korean, English, Japanese, Simplified and Traditional Chinese"
+            }
+          }
+        ]
+      }
+    ],
     "shots": 4,
     "icon": "/works/yokai-hunters/icon.png",
     "accent": "#2b2f5e",
@@ -229,8 +553,8 @@
       "en": "A chick logic puzzle, one per row"
     },
     "about": {
-      "ko": "줄마다, 칸마다, 색 구역마다 병아리를 한 마리씩 놓는 논리 퍼즐입니다. 병아리끼리는 대각선으로도 닿으면 안 됩니다. 모든 판은 추측 없이 풀리고 답은 하나뿐이라, 1~5분이면 한 판이 끝납니다.",
-      "en": "Place one chick in every row, column and colored region, with no two touching, not even diagonally. Every board has exactly one solution and needs no guessing, so a round takes 1 to 5 minutes."
+      "ko": "가로줄, 세로줄, 같은 색 구역에 병아리를 한 마리씩 놓는 논리 퍼즐입니다. 병아리끼리는 가로나 세로, 대각선으로 맞닿으면 안 됩니다. 모든 판은 추측 없이 풀 수 있고 정답은 하나뿐입니다. 한 판은 보통 1~5분 정도 걸립니다.",
+      "en": "A logic puzzle: place one chick in every row, column and colored region. No two chicks may touch, side by side or diagonally. Every board can be solved without guessing and has exactly one answer. A round usually takes 1 to 5 minutes."
     },
     "features": [
       {
@@ -274,6 +598,104 @@
         }
       }
     ],
+    "steps": [
+      {
+        "ko": "가로줄, 세로줄, 색 구역마다 병아리를 한 마리씩 놓습니다",
+        "en": "Place one chick in every row, column and colored region"
+      },
+      {
+        "ko": "병아리끼리는 대각선으로도 맞닿으면 안 됩니다",
+        "en": "No two chicks may touch, not even diagonally"
+      },
+      {
+        "ko": "판을 다 채우면 클리어입니다",
+        "en": "Fill the board to clear it"
+      }
+    ],
+    "captions": [
+      {
+        "ko": "홈에서 오늘의 퍼즐과 다음 판을 고릅니다",
+        "en": "Pick today's puzzle or your next board"
+      },
+      {
+        "ko": "줄과 색 구역을 보며 병아리를 놓습니다",
+        "en": "Place chicks by row, column and region"
+      },
+      {
+        "ko": "클리어하면 기록과 선물을 확인합니다",
+        "en": "See your time and gifts after a clear"
+      }
+    ],
+    "info": [
+      {
+        "title": {
+          "ko": "다운로드 전 확인",
+          "en": "Before you download"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "지원 기기",
+              "en": "Devices"
+            },
+            "value": {
+              "ko": "Android 7.0 이상, iOS 15 이상",
+              "en": "Android 7.0+, iOS 15+"
+            }
+          },
+          {
+            "label": {
+              "ko": "연령 등급",
+              "en": "Age rating"
+            },
+            "value": {
+              "ko": "Google Play 전체이용가",
+              "en": "Google Play: Everyone"
+            }
+          },
+          {
+            "label": {
+              "ko": "광고",
+              "en": "Ads"
+            },
+            "value": {
+              "ko": "전면, 게임 화면 배너, 원할 때 보는 선물 보상 광고",
+              "en": "Interstitials, a banner during play, optional rewarded gifts"
+            }
+          },
+          {
+            "label": {
+              "ko": "앱 내 구매",
+              "en": "In-app purchases"
+            },
+            "value": {
+              "ko": "광고 제거 (전면·배너 제거)",
+              "en": "Ad removal (no interstitials or banner)"
+            }
+          },
+          {
+            "label": {
+              "ko": "인터넷 연결",
+              "en": "Internet"
+            },
+            "value": {
+              "ko": "퍼즐은 연결 없이 가능. 주간 랭킹, 로그인, 진행 저장에 필요",
+              "en": "Puzzles work offline. Needed for weekly rankings, sign-in and saving progress"
+            }
+          },
+          {
+            "label": {
+              "ko": "지원 언어",
+              "en": "Languages"
+            },
+            "value": {
+              "ko": "한국어, 영어, 일본어, 중국어 간체·번체",
+              "en": "Korean, English, Japanese, Simplified and Traditional Chinese"
+            }
+          }
+        ]
+      }
+    ],
     "shots": 3,
     "icon": "/works/cheepdoku/icon.png",
     "accent": "#ffe36b",
@@ -295,8 +717,8 @@
       "en": "Oh My Baby"
     },
     "tagline": {
-      "ko": "한 손으로 원탭 육아일지",
-      "en": "One-tap baby log for one free hand"
+      "ko": "한 손으로 톡, 간편한 육아 기록",
+      "en": "Tap once, log it. A baby log for one hand"
     },
     "about": {
       "ko": "밤중 수유 중에도 한 손으로 기록하는 육아일지입니다. 버튼을 한 번 누르면 바로 기록되고, 수유와 수면은 타이머가 켜집니다. 초대 코드로 보호자와 함께 쓰고, 한 번 결제로 광고를 없앨 수 있습니다.",
@@ -319,8 +741,8 @@
           "en": "Daily rhythm"
         },
         "body": {
-          "ko": "24시간 띠, 밤 요약, 수유 간격",
-          "en": "24-hour strip, night summary, feeding intervals"
+          "ko": "하루 기록을 시간대별로 보고, 밤중 기록과 수유 간격을 확인해요",
+          "en": "See the day hour by hour, with night logs and feeding intervals"
         }
       },
       {
@@ -344,7 +766,147 @@
         }
       }
     ],
-    "shots": 0,
+    "steps": [
+      {
+        "ko": "기록할 버튼을 한 번 누릅니다",
+        "en": "Tap the button for what you want to log"
+      },
+      {
+        "ko": "수유와 수면은 타이머가 바로 켜집니다",
+        "en": "Feeds and sleep start a timer right away"
+      },
+      {
+        "ko": "하루 기록은 타임라인과 통계로 봅니다",
+        "en": "Review the day on the timeline and stats"
+      }
+    ],
+    "captions": [
+      {
+        "ko": "한 번 누르면 기록 끝",
+        "en": "Log it in one tap"
+      },
+      {
+        "ko": "오늘 하루를 한눈에",
+        "en": "Today at a glance"
+      },
+      {
+        "ko": "하루 리듬을 24시간 띠로",
+        "en": "The day as a 24-hour band"
+      },
+      {
+        "ko": "키·몸무게·머리둘레 그래프",
+        "en": "Height, weight and head"
+      }
+    ],
+    "info": [
+      {
+        "title": {
+          "ko": "다운로드 전 확인",
+          "en": "Before you download"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "지원 기기",
+              "en": "Devices"
+            },
+            "value": {
+              "ko": "Android 7.0 이상, iOS 15 이상",
+              "en": "Android 7.0+, iOS 15+"
+            }
+          },
+          {
+            "label": {
+              "ko": "대상",
+              "en": "Audience"
+            },
+            "value": {
+              "ko": "부모와 보호자",
+              "en": "Parents and caregivers"
+            }
+          },
+          {
+            "label": {
+              "ko": "광고",
+              "en": "Ads"
+            },
+            "value": {
+              "ko": "배너 광고 (맞춤형 광고 아님)",
+              "en": "Banner ads (non-personalized)"
+            }
+          },
+          {
+            "label": {
+              "ko": "앱 내 구매",
+              "en": "In-app purchases"
+            },
+            "value": {
+              "ko": "한 번 결제: 광고 제거, 아기 추가, 공유 인원 4명. 구독 없음",
+              "en": "One-time purchase: no ads, more babies, up to 4 caregivers. No subscription"
+            }
+          },
+          {
+            "label": {
+              "ko": "인터넷 연결",
+              "en": "Internet"
+            },
+            "value": {
+              "ko": "기록은 연결 없이 가능. 보호자 공유와 백업에 필요",
+              "en": "Logging works offline. Needed for sharing and backup"
+            }
+          },
+          {
+            "label": {
+              "ko": "지원 언어",
+              "en": "Languages"
+            },
+            "value": {
+              "ko": "한국어, 영어, 일본어, 중국어 간체·번체",
+              "en": "Korean, English, Japanese, Simplified and Traditional Chinese"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "ko": "기록은 어떻게 관리되나요",
+          "en": "How your records are kept"
+        },
+        "rows": [
+          {
+            "label": {
+              "ko": "저장 위치",
+              "en": "Storage"
+            },
+            "value": {
+              "ko": "기본은 휴대폰 안. 보호자 공유나 백업을 켜면 Google Cloud 서울 리전에 저장합니다. 아기 사진과 설정은 서버로 보내지 않습니다",
+              "en": "On your phone by default. Turning on sharing or backup stores records in Google Cloud (Seoul). Baby photos and settings never leave the phone"
+            }
+          },
+          {
+            "label": {
+              "ko": "공유 범위",
+              "en": "Sharing"
+            },
+            "value": {
+              "ko": "초대한 보호자는 아기 정보와 모든 기록을 함께 보고 고칩니다. 초대 코드는 24시간 뒤 만료되고, 무료는 2명, 구매하면 4명까지입니다",
+              "en": "Invited caregivers see and edit the baby profile and every record. Invite codes expire after 24 hours; 2 caregivers free, 4 with the purchase"
+            }
+          },
+          {
+            "label": {
+              "ko": "삭제 방법",
+              "en": "Deletion"
+            },
+            "value": {
+              "ko": "메뉴 → 설정 맨 아래 [계정 삭제]에서 서버 백업과 로그인 계정을 지웁니다. 휴대폰 안 기록은 앱을 지우면 함께 지워집니다",
+              "en": "Menu → Settings → Delete account removes the server backup and your sign-in account. Records on the phone go when you delete the app"
+            }
+          }
+        ]
+      }
+    ],
+    "shots": 4,
     "icon": "/works/babylog/icon.png",
     "accent": "#ff9ec4",
     "banner": "/works/babylog/banner.png",

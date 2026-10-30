@@ -18,6 +18,9 @@
 body { margin: 0; font-family: var(--font-body); color: var(--ink); background: #fff; line-height: 1.6; }
 /* 한국어 제목이 낱말 중간에서 끊기지 않게 */
 h1, h2, h3, figcaption { word-break: keep-all; overflow-wrap: anywhere; }
+/* 제목은 줄 길이를 고르게, 본문은 마지막 줄에 한 단어만 남지 않게 하고 한국어는 낱말 중간에서 끊지 않는다 */
+h1, h2, h3 { text-wrap: balance; }
+p, li, dd, small { word-break: keep-all; overflow-wrap: anywhere; text-wrap: pretty; }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--tang); outline-offset: 3px; }
@@ -37,6 +40,21 @@ a { color: inherit; }
 }
 .topbar-nav a { text-decoration: none; }
 .topbar-nav a:hover { color: var(--wave); }
+.topbar-nav a[aria-current] { color: var(--wave); text-decoration: underline 3px; text-underline-offset: 5px; }
+.topbar-menu { display: none; position: relative; margin-left: auto; }
+.topbar-menu summary {
+  list-style: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 800; font-size: 15px;
+  background: #fff; border: var(--line); border-radius: 99px; padding: 6px 14px; box-shadow: 3px 3px 0 var(--ink);
+}
+.topbar-menu summary::-webkit-details-marker { display: none; }
+.topbar-menu[open] summary { background: var(--ink); color: #fff; }
+.topbar-menu nav {
+  position: absolute; right: 0; top: calc(100% + 10px); display: grid; min-width: 180px;
+  background: #fff; border: var(--line); border-radius: 20px; box-shadow: var(--pop); padding: 8px;
+}
+.topbar-menu nav a { text-decoration: none; font-weight: 800; font-size: 17px; padding: 12px 14px; border-radius: 12px; }
+.topbar-menu nav a[aria-current] { background: var(--sky); }
+.topbar-menu nav a[aria-current]::after { content: ' ●'; color: var(--wave); font-size: 12px; }
 .lang-switch {
   font-family: var(--font-en-display); font-size: 14px; text-decoration: none;
   border: var(--line); border-radius: 99px; padding: 4px 14px; background: #fff;
@@ -46,7 +64,7 @@ a { color: inherit; }
 
 @media (max-width: 720px) {
   .topbar-nav { display: none; }
-  .lang-switch { margin-left: auto; }
+  .topbar-menu { display: block; }
 }
 /* 페이지를 옮길 때 화면을 이어 붙여, 작품 카드 그림이 상세 화면으로 자연스럽게 옮겨 간다 */
 @media (prefers-reduced-motion: no-preference) {
