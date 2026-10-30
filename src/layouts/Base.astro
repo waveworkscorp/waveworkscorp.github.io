@@ -1,0 +1,52 @@
+---
+import type { Lang } from '../data/works';
+import { localePath } from '../data/i18n';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: string; // 언어 접두어 없는 경로, 언어 전환 링크에 씀
+  bodyClass?: string;
+}
+const { lang, title, description, path, bodyClass } = Astro.props;
+const other: Lang = lang === 'ko' ? 'en' : 'ko';
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="alternate" hreflang="ko" href={new URL(localePath('ko', path), Astro.site)}>
+  <link rel="alternate" hreflang="en" href={new URL(localePath('en', path), Astro.site)}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={new URL('/img/logo1.png', Astro.site)}>
+  <link rel="icon" href="/img/ww3.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+</head>
+<body class={bodyClass}>
+  <header class="topbar">
+    <a href={localePath(lang, '/')} class="topbar-logo"><img src="/img/logo1.png" alt="WaveWorks" width="600" height="390"></a>
+    <nav class="topbar-nav">
+      <a href={localePath(lang, '/works/')}>Works</a>
+      <a href={localePath(lang, '/about/')}>About</a>
+      <a href={localePath(lang, '/contact/')}>Contact</a>
+    </nav>
+    <a class="lang-switch" href={localePath(other, path)} hreflang={other} lang={other}>{other === 'en' ? 'EN' : '한국어'}</a>
+  </header>
+  <slot />
+  <script>
+    // 첫 화면을 지나면 상단 막대에 바탕을 깔아 글이 겹치지 않게 한다
+    const bar = document.querySelector('.topbar');
+    const sync = () => bar?.classList.toggle('scrolled', window.scrollY > 40);
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+---
+import type { Lang } from '../data/works';
+import { WORKS } from '../data/works';
+import { localePath } from '../data/i18n';
+import { ABOUT } from '../data/pages';
+import SiteFooter from './SiteFooter.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const a = ABOUT[lang];
+
+const momentImgs = ['/img/moment-subway.png', '/img/moment-night.png', '/img/moment-lunch.png'];
+const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
+---
+<main>
+  <section class="hero">
+    <div class="copy">
+      <p class="kicker">{a.title}</p>
+      <h1>{a.hero.map((line, i) => <span class={`l${i}`}>{line}</span>)}</h1>
+      <p class="lead">{a.lead}</p>
+    </div>
+    <img class="studio" src="/img/studio.png" alt="" width="1024" height="1024" />
+    <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="var(--ink)" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
+    </svg>
+  </section>
+
+  <!-- 브랜드 키워드가 흘러가는 띠 -->
+  <div class="ribbon" aria-hidden="true">
+    <div class="track">
+      {[0, 1].map(() => (
+        <span class="run">{ribbon.map((word) => <><b>{word}</b><svg viewBox="0 0 24 24"><path d="M12 1l3.1 7 7.4.6-5.6 4.9 1.7 7.4L12 17l-6.6 3.9 1.7-7.4L1.5 8.6l7.4-.6z" /></svg></>)}</span>
+      ))}
+    </div>
+  </div>
+
+  <section class="moments" aria-labelledby="moments-head">
+    <h2 id="moments-head">{a.momentsHead}</h2>
+    <p class="sub">{a.momentsBody}</p>
+    <div class="scenes">
+      {a.moments.map((m, i) => (
+        <figure class={`scene s${i}`}>
+          <img src={momentImgs[i]} alt="" width="1024" height="1024" loading="lazy" />
+          <figcaption>{m}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section class="stats" aria-label={a.title}>
+    {a.stats.map((s) => (
+      <div class="stat"><b>{s.value}</b><span>{s.label}</span></div>
+    ))}
+  </section>
+
+  <section class="ways">
+    <article class="way w0">
+      <div class="txt"><h2>{a.ways[0].title}</h2><p>{a.ways[0].body}</p></div>
+      <div class="vis phones" aria-hidden="true">
+        <img src={`/img/shots/cheepdoku/${lang}-2.jpg`} alt="" width="480" height="853" loading="lazy" />
+        <img src={`/img/shots/bus-jam/${lang}-1.jpg`} alt="" width="480" height="853" loading="lazy" />
+      </div>
+    </article>
+    <article class="way w1">
+      <div class="txt"><h2>{a.ways[1].title}</h2><p>{a.ways[1].body}</p></div>
+      <div class="vis" aria-hidden="true">
+        <img class="banner" src="/img/fg-babylog.png" alt="" width="1024" height="500" loading="lazy" />
+      </div>
+    </article>
+    <article class="way w2">
+      <div class="txt"><h2>{a.ways[2].title}</h2><p>{a.ways[2].body}</p></div>
+      <div class="vis bubbles" aria-hidden="true">
+        {a.hello.map((h, i) => <span class={`b${i}`}>{h}</span>)}
+      </div>
+    </article>
+  </section>
+
+  <section class="cta">
+    <div class="icons" aria-hidden="true">
+      {WORKS.map((w) => <img src={w.icon} alt="" width="512" height="512" loading="lazy" />)}
+    </div>
+    <h2>{a.ctaHead}</h2>
+    <a class="btn" href={localePath(lang, '/works/')}>{a.ctaButton}</a>
+  </section>
+</main>
+<SiteFooter lang={lang} />
+
+<style>
+  h2 { margin: 0; font: 400 clamp(36px, 5.4vw, 76px)/1.08 var(--font-ko-display); }
+  :global(html[lang='en']) h2, :global(html[lang='en']) h1 { font-family: var(--font-en-display); font-weight: 700; letter-spacing: -.02em; }
+
+  /* 첫 화면: 아주 큰 세 줄 문장과 스튜디오 그림 */
+  .hero {
+    position: relative; overflow: hidden; display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 20px;
+    padding: 120px clamp(20px, 6vw, 96px) 130px; min-height: min(92svh, 860px);
+    background: radial-gradient(rgba(255,255,255,.35) 2.5px, transparent 3.5px) 0 0 / 26px 26px, var(--sun);
+  }
+  .copy { position: relative; z-index: 1; }
+  .kicker {
+    display: inline-block; margin: 0 0 18px; font-weight: 800; background: #fff; border: var(--line);
+    border-radius: 99px; padding: 6px 18px; box-shadow: 3px 3px 0 var(--ink);
+  }
+  h1 { margin: 0; font: 400 clamp(60px, 9.4vw, 148px)/.98 var(--font-ko-display); }
+  h1 span { display: block; }
+  h1 .l1 {
+    display: inline-block; margin: .06em 0; padding: 0 .14em; color: #fff; background: var(--wave);
+    border: var(--line); border-radius: 24px; box-shadow: var(--pop); transform: rotate(-2deg);
+  }
+  .lead { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 26px 0 0; max-width: 24em; }
+  .studio { width: 100%; max-width: 640px; justify-self: center; animation: drift 5s ease-in-out infinite; }
+  @keyframes drift { 50% { transform: translateY(-14px) rotate(-1.5deg); } }
+  .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
+
+  .ribbon { background: var(--ink); color: #fff; overflow: hidden; padding: 18px 0 26px; }
+  .track { display: flex; width: max-content; animation: flow 28s linear infinite; }
+  .run { display: flex; align-items: center; gap: 28px; padding-right: 28px; }
+  .run b { font: 400 clamp(30px, 4vw, 52px) var(--font-ko-display); white-space: nowrap; }
+  :global(html[lang='en']) .run b { font-family: var(--font-en-display); font-weight: 700; }
+  .run svg { width: 34px; height: 34px; fill: var(--sun); flex: none; }
+  @keyframes flow { to { transform: translateX(-50%); } }
+
+  .moments, .stats, .ways, .cta { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+  .moments { padding-top: 110px; text-align: center; }
+  .sub { margin: 14px auto 0; font-size: clamp(18px, 1.8vw, 22px); font-weight: 600; opacity: .8; }
+  .scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 48px; }
+  .scene {
+    margin: 0; padding: 18px 18px 26px; border: var(--line); border-radius: 36px; box-shadow: var(--pop);
+    transition: transform .2s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .s0 { background: var(--sky); transform: rotate(-2deg); }
+  .s1 { background: #2b2f5e; color: #fff; transform: translateY(26px); }
+  .s2 { background: var(--sun); transform: rotate(2deg); }
+  .scene:hover { transform: translateY(-8px) rotate(0); }
+  .scene img { width: 100%; height: auto; }
+  .scene figcaption { font: 400 clamp(20px, 2vw, 26px)/1.25 var(--font-ko-display); }
+  :global(html[lang='en']) .scene figcaption { font-family: var(--font-en-display); font-weight: 700; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 130px; }
+  .stat { display: grid; justify-items: center; text-align: center; }
+  .stat b {
+    display: grid; place-items: center; width: clamp(150px, 16vw, 210px); aspect-ratio: 1; border-radius: 50%;
+    font: 700 clamp(84px, 10vw, 136px)/1 var(--font-en-display); color: #fff; background: var(--wave);
+    border: 4px solid var(--ink); box-shadow: var(--pop);
+  }
+  .stat:nth-child(2) b { background: var(--coral); transform: rotate(6deg); }
+  .stat:nth-child(3) b { background: var(--tang); transform: rotate(-5deg); }
+  .stat span { margin-top: 18px; font-weight: 800; font-size: 19px; }
+
+  /* 원칙 셋을 좌우로 번갈아 크게 */
+  .ways { display: grid; gap: 40px; margin-top: 140px; }
+  .way {
+    display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; overflow: hidden;
+    border: 4px solid var(--ink); border-radius: 44px; box-shadow: var(--pop); padding: clamp(28px, 5vw, 64px);
+  }
+  .way:nth-child(even) .txt { order: 2; }
+  .w0 { background: var(--sky); }
+  .w1 { background: #ff9ec4; }
+  .w2 { background: var(--foam); }
+  .way p { margin: 18px 0 0; font-size: clamp(18px, 1.7vw, 22px); font-weight: 600; line-height: 1.6; max-width: 22em; }
+  .vis { display: flex; justify-content: center; }
+  .phones img {
+    width: 40%; height: auto; border: 5px solid var(--ink); border-radius: 26px; box-shadow: 8px 8px 0 var(--ink); background: var(--ink);
+  }
+  .phones img:first-child { transform: rotate(-6deg) translateX(14px); }
+  .phones img:last-child { transform: rotate(5deg) translate(-14px, 30px); }
+  .banner { width: 100%; height: auto; border: 5px solid var(--ink); border-radius: 30px; box-shadow: 8px 8px 0 var(--ink); transform: rotate(-3deg); }
+  .bubbles { flex-wrap: wrap; gap: 14px; }
+  .bubbles span {
+    position: relative; font-weight: 800; font-size: clamp(22px, 2.4vw, 32px); padding: 12px 24px;
+    border: var(--line); border-radius: 26px; box-shadow: 4px 4px 0 var(--ink); background: #fff;
+  }
+  .bubbles span::after {
+    content: ''; position: absolute; left: 22px; bottom: -12px; width: 18px; height: 18px; background: inherit;
+    border-right: var(--line); border-bottom: var(--line); transform: rotate(45deg);
+  }
+  .b0 { background: var(--sun) !important; transform: rotate(-3deg); }
+  .b1 { background: var(--sky) !important; transform: rotate(2deg) translateY(10px); }
+  .b2 { background: var(--coral) !important; color: #fff; transform: rotate(-2deg); }
+  .b3 { background: var(--tang) !important; color: #fff; transform: rotate(3deg) translateY(8px); }
+  .b4 { transform: rotate(-1deg); }
+
+  .cta { margin-top: 140px; text-align: center; display: grid; justify-items: center; gap: 26px; }
+  .icons { display: flex; justify-content: center; }
+  .icons img { width: clamp(70px, 9vw, 110px); border: 4px solid var(--ink); border-radius: 26%; box-shadow: 4px 4px 0 var(--ink); margin: 0 -8px; }
+  .icons img:nth-child(odd) { transform: rotate(-8deg); }
+  .icons img:nth-child(even) { transform: rotate(7deg) translateY(-12px); }
+  .btn {
+    font-weight: 800; font-size: 19px; text-decoration: none; color: #fff; background: var(--wave);
+    border: var(--line); border-radius: 18px; padding: 16px 32px; box-shadow: var(--pop); transition: transform .12s ease-out;
+  }
+  .btn:hover { transform: translate(-3px, -3px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track, .studio { animation: none; }
+  }
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; padding: 100px 24px 100px; }
+    .studio { width: 78%; }
+    .scenes, .stats, .way { grid-template-columns: 1fr; }
+    .s1 { transform: none; }
+    .way:nth-child(even) .txt { order: 0; }
+    .stats { gap: 40px; }
+  }
+</style>

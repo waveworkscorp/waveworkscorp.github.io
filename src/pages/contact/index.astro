@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactView from '../../components/ContactView.astro';
+import { CONTACT } from '../../data/pages';
+
+const c = CONTACT.ko;
+---
+<Base lang="ko" title={`${c.title} | WaveWorks`} description={c.lead} path="/contact/">
+  <ContactView lang="ko" />
+</Base>

@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../../layouts/Base.astro';
+import WorkDetail from '../../../components/WorkDetail.astro';
+import { WORKS, type Work } from '../../../data/works';
+
+export const getStaticPaths = (() => WORKS.map((work) => ({ params: { slug: work.slug }, props: { work } }))) satisfies GetStaticPaths;
+
+interface Props { work: Work }
+const { work } = Astro.props;
+---
+<Base lang="en" title={`${work.name.en} | WaveWorks`} description={work.about.en} path={`/works/${work.slug}/`}>
+  <WorkDetail lang="en" work={work} />
+</Base>

@@ -1,0 +1,117 @@
+---
+import type { Lang } from '../data/works';
+import { WORKS } from '../data/works';
+import { STRINGS, localePath } from '../data/i18n';
+import SiteFooter from './SiteFooter.astro';
+import WorkCard from './WorkCard.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = STRINGS[lang];
+
+const menu = [
+  { href: '/works/', title: 'Works', sub: t.worksSub, img: '/img/mascot-works.png', tone: 'sun' },
+  { href: '/about/', title: 'About', sub: t.aboutSub, img: '/img/mascot-about.png', tone: 'sky' },
+  { href: '/contact/', title: 'Contact', sub: t.contactSub, img: '/img/mascot-contact.png', tone: 'coral' },
+] as const;
+---
+<main class="home">
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>{t.heroLine1}<br />{t.heroLine2}<br /><span class="brand">{t.heroBrand}</span></h1>
+      <p>{t.homeDesc}</p>
+      <a class="btn" href={localePath(lang, '/works/')}>{t.seeWorks}</a>
+    </div>
+    <img class="rider" src="/img/mascot-works.png" alt="" width="640" height="640" aria-hidden="true" />
+    <svg class="hero-edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
+    </svg>
+  </section>
+
+  <section class="works" aria-labelledby="works-head">
+    <div class="head">
+      <h2 id="works-head">{t.worksHead}</h2>
+      <a class="more" href={localePath(lang, '/works/')}>{t.allWorks}</a>
+    </div>
+    <div class="grid">
+      {WORKS.map((w, i) => (
+        <WorkCard lang={lang} work={w} wide={i === 0} />
+      ))}
+    </div>
+  </section>
+
+  <nav class="menu" aria-label={t.mapLabel}>
+    {menu.map((m) => (
+      <a class={`mcard ${m.tone}`} href={localePath(lang, m.href)}>
+        <b>{m.title}</b><span>{m.sub}</span>
+        <img src={m.img} alt="" width="640" height="640" loading="lazy" />
+      </a>
+    ))}
+  </nav>
+</main>
+<SiteFooter lang={lang} />
+
+<style>
+  /* 첫 화면: 파도 그림을 화면 가득, 큰 제목은 하늘 쪽에 */
+  .hero {
+    position: relative; min-height: min(100svh, 940px); display: flex; align-items: center; overflow: hidden;
+    background:
+      linear-gradient(90deg, #4cb6f2 0 28%, rgba(76, 182, 242, 0) 52%),
+      url('/img/hero-wave.jpg') right center / cover no-repeat, var(--sky);
+    padding: 110px clamp(20px, 6vw, 96px) 140px;
+  }
+  .hero-copy { position: relative; z-index: 1; max-width: 600px; }
+  h1 { margin: 0; font: 400 clamp(56px, 8.6vw, 132px)/.98 var(--font-ko-display); color: var(--ink); }
+  :global(html[lang='en']) h1 { font-family: var(--font-en-display); font-weight: 700; letter-spacing: -.02em; }
+  .brand {
+    display: inline-block; margin-top: .12em; padding: 0 .16em; font-size: .82em; white-space: nowrap;
+    background: var(--sun); border: var(--line); border-radius: 22px; box-shadow: var(--pop); transform: rotate(-2deg);
+  }
+  .hero p { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 28px 0 32px; max-width: 21em; }
+  .btn {
+    display: inline-block; font-weight: 800; font-size: 18px; text-decoration: none; color: #fff;
+    background: var(--wave); border: var(--line); border-radius: 18px; padding: 16px 30px; box-shadow: var(--pop);
+    transition: transform .12s ease-out, box-shadow .12s ease-out;
+  }
+  .btn:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--ink); }
+  .rider {
+    position: absolute; z-index: 1; left: 50%; bottom: 60px; width: clamp(150px, 15vw, 240px);
+    animation: ride 3.4s ease-in-out infinite;
+  }
+  @keyframes ride { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-22px) rotate(5deg); } }
+  .hero-edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
+
+  /* 작품 */
+  .works, .menu { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+  .works { padding-top: 60px; }
+  .head { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
+  h2 { margin: 0; font: 400 clamp(40px, 5.6vw, 76px)/1.05 var(--font-ko-display); }
+  :global(html[lang='en']) h2 { font-family: var(--font-en-display); font-weight: 700; }
+  .more { font-weight: 800; border: var(--line); border-radius: 99px; padding: 8px 20px; text-decoration: none; box-shadow: 4px 4px 0 var(--ink); }
+  .more:hover { background: var(--sun); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+  /* 파도 캐릭터 메뉴 (111%의 캐릭터 메뉴) */
+  .menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-top: 120px; }
+  .mcard {
+    position: relative; display: block; min-height: 360px; padding: 32px 30px 0; overflow: hidden; text-decoration: none;
+    border: var(--line); border-radius: 36px; box-shadow: var(--pop);
+  }
+  .sun { background: var(--sun); }
+  .sky { background: var(--sky); }
+  .coral { background: var(--coral); color: #fff; }
+  .mcard b { display: block; font: 700 clamp(36px, 4vw, 56px)/1 var(--font-en-display); }
+  .mcard span { font-weight: 700; }
+  .mcard img { position: absolute; right: -6%; bottom: -8%; width: 68%; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+  .mcard:hover img, .mcard:focus-visible img { transform: translateY(-24px) rotate(-6deg) scale(1.06); }
+
+  @media (max-width: 860px) {
+    .hero { background: url('/img/hero-wave.jpg') 72% bottom / auto 380px no-repeat, #4cb6f2; }
+    .hero { align-items: flex-start; min-height: 0; padding: 96px 24px 380px; }
+    .hero p { margin: 20px 0 24px; }
+    .rider { left: 6%; bottom: 70px; width: 120px; }
+    .grid, .menu { grid-template-columns: 1fr; }
+    .mcard { min-height: 240px; }
+    .mcard img { width: 46%; }
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+import Base from '../../../layouts/Base.astro';
+import WorksView from '../../../components/WorksView.astro';
+import { STRINGS } from '../../../data/i18n';
+
+const t = STRINGS.en;
+---
+<Base lang="en" title={`${t.worksTitle} | WaveWorks`} description={t.worksLead} path="/works/">
+  <WorksView lang="en" />
+</Base>

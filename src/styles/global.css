@@ -1,0 +1,56 @@
+:root {
+  /* 로고에서 뽑은 색 */
+  --ink: #16224f;
+  --wave: #1e7bff;
+  --sky: #5cc8ff;
+  --foam: #f2faff;
+  --sun: #ffc21a;
+  --tang: #ff7a1a;
+  --coral: #ff5a6e;
+  --line: 3px solid var(--ink);
+  --pop: 6px 6px 0 var(--ink);
+  --font-body: Pretendard, system-ui, sans-serif;
+  --font-ko-display: 'Black Han Sans', var(--font-body);
+  --font-en-display: Fredoka, var(--font-body);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-body); color: var(--ink); background: #fff; line-height: 1.6; }
+/* 한국어 제목이 낱말 중간에서 끊기지 않게 */
+h1, h2, h3, figcaption { word-break: keep-all; overflow-wrap: anywhere; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--tang); outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+.topbar {
+  position: fixed; inset: 0 0 auto; z-index: 20;
+  display: flex; align-items: center; gap: 24px;
+  padding: 14px clamp(16px, 3vw, 32px);
+  transition: background-color .2s ease-out, box-shadow .2s ease-out;
+}
+.topbar.scrolled { background: rgba(255, 255, 255, .94); box-shadow: 0 3px 0 var(--ink); }
+.topbar-logo img { height: 46px; width: auto; }
+.topbar-nav {
+  display: flex; gap: 22px; margin-left: auto; font-family: var(--font-en-display); font-size: 18px;
+  background: #fff; border: var(--line); border-radius: 99px; padding: 4px 22px; box-shadow: 3px 3px 0 var(--ink);
+}
+.topbar-nav a { text-decoration: none; }
+.topbar-nav a:hover { color: var(--wave); }
+.lang-switch {
+  font-family: var(--font-en-display); font-size: 14px; text-decoration: none;
+  border: var(--line); border-radius: 99px; padding: 4px 14px; background: #fff;
+}
+
+@media (max-width: 720px) {
+  .topbar-nav { display: none; }
+  .lang-switch { margin-left: auto; }
+}
+/* 페이지를 옮길 때 화면을 이어 붙여, 작품 카드 그림이 상세 화면으로 자연스럽게 옮겨 간다 */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-group(*) { animation-duration: .38s; animation-timing-function: cubic-bezier(.3, 1.2, .5, 1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

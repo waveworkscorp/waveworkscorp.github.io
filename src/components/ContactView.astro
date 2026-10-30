@@ -1,0 +1,148 @@
+---
+import type { Lang } from '../data/works';
+import { WORKS } from '../data/works';
+import { COMPANY } from '../data/i18n';
+import { CONTACT } from '../data/pages';
+import PageHero from './PageHero.astro';
+import SiteFooter from './SiteFooter.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = CONTACT[lang];
+---
+<main>
+  <PageHero title={c.title} lead={c.lead} tone="var(--coral)" art="/img/island-contact.png" mascot="/img/mascot-contact.png" dark />
+
+  <div class="body">
+    <!-- 정적 사이트라 서버 없이 메일 앱으로 넘긴다. 스크립트가 없어도 mailto로 보내진다 -->
+    <form class="form" action={`mailto:${COMPANY.email}`} method="post" enctype="text/plain"
+      data-to={COMPANY.email} data-prefix={c.subjectPrefix}>
+      <fieldset>
+        <legend>{c.kindLabel}</legend>
+        <div class="kinds">
+          {c.kinds.map((k, i) => (
+            <label class="kind"><input type="radio" name="kind" value={k} checked={i === 0} /><span>{k}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <label class="field">
+        <span>{c.workLabel}</span>
+        <select name="work">
+          <option value="">{c.workNone}</option>
+          {WORKS.map((w) => <option value={w.slug} data-name={w.name[lang]}>{w.name[lang]}</option>)}
+        </select>
+      </label>
+
+      <div class="row">
+        <label class="field"><span>{c.nameLabel}</span><input name="name" autocomplete="name" /></label>
+        <label class="field"><span>{c.replyLabel}</span><input name="reply" type="email" autocomplete="email" required /></label>
+      </div>
+
+      <label class="field">
+        <span>{c.messageLabel}</span>
+        <textarea name="message" rows="7" required aria-describedby="msg-hint"></textarea>
+        <small id="msg-hint">{c.messageHint}</small>
+      </label>
+
+      <button type="submit">{c.send}</button>
+      <p class="note">{c.sendNote}</p>
+    </form>
+
+    <aside class="direct">
+      <img src="/img/mascot-contact.png" alt="" width="640" height="640" loading="lazy" />
+      <h2>{c.directHead}</h2>
+      <a class="mail" href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+      <button type="button" class="copy" data-copy={COMPANY.email} data-done={c.copied}>{c.copy}</button>
+    </aside>
+  </div>
+</main>
+<SiteFooter lang={lang} />
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.form');
+  const select = form?.querySelector<HTMLSelectElement>('select[name=work]');
+
+  // 작품 상세의 고객지원 링크(?app=<slug>)로 들어오면 작품과 문의 종류를 미리 고른다
+  const app = new URLSearchParams(location.search).get('app');
+  if (select && app && [...select.options].some((o) => o.value === app)) select.value = app;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const work = select?.selectedOptions[0]?.dataset.name ?? '';
+    const kind = String(data.get('kind') ?? '');
+    const subject = [form.dataset.prefix, kind, work].filter(Boolean).join(' ');
+    const body = [
+      String(data.get('message') ?? ''),
+      '',
+      '---',
+      `${kind}${work ? ` / ${work}` : ''}`,
+      `${String(data.get('name') ?? '')} <${String(data.get('reply') ?? '')}>`,
+    ].join('\n');
+    location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+
+  document.querySelector<HTMLButtonElement>('.copy')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+      btn.textContent = btn.dataset.done ?? '';
+    } catch {
+      // 클립보드 권한이 없으면 주소를 선택해 두어 직접 복사하게 한다
+      const mail = document.querySelector('.mail');
+      if (mail) getSelection()?.selectAllChildren(mail);
+    }
+  });
+</script>
+
+<style>
+  .body { max-width: 1240px; margin: 0 auto; padding: 40px 20px 0; display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: start; }
+  .form { display: grid; gap: 24px; background: #fff; border: var(--line); border-radius: 36px; box-shadow: var(--pop); padding: clamp(24px, 4vw, 44px); }
+  fieldset { border: 0; margin: 0; padding: 0; }
+  legend, .field > span { font-weight: 800; font-size: 17px; margin-bottom: 10px; }
+  .kinds { display: flex; flex-wrap: wrap; gap: 10px; }
+  .kind input { position: absolute; opacity: 0; }
+  .kind span {
+    display: inline-block; cursor: pointer; font-weight: 700; border: var(--line); border-radius: 99px; padding: 8px 18px;
+    box-shadow: 3px 3px 0 var(--ink); transition: transform .12s ease-out;
+  }
+  .kind span:hover { transform: translateY(-2px); }
+  .kind input:checked + span { background: var(--ink); color: #fff; }
+  .kind input:focus-visible + span { outline: 3px solid var(--wave); outline-offset: 3px; }
+  .field { display: grid; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  input:not([type=radio]), select, textarea {
+    font: 500 17px var(--font-body); color: var(--ink); background: var(--foam);
+    border: var(--line); border-radius: 16px; padding: 12px 16px;
+  }
+  textarea { resize: vertical; line-height: 1.55; }
+  input:focus, select:focus, textarea:focus { outline: 3px solid var(--wave); outline-offset: 2px; }
+  small { margin-top: 8px; font-weight: 600; opacity: .7; }
+  button[type=submit] {
+    justify-self: start; cursor: pointer; font: 800 18px var(--font-body); color: #fff;
+    background: var(--wave); border: var(--line); border-radius: 18px; padding: 15px 30px; box-shadow: var(--pop);
+    transition: transform .12s ease-out;
+  }
+  button[type=submit]:hover { transform: translate(-3px, -3px); }
+  .note { margin: -12px 0 0; font-size: 14px; font-weight: 600; opacity: .65; }
+
+  .direct {
+    position: sticky; top: 110px; display: grid; justify-items: center; text-align: center; gap: 10px;
+    background: var(--sun); border: var(--line); border-radius: 36px; box-shadow: var(--pop); padding: 32px 24px 36px;
+  }
+  .direct img { width: 150px; animation: hop 2.8s ease-in-out infinite; }
+  @keyframes hop { 50% { transform: translateY(-14px) rotate(4deg); } }
+  .direct h2 { margin: 0; font: 400 clamp(26px, 2.6vw, 34px)/1.2 var(--font-ko-display); }
+  :global(html[lang='en']) .direct h2 { font-family: var(--font-en-display); font-weight: 700; }
+  .mail { font-weight: 800; font-size: 19px; word-break: break-all; }
+  .copy {
+    cursor: pointer; font: 800 15px var(--font-body); color: var(--ink); background: #fff;
+    border: var(--line); border-radius: 99px; padding: 7px 18px; box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  @media (max-width: 860px) {
+    .body, .row { grid-template-columns: 1fr; }
+    .direct { position: static; }
+  }
+</style>

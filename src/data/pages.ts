@@ -1,0 +1,88 @@
+import type { Lang } from './works';
+
+// About·Contact 화면 문구. 짧은 공통 문구는 i18n.ts에 둔다
+export const ABOUT = {
+  ko: {
+    title: '우리 이야기',
+    lead: '웨이브웍스는 짧은 틈에 꺼내 드는 게임과 매일 손이 가는 앱을 만드는 작은 스튜디오입니다.',
+    hero: ['짧은 틈을', '즐거움으로', '채웁니다'],
+    ribbon: ['경쾌하게', '발랄하게', '세련되게', '한 판 더'],
+    momentsHead: '출근길, 새벽 3시, 점심 뒤 5분',
+    momentsBody: '우리가 만드는 것은 하루 사이사이 짧은 틈을 위한 것입니다.',
+    moments: ['흔들리는 지하철에서 한 판', '아기가 잠든 새벽에 한 손으로', '커피 한 잔 비울 동안'],
+    stats: [
+      { value: '4', label: '출시 준비 중인 게임' },
+      { value: '1', label: '매일 쓰는 육아 앱' },
+      { value: '5', label: '함께 준비하는 언어' },
+    ],
+    ways: [
+      { title: '몇 분이면 한 판', body: '퍼즐도 디펜스도 짧게 끝나도록 판을 짭니다. 언제 멈춰도 아깝지 않게.' },
+      { title: '한 손으로 충분하게', body: '밤중 수유 중에도, 손잡이를 잡은 채로도 쓸 수 있게 버튼을 크게, 화면은 단순하게.' },
+      { title: '여러 언어로 같은 날', body: '한국어와 영어, 일본어, 중국어 간체·번체를 출시 날 함께 내놓습니다.' },
+    ],
+    hello: ['안녕하세요', 'Hello', 'こんにちは', '你好', '哈囉'],
+    ctaHead: '우리가 만든 게임과 앱을 만나 보세요',
+    ctaButton: '게임·앱 보러 가기',
+  },
+  en: {
+    title: 'Our story',
+    lead: 'WaveWorks is a small studio making games for spare moments and apps you reach for every day.',
+    hero: ['We fill', 'short breaks', 'with fun'],
+    ribbon: ['Light', 'Bouncy', 'Polished', 'One more round'],
+    momentsHead: 'The commute, 3 a.m., five minutes after lunch',
+    momentsBody: 'We make things for the short gaps in between your day.',
+    moments: ['A round on a swaying subway', 'One hand free while the baby sleeps', 'Before the coffee runs out'],
+    stats: [
+      { value: '4', label: 'games getting ready' },
+      { value: '1', label: 'everyday baby app' },
+      { value: '5', label: 'languages at launch' },
+    ],
+    ways: [
+      { title: 'A round in minutes', body: 'Puzzles and defense alike are built to end quickly, so stopping never feels like a loss.' },
+      { title: 'One hand is enough', body: 'Big buttons and simple screens, usable mid-feed or holding a subway strap.' },
+      { title: 'Every language, same day', body: 'Korean, English, Japanese and both Chinese scripts ship together on launch day.' },
+    ],
+    hello: ['안녕하세요', 'Hello', 'こんにちは', '你好', '哈囉'],
+    ctaHead: 'Meet our games and apps',
+    ctaButton: 'See games and apps',
+  },
+} as const satisfies Record<Lang, unknown>;
+
+export const CONTACT = {
+  ko: {
+    title: '문의하기',
+    lead: '게임·앱 이용 문의, 제휴 제안, 그 밖의 이야기 모두 반갑습니다.',
+    kindLabel: '어떤 문의인가요?',
+    kinds: ['게임·앱 이용 문의', '제휴·비즈니스', '기타'],
+    workLabel: '관련 게임·앱',
+    workNone: '해당 없음',
+    nameLabel: '이름 (선택)',
+    replyLabel: '답장 받을 이메일',
+    messageLabel: '내용',
+    messageHint: '기기 모델과 앱 버전을 함께 적어 주시면 더 빨리 확인할 수 있습니다.',
+    send: '메일 앱으로 보내기',
+    sendNote: '보내기를 누르면 적은 내용이 담긴 채로 메일 앱이 열립니다.',
+    directHead: '메일로 바로 보내기',
+    copy: '주소 복사',
+    copied: '복사했습니다',
+    subjectPrefix: '[WaveWorks 문의]',
+  },
+  en: {
+    title: 'Get in touch',
+    lead: 'Questions about our titles, partnership ideas or anything else, we would love to hear from you.',
+    kindLabel: 'What is it about?',
+    kinds: ['Help with a title', 'Partnership or business', 'Something else'],
+    workLabel: 'Related title',
+    workNone: 'None',
+    nameLabel: 'Name (optional)',
+    replyLabel: 'Email for our reply',
+    messageLabel: 'Message',
+    messageHint: 'Adding your device model and app version helps us check faster.',
+    send: 'Open in mail app',
+    sendNote: 'Your mail app opens with everything you wrote filled in.',
+    directHead: 'Email us directly',
+    copy: 'Copy address',
+    copied: 'Copied',
+    subjectPrefix: '[WaveWorks inquiry]',
+  },
+} as const satisfies Record<Lang, unknown>;

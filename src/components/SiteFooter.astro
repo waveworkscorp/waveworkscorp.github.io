@@ -1,0 +1,39 @@
+---
+import type { Lang } from '../data/works';
+import { STRINGS, COMPANY, localePath } from '../data/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = STRINGS[lang];
+---
+<footer class="site-footer">
+  <img class="peek" src="/img/mascot-about.png" alt="" width="640" height="640" aria-hidden="true" />
+  <div class="inner">
+    <img class="logo" src="/img/logo1.png" alt="WaveWorks" width="600" height="390" />
+    <nav class="links" aria-label={t.company}>
+      <a href={localePath(lang, '/works/')}>Works</a>
+      <a href={localePath(lang, '/about/')}>About</a>
+      <a href={localePath(lang, '/contact/')}>Contact</a>
+    </nav>
+    <p class="biz">
+      {COMPANY.name}, {t.rep} {COMPANY.rep[lang]}, {t.bizNo} {COMPANY.bizNo}<br />
+      {COMPANY.address[lang]}<br />
+      <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+    </p>
+    <p class="copy">© 2026 WaveWorks</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { position: relative; margin-top: 140px; background: var(--ink); color: #fff; font-size: 14px; }
+  /* 파도 캐릭터가 바닥 위로 고개를 내민다 */
+  .peek { position: absolute; right: clamp(16px, 8vw, 120px); top: -96px; width: 130px; animation: peek 3s ease-in-out infinite; }
+  @keyframes peek { 50% { transform: translateY(-10px) rotate(4deg); } }
+  .inner { max-width: 1240px; margin: 0 auto; padding: 48px 20px 56px; display: grid; gap: 18px; }
+  .logo { height: 52px; width: auto; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 26px; font: 600 17px var(--font-en-display); }
+  .links a { text-decoration: none; }
+  .links a:hover { color: var(--sun); }
+  .biz { margin: 0; opacity: .75; line-height: 1.8; }
+  .copy { margin: 0; opacity: .55; }
+</style>

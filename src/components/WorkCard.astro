@@ -1,0 +1,57 @@
+---
+import type { Lang, Work } from '../data/works';
+import { STRINGS, localePath } from '../data/i18n';
+
+interface Props { lang: Lang; work: Work; wide?: boolean }
+const { lang, work: w, wide = false } = Astro.props;
+const t = STRINGS[lang];
+---
+<a class:list={['card', { wide, art: !!w.banner }]} href={localePath(lang, `/works/${w.slug}/`)} style={`--accent:${w.accent}`}>
+  <div class="pic">
+    {w.banner
+      ? <img src={w.banner} alt="" width="1024" height="500" loading="lazy" style={`view-transition-name:work-${w.slug}`} />
+      : <img class="float" src={w.icon} alt="" width="512" height="512" loading="lazy" style={`view-transition-name:work-${w.slug}`} />}
+  </div>
+  <div class="txt">
+    <small>{t.comingSoon}</small>
+    <h3>{w.name[lang]}</h3>
+    <p>{w.tagline[lang]}</p>
+    <span class="pill">{t.viewDetail}</span>
+  </div>
+</a>
+
+<style>
+  /* 슈퍼센트처럼 큼지막한 그림 카드 */
+  .card {
+    display: flex; flex-direction: column; text-decoration: none; overflow: hidden;
+    background: var(--accent); border: 4px solid var(--ink); border-radius: 36px; box-shadow: var(--pop);
+    transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), box-shadow .2s ease-out;
+  }
+  .card:hover, .card:focus-visible { transform: translate(-4px, -6px) rotate(-.6deg); box-shadow: 10px 12px 0 var(--ink); }
+  .pic {
+    position: relative; aspect-ratio: 2 / 1; display: grid; place-items: center; overflow: hidden;
+    background: radial-gradient(rgba(255,255,255,.35) 2px, transparent 3px) 0 0 / 22px 22px;
+    border-bottom: 4px solid var(--ink);
+  }
+  .art .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease-out; }
+  .card:hover .pic img { transform: scale(1.05); }
+  .float { width: 44%; border: 4px solid var(--ink); border-radius: 26%; box-shadow: var(--pop); animation: float 4s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-12px) rotate(-3deg); } }
+  .txt { padding: 22px 28px 28px; background: #fff; flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
+  .txt small { font-weight: 800; font-size: 13px; color: var(--tang); }
+  h3 { margin: 2px 0 4px; font: 400 clamp(28px, 3vw, 40px)/1.15 var(--font-ko-display); }
+  :global(html[lang='en']) h3 { font-family: var(--font-en-display); font-weight: 700; }
+  .txt p { margin: 0 0 16px; font-weight: 600; opacity: .8; }
+  .pill { font-weight: 800; font-size: 14px; border: var(--line); border-radius: 99px; padding: 5px 16px; }
+  .card:hover .pill { background: var(--ink); color: #fff; }
+  .wide { grid-column: 1 / -1; flex-direction: row-reverse; }
+  .wide .pic { flex: 1.4; aspect-ratio: auto; min-height: 380px; border-bottom: 0; border-left: 4px solid var(--ink); }
+  .wide .txt { flex: 1; justify-content: center; padding: 40px; }
+  .wide h3 { font-size: clamp(36px, 4.4vw, 60px); }
+
+  @media (max-width: 860px) {
+    .wide { flex-direction: column; }
+    .wide .pic { aspect-ratio: 2 / 1; min-height: 0; border-left: 0; border-bottom: 4px solid var(--ink); }
+    .wide .txt { padding: 22px 28px 28px; }
+  }
+</style>

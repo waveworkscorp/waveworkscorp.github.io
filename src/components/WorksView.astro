@@ -1,0 +1,96 @@
+---
+import type { Category, Lang } from '../data/works';
+import { WORKS, worksBy } from '../data/works';
+import { STRINGS } from '../data/i18n';
+import PageHero from './PageHero.astro';
+import WorkCard from './WorkCard.astro';
+import SiteFooter from './SiteFooter.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = STRINGS[lang];
+
+const tabs: readonly { key: Category | 'all'; label: string }[] = [
+  { key: 'all', label: t.tabAll },
+  { key: 'game', label: t.tabGame },
+  { key: 'app', label: t.tabApp },
+  { key: 'web', label: t.tabWeb },
+];
+---
+<main>
+  <PageHero title={t.worksTitle} lead={t.worksLead} tone="var(--sky)" art="/img/island-works.png" mascot="/img/mascot-works.png" />
+
+  <div class="body">
+    <div class="tabs" role="tablist" aria-label={t.worksTitle}>
+      {tabs.map((tab, i) => (
+        <a role="tab" href={`#${tab.key}`} id={`tab-${tab.key}`} aria-controls={tab.key} aria-selected={i === 0 ? 'true' : 'false'}>{tab.label}</a>
+      ))}
+    </div>
+
+    {tabs.map((tab) => {
+      const list = tab.key === 'all' ? WORKS : worksBy(tab.key);
+      return (
+        <section class="panel" id={tab.key} role="tabpanel" aria-labelledby={`tab-${tab.key}`}>
+          {list.length > 0
+            ? <div class="grid">{list.map((w, i) => <WorkCard lang={lang} work={w} wide={i === 0 && list.length % 2 === 1} />)}</div>
+            : (
+              <div class="empty">
+                <img src="/img/mascot-about.png" alt="" width="640" height="640" />
+                <h2>{t.webEmptyTitle}</h2>
+                <p>{t.webEmptyBody}</p>
+              </div>
+            )}
+        </section>
+      );
+    })}
+  </div>
+</main>
+<SiteFooter lang={lang} />
+
+<script>
+  // 탭은 주소의 #all, #game, #app, #web과 맞물려 링크로 바로 열 수 있다. 스크립트가 없으면 전부 보인다
+  const tabs = [...document.querySelectorAll<HTMLAnchorElement>('.tabs [role=tab]')];
+  const panels = [...document.querySelectorAll<HTMLElement>('.panel')];
+  const show = (key: string) => {
+    const target = panels.some((p) => p.id === key) ? key : panels[0]?.id;
+    panels.forEach((p) => { p.hidden = p.id !== target; });
+    tabs.forEach((a) => a.setAttribute('aria-selected', String(a.getAttribute('aria-controls') === target)));
+  };
+  tabs.forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const key = a.getAttribute('aria-controls') ?? '';
+    history.replaceState(null, '', `#${key}`);
+    show(key);
+  }));
+  show(location.hash.slice(1));
+</script>
+
+<style>
+  .body { max-width: 1240px; margin: 0 auto; padding: 24px 20px 0; }
+  .tabs { display: flex; gap: 10px; margin-bottom: 36px; }
+  .tabs a {
+    font: 700 20px var(--font-en-display); text-decoration: none;
+    border: var(--line); border-radius: 99px; padding: 8px 26px; background: #fff; box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .12s ease-out;
+  }
+  :global(html[lang='ko']) .tabs a { font-family: var(--font-body); font-weight: 800; }
+  .tabs a:hover { transform: translateY(-3px); }
+  .tabs a[aria-selected='true'] { background: var(--ink); color: #fff; }
+  .panel + .panel { margin-top: 60px; }
+  .panel[hidden] + .panel, .panel + .panel[hidden] { margin-top: 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .empty {
+    display: grid; justify-items: center; text-align: center; gap: 6px;
+    border: 3px dashed var(--ink); border-radius: 36px; padding: 48px 20px 56px; background: var(--foam);
+  }
+  .empty img { width: 150px; animation: hop 2.8s ease-in-out infinite; }
+  .empty h2 { margin: 8px 0 0; font: 400 clamp(26px, 3vw, 36px)/1.2 var(--font-ko-display); }
+  :global(html[lang='en']) .empty h2 { font-family: var(--font-en-display); font-weight: 700; }
+  .empty p { margin: 0; font-weight: 600; opacity: .75; }
+  @keyframes hop { 50% { transform: translateY(-16px) rotate(4deg); } }
+
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; }
+    .tabs a { padding: 7px 18px; font-size: 17px; }
+  }
+</style>

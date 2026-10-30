@@ -1,0 +1,66 @@
+---
+import type { Lang } from '../data/works';
+import { WORKS } from '../data/works';
+import { STRINGS } from '../data/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = STRINGS[lang];
+
+const ICON_COLUMNS = 8;
+const ICONS_PER_COLUMN = 12;
+const icons = WORKS.map((w) => w.icon);
+const columns = Array.from({ length: ICON_COLUMNS }, (_, c) =>
+  Array.from({ length: ICONS_PER_COLUMN }, (_, r) => icons[(c * 2 + r) % icons.length]),
+);
+---
+<script is:inline>
+  // 같은 세션에서 다시 홈에 오면 입장 화면을 건너뛴다
+  try { if (sessionStorage.getItem('ww-entered')) document.documentElement.classList.add('entered'); } catch {}
+</script>
+
+<div class="intro" id="intro">
+  <div class="wall" aria-hidden="true">
+    {columns.map((col) => (
+      <div class="col">{col.map((src) => <img src={src} alt="" width="120" height="120" loading="lazy" />)}</div>
+    ))}
+  </div>
+  <div class="gate">
+    <img class="gate-logo" src="/img/logo1.png" alt="WaveWorks" width="600" height="390" />
+    <button class="enter" id="enter" type="button">{t.enter}</button>
+  </div>
+</div>
+
+<script>
+  const intro = document.getElementById('intro');
+  document.getElementById('enter')?.addEventListener('click', () => {
+    intro?.classList.add('out');
+    try { sessionStorage.setItem('ww-entered', '1'); } catch { /* 저장 못 해도 입장은 된다 */ }
+  });
+</script>
+
+<style>
+  /* 입장 화면 (111%의 아이콘 벽) */
+  .intro {
+    position: fixed; inset: 0; z-index: 40; background: var(--ink);
+    display: grid; place-items: center; overflow: hidden;
+    transition: transform .8s cubic-bezier(.7, 0, .2, 1);
+  }
+  .intro.out, :global(html.entered) .intro { transform: translateY(-100%); }
+  :global(html.entered) .intro { transition: none; }
+  .wall { position: absolute; inset: -25%; display: flex; gap: 18px; justify-content: center; transform: rotate(-12deg); opacity: .5; }
+  .col { display: flex; flex-direction: column; gap: 18px; animation: up 30s linear infinite; }
+  .col:nth-child(even) { animation-name: down; }
+  .col img { width: 120px; height: 120px; border-radius: 28px; border: 3px solid #fff; }
+  @keyframes up { to { transform: translateY(-50%); } }
+  @keyframes down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+  .gate { position: relative; text-align: center; }
+  .gate-logo { width: min(440px, 78vw); margin: 0 auto 22px; animation: bob 3.2s ease-in-out infinite; }
+  .enter {
+    font: 700 22px var(--font-en-display); color: var(--ink); cursor: pointer;
+    background: var(--sun); border: var(--line); border-radius: 99px; padding: 12px 44px;
+    box-shadow: 0 6px 0 #0b1330; transition: transform .12s ease-out, box-shadow .12s ease-out;
+  }
+  .enter:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #0b1330; }
+  @keyframes bob { 50% { transform: translateY(-8px) rotate(-1deg); } }
+</style>

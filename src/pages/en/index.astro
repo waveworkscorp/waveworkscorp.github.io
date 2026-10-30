@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import HomeIntro from '../../components/HomeIntro.astro';
+import Home from '../../components/Home.astro';
+import { STRINGS } from '../../data/i18n';
+
+const t = STRINGS.en;
+---
+<Base lang="en" title={t.homeTitle} description={t.homeDesc} path="/">
+  <HomeIntro lang="en" />
+  <Home lang="en" />
+</Base>
