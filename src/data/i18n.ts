@@ -132,7 +132,7 @@ export const COMPANY = {
 } as const;
 
 // 문의 폼을 받는 Apps Script 웹 앱 주소. 설치와 재배포는 app-factory 루트 scripts/contact-receiver/README.md
-export const CONTACT_ENDPOINT = '';
+export const CONTACT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzmJdiRO5-uRMhsgPQWRr-cvQrxL9tp5bm5sy3Lpot27R21PjNwT9OrD3ZG2HcRn43o/exec';
 
 // 스토어 개발자 페이지. App Store는 첫 앱이 공개돼야 개발자 페이지가 생기므로 그때 주소를 넣는다
 export const DEVELOPER_STORES: { readonly play?: string; readonly appStore?: string } = {
