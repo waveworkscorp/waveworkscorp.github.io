@@ -100,12 +100,19 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
 
       <div class="actions">
         <p class="note">{CONTACT_ENDPOINT ? c.sendNote : c.mailNote}</p>
-        <div class="after" role="status" hidden>{(CONTACT_ENDPOINT ? c.sent : c.mailAfter).map((line) => <p>{line}</p>)}</div>
+        <div class="after" role="status" hidden>{c.mailAfter.map((line) => <p>{line}</p>)}</div>
         <p class="failed" role="alert" hidden>{c.sendFailed}</p>
         <button type="submit">{c.send}<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z M11.3 13.7 21 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /></svg></button>
       </div>
     </div></div>
     </div>
+
+    <dialog class="sent-modal" aria-labelledby="sent-title">
+      <img src="/img/envelope.png" alt="" width="120" height="120" />
+      <h2 id="sent-title">{c.sent[0]}</h2>
+      <p>{c.sent[1]}</p>
+      <button type="button" class="sent-close">{c.sentClose}</button>
+    </dialog>
 
     <div class="direct">
       <img src="/img/envelope.png" alt="" width="720" height="720" loading="lazy" />
@@ -167,6 +174,10 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   const submit = form?.querySelector<HTMLButtonElement>('button[type=submit]');
   const sentBox = form?.querySelector<HTMLElement>('.after');
   const failedBox = form?.querySelector<HTMLElement>('.failed');
+  const sentModal = document.querySelector<HTMLDialogElement>('.sent-modal');
+  sentModal?.querySelector('.sent-close')?.addEventListener('click', () => sentModal.close());
+  // 바깥(배경)을 눌러도 닫는다
+  sentModal?.addEventListener('click', (e) => { if (e.target === sentModal) sentModal.close(); });
 
   // 숨긴 묶음(disabled)의 칸은 FormData에서 빠지므로 보이는 칸만 보낸다
   const collect = (f: HTMLFormElement) => {
@@ -238,7 +249,6 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
     const label = submit.innerHTML;
     submit.disabled = true;
     submit.textContent = form.dataset.sending ?? '';
-    if (sentBox) sentBox.hidden = true;
     if (failedBox) failedBox.hidden = true;
     const ok = await send(collect(form));
     submit.disabled = false;
@@ -246,7 +256,7 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
     if (ok) {
       // 같은 내용을 두 번 보내지 않게 적은 글만 비운다. 이름·이메일은 남겨 이어서 문의하기 쉽게 한다
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('textarea, .group input:not([type=radio])').forEach((el) => { el.value = ''; });
-      if (sentBox) sentBox.hidden = false;
+      sentModal?.showModal();
     } else if (failedBox) {
       failedBox.hidden = false;
     }
@@ -368,6 +378,19 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   [aria-invalid] { border-color: #c62828 !important; }
   .after { flex-basis: 100%; order: 3; background: var(--sky); border: 2px solid var(--ink); border-radius: 16px; padding: 12px 16px; font-weight: 700; }
   .after p { margin: 0; }
+  .sent-modal {
+    width: min(420px, calc(100% - 32px)); padding: 28px 24px 24px; text-align: center; color: var(--ink);
+    background: var(--sky); border: 4px solid var(--ink); border-radius: 28px; box-shadow: var(--pop);
+  }
+  .sent-modal::backdrop { background: color-mix(in srgb, var(--ink) 45%, transparent); }
+  .sent-modal img { display: block; width: 96px; height: 96px; margin: 0 auto; }
+  .sent-modal h2 { margin: 8px 0 10px; font-size: 24px; }
+  .sent-modal p { margin: 0 0 22px; font-weight: 600; line-height: 1.6; word-break: keep-all; }
+  .sent-close {
+    cursor: pointer; min-width: 140px; color: #fff; font-family: inherit; font-size: 18px; font-weight: 700; line-height: 1; background: var(--wave);
+    border: 3px solid var(--ink); border-radius: 99px; padding: 14px 28px; box-shadow: 4px 4px 0 var(--ink);
+  }
+  .sent-close:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
   .failed { flex-basis: 100%; order: 3; margin: 0; background: #ffe1dc; border: 2px solid #c62828; border-radius: 16px; padding: 12px 16px; font-weight: 700; }
   .trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
   button[type=submit]:disabled { cursor: progress; opacity: .7; }
