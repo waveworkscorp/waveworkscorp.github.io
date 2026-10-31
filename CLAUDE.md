@@ -16,6 +16,14 @@ Site-wide pages (home, about, contact, shared legal docs directly under `src/leg
 
 Posts are markdown files: Korean in `src/content/blog/ko/YYYY-MM-DD-<slug>.md` (required), English under the same name in `src/content/blog/en/` (optional; an English-only post fails the build). Covers go in `src/assets/blog/<name>/cover.png`. Frontmatter schema is in `src/content.config.ts`, categories and UI strings in `src/data/blog.ts`. Write posts with the `/blog-auto-write <topic>` skill (`.claude/skills/blog-auto-write/`). It commits locally and opens a preview; push only after the user says "올려". Design: `docs/superpowers/specs/2026-10-31-blog-design.md`.
 
+Every post must meet three criteria, in this order of priority (user decision 2026-10-31). Details are in §0 of the skill.
+
+1. It helps marketing and branding: readers come away wanting to try the work or trusting WaveWorks.
+2. It reads as written by a person, with no AI tells.
+3. It is easy to read: someone new can follow it in one pass.
+
+The skill runs without asking anything until the final publish approval.
+
 ## Check
 
 - `npx astro build`, then `npx astro preview --port 4329`. Preview serves `dist/`, so build first. Stop the preview when done.
