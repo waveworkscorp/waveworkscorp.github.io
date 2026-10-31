@@ -65,7 +65,9 @@ const tabs: readonly { key: BlogCategory | 'all'; label: string }[] = [
 
   const apply = async () => {
     const params = new URLSearchParams(location.search);
-    const cat = params.get('cat') ?? 'all';
+    // 탭에 없는 값이 오면 전체로 본다. 그래야 켜진 탭이 늘 하나 있다
+    const rawCat = params.get('cat') ?? 'all';
+    const cat = tabs.some((a) => a.dataset.key === rawCat) ? rawCat : 'all';
     const tag = params.get('tag');
     const q = (params.get('q') ?? '').trim();
     const hits = q ? new Set(searchPosts(q, await loadIndex()).map((e) => e.url)) : undefined;
@@ -78,7 +80,7 @@ const tabs: readonly { key: BlogCategory | 'all'; label: string }[] = [
     });
     // 거르는 중에는 첫 글만 크게 보이면 어색해서 모두 같은 크기로 맞춘다
     document.querySelector('.grid')?.classList.toggle('filtering', cat !== 'all' || Boolean(tag) || Boolean(q));
-    tabs.forEach((a) => a.toggleAttribute('aria-current', a.dataset.key === cat));
+    tabs.forEach((a) => (a.dataset.key === cat ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
     if (tagBox) {
       tagBox.hidden = !tag;
       const name = tagBox.querySelector('.tag-name');

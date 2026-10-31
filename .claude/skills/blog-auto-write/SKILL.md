@@ -51,7 +51,7 @@ ls src/content/blog/ko/
 
 - slug: 영문 kebab-case 6단어 이내. 같은 이름이 있으면 `-2`, `-3`.
 - 한국어 `src/content/blog/ko/<날짜>-<slug>.md`, 영어 `src/content/blog/en/`에 같은 파일 이름.
-- 표지 `src/assets/blog/<날짜>-<slug>/cover.png`.
+- 표지 `src/assets/blog/<날짜>-<slug>/cover.jpg`.
 
 ## 5. frontmatter
 
@@ -62,7 +62,7 @@ date: "YYYY-MM-DD"
 category: news
 excerpt: "140자 이하 한 문장. 글에서 가장 구체적인 사실을 꺼냄"
 tags: ["태그1", "태그2"]
-cover: ../../../assets/blog/YYYY-MM-DD-slug/cover.png
+cover: ../../../assets/blog/YYYY-MM-DD-slug/cover.jpg
 coverAlt: "표지 그림 설명"
 works: ["bus-jam"]
 featured: false
@@ -107,7 +107,7 @@ draft: false
 
 ```bash
 mkdir -p src/assets/blog/<이름>
-node -e "require('sharp')(process.argv[1]).resize(1600,900,{fit:'cover'}).png().toFile(process.argv[2])" <원본> src/assets/blog/<이름>/cover.png
+node -e "require('sharp')(process.argv[1]).resize(1600,900,{fit:'cover'}).jpeg({quality:85}).toFile(process.argv[2])" <원본> src/assets/blog/<이름>/cover.jpg
 ```
 
 5. 그림 안에 글자가 들어갔으면 한 번 다시 만든다. 그래도 있으면 표지 없이 진행한다.
@@ -129,11 +129,11 @@ npx astro build 2>&1 | tail -30
 ```bash
 git add src/content/blog/ko/<이름>.md   # 영어판·표지는 실제로 만든 경우에만 경로를 덧붙인다
 git commit -m "post: <제목>"
-npx astro preview --port 4329
+npx astro preview --port 4329   # run_in_background로 띄운다
 open -a Aside http://localhost:4329/blog/<이름>/
 ```
 
-- 경로를 하나씩 지정해 add한다. 만든 파일만 넣는다(영어판 `src/content/blog/en/<이름>.md`, 표지 `src/assets/blog/<이름>/cover.png`). 없는 경로를 넣으면 add가 실패한다. `.omc/`는 넣지 않는다.
+- 경로를 하나씩 지정해 add한다. 만든 파일만 넣는다(영어판 `src/content/blog/en/<이름>.md`, 표지 `src/assets/blog/<이름>/cover.jpg`). 없는 경로를 넣으면 add가 실패한다. `.omc/`는 넣지 않는다.
 - 이 단계에서는 push하지 않는다.
 
 ## 11. 공개 (사용자가 "올려"라고 한 뒤에만)

@@ -12,7 +12,7 @@ featured: true
 
 Bus Loop Escape, the first WaveWorks game, went live on Google Play on October 19. We founded the studio in October 2025, so this is our first release a year in.
 
-You clear a packed parking lot one bus at a time and send passengers off in the bus that matches their color. There's no timer, so it works well on a commute with one free finger.
+You clear a packed parking lot one bus at a time and send passengers off in the bus that matches their color. There's no timer, so you can take it slow with one finger.
 
 ## How to play
 

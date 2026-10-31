@@ -91,8 +91,9 @@ async function loadAll(): Promise<BlogEntry[]> {
 }
 
 export async function getPosts(lang: Lang): Promise<BlogEntry[]> {
-  cache ??= loadAll();
-  const list = (await cache).filter((e) => postLang(e) === lang);
+  // astro dev는 모듈을 다시 읽지 않아 캐시하면 새 글이 안 보인다
+  const all = import.meta.env.DEV ? loadAll() : (cache ??= loadAll());
+  const list = (await all).filter((e) => postLang(e) === lang);
   const order = sortPosts(list.map(postMeta)).map((m) => m.id);
   return order.map((id) => list.find((e) => postName(e) === id)).filter((e): e is BlogEntry => e !== undefined);
 }
