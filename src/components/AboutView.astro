@@ -1,9 +1,10 @@
 ---
 import type { Lang } from '../data/works';
-import { WORKS, isAvailable } from '../data/works';
+import { WORKS } from '../data/works';
 import { localePath } from '../data/i18n';
 import { ABOUT } from '../data/pages';
 import SiteFooter from './SiteFooter.astro';
+import AboutStory from './AboutStory.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -12,24 +13,9 @@ const a = ABOUT[lang];
 const momentImgs = ['/img/moment-subway.png', '/img/moment-night.png', '/img/moment-lunch.png'];
 const ribbon = [...a.ribbon, ...a.ribbon, ...a.ribbon];
 
-// 큰 숫자가 확정 실적으로 읽히지 않게 출시·준비 상태를 함께 적는다
-const statusOf = (list: typeof WORKS) => {
-  const out = list.filter(isAvailable).length;
-  if (out === 0) return a.stats.allReady;
-  const ready = list.length - out;
-  return lang === 'ko'
-    ? `${out}개 ${a.stats.released}${ready > 0 ? ` · ${ready}개 ${a.stats.ready}` : ''}`
-    : `${out} ${a.stats.released}${ready > 0 ? ` · ${ready} ${a.stats.ready}` : ''}`;
-};
-const games = WORKS.filter((w) => w.category === 'game');
-const apps = WORKS.filter((w) => w.category === 'app');
 // 원칙마다 실제 작품 하나를 붙여 추상적인 다짐으로 끝나지 않게 한다
 // 예시가 가리키는 작품이 있으면 그 상세로 잇는다
 const exHref = (slug: string): string => localePath(lang, `/${slug}/`);
-const stats = [
-  { value: games.length, label: a.stats.games, note: statusOf(games) },
-  { value: apps.length, label: a.stats.apps, note: statusOf(apps) },
-];
 ---
 <main>
   <section class="hero">
@@ -40,7 +26,6 @@ const stats = [
     </div>
     <figure class="maker">
       <img class="studio" src="/img/studio.png" alt="" width="1024" height="1024" />
-      <figcaption class="sign"><p>{a.sign.body}</p><b>{a.sign.name}</b></figcaption>
     </figure>
     <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="var(--ink)" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
@@ -56,6 +41,8 @@ const stats = [
     </div>
   </div>
 
+  <AboutStory lang={lang} />
+
   <section class="moments" aria-labelledby="moments-head">
     <h2 id="moments-head">{a.momentsHead}</h2>
     <p class="sub">{a.momentsBody}</p>
@@ -67,13 +54,6 @@ const stats = [
         </figure>
       ))}
     </div>
-  </section>
-
-  <section class="stats" aria-label={a.title}>
-    {stats.map((s) => (
-      <div class="stat"><b>{s.value}</b><span>{s.label}</span><small>{s.note}</small></div>
-    ))}
-    <div class="stat goal"><b>5</b><span>{a.stats.langs}</span><small>{a.stats.goal}</small></div>
   </section>
 
   <section class="ways">
@@ -136,13 +116,6 @@ const stats = [
   .lead { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; margin: 26px 0 0; max-width: 24em; }
   .maker { margin: 0; justify-self: center; display: grid; justify-items: center; max-width: 640px; }
   .studio { width: 100%; animation: drift 5s ease-in-out infinite; }
-  .sign {
-    margin-top: -40px; position: relative; max-width: 25em; padding: 16px 22px; background: #fff;
-    border: var(--line); border-radius: 22px; box-shadow: 5px 5px 0 var(--ink); transform: rotate(-1.5deg);
-  }
-  .sign p { margin: 0; font-weight: 600; line-height: 1.55; }
-  .sign b { display: block; margin-top: 8px; text-align: right; font-size: 15px; }
-  .sign b::before { content: '— '; }
   @keyframes drift { 50% { transform: translateY(-14px) rotate(-1.5deg); } }
   .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
 
@@ -154,7 +127,7 @@ const stats = [
   .run svg { width: 34px; height: 34px; fill: var(--sun); flex: none; }
   @keyframes flow { to { transform: translateX(-50%); } }
 
-  .moments, .stats, .ways, .cta { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+  .moments, .ways, .cta { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
   .moments { padding-top: 110px; text-align: center; }
   .sub { margin: 14px auto 0; font-size: clamp(18px, 1.8vw, 22px); font-weight: 600; opacity: .8; }
   .scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 48px; }
@@ -169,21 +142,6 @@ const stats = [
   .scene img { width: 100%; height: auto; }
   .scene figcaption { font: 400 clamp(20px, 2vw, 26px)/1.25 var(--font-ko-display); }
   :global(html[lang='en']) .scene figcaption { font-family: var(--font-en-display); font-weight: 700; }
-
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 130px; }
-  .stat { display: grid; justify-items: center; text-align: center; }
-  .stat b {
-    display: grid; place-items: center; width: clamp(150px, 16vw, 210px); aspect-ratio: 1; border-radius: 50%;
-    font: 700 clamp(84px, 10vw, 136px)/1 var(--font-en-display); color: #fff; background: var(--wave);
-    border: 4px solid var(--ink); box-shadow: var(--pop);
-  }
-  .stat:nth-child(2) b { background: var(--coral); transform: rotate(6deg); }
-  .stat:nth-child(3) b { background: var(--tang); transform: rotate(-5deg); }
-  .stat span { margin-top: 18px; font-weight: 800; font-size: 19px; }
-  .stat small { margin-top: 4px; font-size: 16px; font-weight: 600; opacity: .75; }
-  /* 언어 수는 실적이 아니라 목표라 속을 비워 다르게 보인다 */
-  .stat.goal b { background: #fff; color: var(--ink); border-style: dashed; box-shadow: none; transform: rotate(-5deg); }
-  .stat.goal small { display: inline-block; padding: 2px 12px; border: 2px dashed var(--ink); border-radius: 99px; opacity: 1; }
 
   /* 원칙 셋을 좌우로 번갈아 크게 */
   .ways { display: grid; gap: 40px; margin-top: 140px; }
@@ -241,9 +199,8 @@ const stats = [
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; min-height: 0; padding: 100px 24px 100px; }
     .maker { width: 88%; }
-    .scenes, .stats, .way { grid-template-columns: 1fr; }
+    .scenes, .way { grid-template-columns: 1fr; }
     .s1 { transform: none; }
     .way:nth-child(even) .txt { order: 0; }
-    .stats { gap: 40px; }
   }
 </style>

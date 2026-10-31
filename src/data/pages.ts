@@ -4,15 +4,47 @@ import type { Lang } from './works';
 export const ABOUT = {
   ko: {
     title: '우리 이야기',
-    lead: '웨이브웍스는 짧은 틈에 꺼내 드는 게임과 매일 손이 가는 앱을 만드는 작은 스튜디오입니다.',
+    lead: '웨이브웍스는 빠른 변화의 물결에 휩쓸리지 않고 서핑하며 매일 손이 가는 재미있는 게임을 만드는 스튜디오입니다.',
     hero: ['짧은 틈을', '즐거움으로', '채웁니다'],
     ribbon: ['경쾌하게', '발랄하게', '세련되게', '한 판 더'],
     momentsHead: '출근길, 새벽 3시, 점심 뒤 5분',
     momentsBody: '우리가 만드는 것은 하루 사이사이 짧은 틈을 위한 것입니다.',
     moments: ['흔들리는 지하철에서 한 판', '아기가 잠든 새벽에 한 손으로', '커피 한 잔 비울 동안'],
-    // 작품 수와 출시 상태는 작품 목록에서 센다
-    stats: { games: '게임', apps: '육아 앱', langs: '지원 목표 언어', goal: '목표', released: '출시', ready: '준비 중', allReady: '출시 준비 중' },
-    sign: { body: '기획부터 개발, 디자인, 문의 답장까지 한 사람이 직접 맡는 1인 스튜디오입니다.', name: '웨이브웍스 대표 홍바울' },
+    // 굵게 보일 말은 홀수 칸에 둔다
+    story: {
+      big: ['MOVE FAST,', 'BREAK THINGS!'],
+      sub: '다르게, 빠르게',
+      say: ['가치의 ', '변화는', '빠르고, ', '속도', '는 기회를 만듭니다.'],
+      body: '작은 동전들이 모여 큰 가치를 만들어내듯, 짧은 순간의 즐거움이 쌓여 일상을 행복하게 만든다고 믿습니다. 웨이브웍스는 빠르게 변하는 세상 속에서 사람들의 일상을 채우는 특별한 즐거움을 만듭니다. 관성적인 방식을 뛰어넘어, 모든 프로세스에 AI를 내재화하여 데이터 속에 숨겨진 재미의 본질을 가장 빠르고 정확하게 찾아냅니다. 이를 게임과 콘텐츠에 녹여내며,  글로벌 콘텐츠 테크의 새로운 미래를 만들어가는 것을 목표로 향하고 있습니다.',
+      highlight: '웨이브웍스는 능동적이고 빠른 개발문화를 지향합니다.',
+      numHead: '기획부터 출시까지',
+      num: '3',
+      numUnit: '개월',
+      cycleHead: '빠르게 만들고, 반응으로 성장하는',
+      cycleTitle: ['웨이브웍스만의 ', '3개월 사이클'],
+      steps: [
+        { title: '기획·설계', body: '시장 리서치와 분석으로 사용자들의 니즈를 찾고, 웨이브웍스만의 색을 더해 새로운 가치를 만듭니다' },
+        { title: '개발', body: '핵심 재미·가치에 집중해 빠르게 만듭니다.' },
+        { title: '출시', body: '다양한 언어로 글로벌 유저에게 선보이고 반응을 확인합니다' },
+        { title: '피드백', body: '더 나은 제품을 위해 유저들의 피드백을 살펴 빠르게 개선합니다' },
+      ],
+      moveHead: 'How We Move',
+      moves: [
+        { title: ['Beyond', 'Boundaries'], sub: '정해진 틀에 머무르지 않습니다', body: '장르와 방식에 대한 고정관념을 내려놓고 새로운 가능성을 찾습니다. 정답을 기다리기보다 머릿속 아이디어를 바로 만들어 보고, 눈에 보이는 결과로 확인합니다.' },
+        { title: ['Fail', 'Forward'], sub: '실패는 다음 판을 위한 재료입니다', body: '실패를 두려워하지 않고 도전합니다. 출시한 게임의 반응이 기대와 달라도 거기서 배운 점을 다음 기획에 바로 담습니다. 완벽한 계획보다 빠른 시도와 반복으로 더 나은 방향을 찾습니다.' },
+        { title: ['Maintain', 'Momentum'], sub: '한번 붙은 속도를 멈추지 않습니다', body: '결정한 일은 빠르게 실행합니다. AI를 녹인 작업 방식으로 기획부터 출시까지의 시간을 줄이고, 방향이 틀렸다면 곧바로 고칩니다. 오래 고민하기보다 먼저 만들어 보며 흐름을 이어 갑니다.' },
+        { title: ['Immerse', 'Endlessly'], sub: '몰입이 가장 좋은 결과를 만듭니다', body: '한 판의 재미를 위해 끝까지 파고듭니다. 작은 성과에 머무르지 않고, 더 나은 손맛과 화면이 나올 때까지 계속 다듬습니다.' },
+        { title: ['Rise', 'as One'], sub: '혼자 만드는 게임은 없습니다', body: '플레이어의 리뷰와 문의, 숫자 하나하나가 다음 게임을 만듭니다. 우리는 플레이하는 사람들과 함께 성장합니다.' },
+      ],
+      // 출시한 작품은 slug로 이름을 가져온다. 아직 안 나온 작품은 연월 없이 준비 중으로 묶는다
+      history: [
+        { year: '2026', items: [
+          { month: '10', slug: 'bus-jam', text: 'Google Play 출시' },
+        ] },
+        { year: '2025', items: [{ month: '10', text: '웨이브웍스 설립' }] },
+      ],
+      soon: '출시 준비 중',
+    },
     examples: [
       { slug: 'cheepdoku', text: '삐약도쿠는 한 판에 보통 1~5분' },
       { slug: 'babylog', text: '오 마이 베이비는 한 번 눌러 기록 시작' },
@@ -35,8 +67,39 @@ export const ABOUT = {
     momentsHead: 'The commute, 3 a.m., five minutes after lunch',
     momentsBody: 'We make things for the short gaps in between your day.',
     moments: ['A round on a swaying subway', 'One hand free while the baby sleeps', 'Before the coffee runs out'],
-    stats: { games: 'games', apps: 'baby app', langs: 'target languages', goal: 'Goal', released: 'out', ready: 'in progress', allReady: 'In progress' },
-    sign: { body: 'WaveWorks is a one-person studio. Planning, code, design and every reply to your emails are handled by one person.', name: 'Paul Hong, founder of WaveWorks' },
+    story: {
+      big: ['MOVE FAST,', 'BREAK THINGS!'],
+      sub: 'Different. Fast.',
+      say: ['', 'Value', ' shifts fast, and ', 'speed', ' creates opportunity.'],
+      body: 'Just as small coins add up to real value, we believe short moments of fun add up to happier days. In a fast-changing world, WaveWorks makes the kind of fun that fills people\'s everyday lives. Going beyond habit, we build AI into every step of our process to find the core of fun hidden in data, quickly and precisely. We bring it into our games and content, aiming to shape a new future for global content tech.',
+      highlight: 'WaveWorks runs on a proactive, fast-moving way of building.',
+      numHead: 'From planning to launch',
+      num: '3',
+      numUnit: ' months',
+      cycleHead: 'Build fast, grow with player response',
+      cycleTitle: ['Our ', '3-month cycle'],
+      steps: [
+        { title: 'Plan & design', body: 'We find what players need through market research and analysis, then add our own color to create something new.' },
+        { title: 'Build', body: 'We focus on the core fun and value, and build fast.' },
+        { title: 'Launch', body: 'We release to players worldwide in many languages and watch how they respond.' },
+        { title: 'Feedback', body: 'We read player feedback and improve quickly to make a better product.' },
+      ],
+      moveHead: 'How We Move',
+      moves: [
+        { title: ['Beyond', 'Boundaries'], sub: 'We don\'t stay inside the lines', body: 'We let go of fixed ideas about genres and the usual way of doing things. Instead of waiting for the right answer, we build the idea in our heads right away and judge it by what we can see.' },
+        { title: ['Fail', 'Forward'], sub: 'Every miss feeds the next round', body: 'We aren\'t afraid to try. When a launch lands differently than we hoped, what we learned goes straight into the next plan. Quick attempts and repetition beat a perfect plan.' },
+        { title: ['Maintain', 'Momentum'], sub: 'Once we\'re moving, we keep moving', body: 'We act on decisions fast. AI in our workflow shortens the road from plan to launch, and when the direction is wrong we fix it right away. We build first and keep the flow going.' },
+        { title: ['Immerse', 'Endlessly'], sub: 'Deep focus makes the best work', body: 'We dig in for the fun of a single round. We don\'t settle for small wins, and keep polishing the feel and the screen until it plays better.' },
+        { title: ['Rise', 'as One'], sub: 'No game is made alone', body: 'Every review, every message and every number from players shapes the next game. We grow together with the people who play.' },
+      ],
+      history: [
+        { year: '2026', items: [
+          { month: '10', slug: 'bus-jam', text: 'released on Google Play' },
+        ] },
+        { year: '2025', items: [{ month: '10', text: 'WaveWorks founded' }] },
+      ],
+      soon: 'in progress',
+    },
     examples: [
       { slug: 'cheepdoku', text: 'A round of CheepDoku usually takes 1 to 5 minutes' },
       { slug: 'babylog', text: 'Oh My Baby starts a log with one tap' },

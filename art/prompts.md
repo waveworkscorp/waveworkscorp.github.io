@@ -66,3 +66,17 @@ Use your image generation tool to create 5 separate images (do not write code, d
 5) envelope: NO mascot. A big open envelope with a letter peeking out, a scalloped postage stamp showing a blue wave, a red wax seal shaped like a heart, two small paper planes around it.
 When done, print the absolute file paths of the 5 generated images in order. Save copies into art/master/ named contact-hero.png, kind-help.png, kind-biz.png, kind-etc.png, envelope.png.
 ```
+
+## How We Move 카드 5장 (2026-10-31)
+
+원본 `art/master/move-{beyond,fail,momentum,immerse,together}.png` 1024px 투명, 사이트에는 640px로 줄여 `public/img/`에 넣음. 참고 이미지 mascot-about, studio.
+
+```text
+Use your image generation tool to create 5 separate images (do not write code, do not draw with SVG or PIL). The attached images show our mascot 'Wavy', a water-drop wave character. Keep exactly the same character design and art style in every image: glossy cartoon sticker style, thick dark navy outline (#16224F, about 14px at 1024px), saturated sky blue and ocean blue (#1E8BFF, #5CC8FF), white foam highlights, sunny yellow and orange accents (#FFC21A, #FF8A1F), soft inner shading, glossy highlights. No text, no letters, no numbers, no logos, no watermark. Each image 1024x1024 with a fully transparent background, full body Wavy doing one action, a single compact sticker-like vignette centered with some margin, standing on a small dark navy oval shadow at the bottom.
+1) move-beyond: Wavy bursting through a broken paper wall or frame with one fist raised, a glowing yellow light bulb above its head, sparkles.
+2) move-fail: Wavy just after tripping, bouncing back up with a determined grin, a small bandage on its head, holding a tiny wrench, a few small stars around.
+3) move-momentum: Wavy running and jumping over a red-and-white striped hurdle at full speed, speed lines, a small orange scarf flowing behind.
+4) move-immerse: Wavy wearing big headphones, fully focused, sitting cross-legged and typing on a laptop, sparkly focused eyes, a few floating game pieces around.
+5) move-together: three Wavy-style characters in slightly different blue shades giving a joyful group high five in the middle, confetti.
+When done, print the absolute file paths of the 5 generated images in the order above.
+```
