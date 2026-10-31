@@ -45,4 +45,5 @@ Runs share one `pages` concurrency group and deploy in order. A run stuck in `qu
 
 - `git add` by path. Never commit `.omc/`.
 - No `update-wiki`, `docs/STATE.md` or wiki for this repo (user decision 2026-10-31). Pending site work goes in one line of the root `docs/STATE.md`.
+- The "다음 작업은?" question in this repo does not include the fixed "update-wiki 후 커밋" option (user instruction 2026-10-31). This overrides the output style's fixed last option.
 - Copy in both languages changes together. Facts shown on work pages (ratings, ads, stores) come from the app's `site/site.json`; do not add unverified ones.
