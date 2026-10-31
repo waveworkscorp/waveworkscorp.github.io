@@ -2,7 +2,6 @@
 import type { Lang } from '../data/works';
 import { STRINGS, COMPANY, DEVELOPER_STORES, localePath } from '../data/i18n';
 import StoreIcon from './StoreIcon.astro';
-import { WORKS } from '../data/works';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -12,8 +11,6 @@ const stores = [
   { key: 'play', label: 'Google Play', href: DEVELOPER_STORES.play },
   { key: 'apple', label: 'App Store', href: DEVELOPER_STORES.appStore },
 ] as const;
-// 이용자와 스토어 심사자가 상세를 다시 찾지 않고 작품별 문서로 바로 가게 한다
-const withDeletion = WORKS.filter((w) => w.deletion);
 ---
 <footer class="site-footer">
   <div class="inner">
@@ -23,14 +20,6 @@ const withDeletion = WORKS.filter((w) => w.deletion);
       <a href={localePath(lang, '/about/')}>About</a>
       <a href={localePath(lang, '/contact/')}>Contact</a>
     </nav>
-    <section class="help">
-      <h2>{t.help}</h2>
-      <a class="help-main" href={localePath(lang, '/contact/')}>{t.helpSupport}</a>
-      <p><span>{t.helpDocs}</span>{WORKS.map((w) => <a href={`${localePath(lang, `/${w.slug}/`)}#docs`}>{w.name[lang]}</a>)}</p>
-      {withDeletion.length > 0 && (
-        <p><span>{t.helpDeletion}</span>{withDeletion.map((w) => <a href={w.deletion?.[lang]}>{w.name[lang]}</a>)}</p>
-      )}
-    </section>
     <p class="biz">
       {COMPANY.name}, {t.rep} {COMPANY.rep[lang]}, {t.bizNo} {COMPANY.bizNo}<br />
       {t.mailOrder} {COMPANY.mailOrderNo}<br />
@@ -62,7 +51,7 @@ const withDeletion = WORKS.filter((w) => w.deletion);
   .inner > :not(.side) { grid-column: 1; }
   /* 오른쪽 아래: 왼쪽 열에 스토어 버튼 두 개, 오른쪽에 두 버튼 높이만 한 파도 캐릭터 */
   .side {
-    grid-column: 2; grid-row: 1 / span 5; align-self: end;
+    grid-column: 2; grid-row: 1 / span 4; align-self: end;
     display: grid; grid-template-columns: auto auto; grid-template-areas: 'play peek' 'apple peek'; gap: 16px 18px; align-items: center;
   }
   .play { grid-area: play; }
@@ -95,12 +84,6 @@ const withDeletion = WORKS.filter((w) => w.deletion);
   .links { display: flex; flex-wrap: wrap; gap: 8px 26px; font: 600 17px var(--font-en-display); }
   .links a { text-decoration: none; }
   .links a:hover { color: var(--sun); }
-  .help h2 { margin: 0 0 8px; font-size: 16px; }
-  .help p { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 4px 14px; line-height: 1.6; }
-  .help p span { opacity: .65; flex-basis: 100%; }
-  .help a { color: #fff; }
-  .help a:hover { color: var(--sun); }
-  .help-main { font-weight: 800; font-size: 16px; }
   .biz { margin: 0; opacity: .75; line-height: 1.8; }
   .copy { margin: 0; opacity: .55; }
 </style>

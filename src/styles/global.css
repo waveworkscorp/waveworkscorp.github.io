@@ -33,10 +33,17 @@ a { color: inherit; }
   transition: background-color .2s ease-out, box-shadow .2s ease-out;
 }
 .topbar.scrolled { background: rgba(255, 255, 255, .94); box-shadow: 0 3px 0 var(--ink); }
-.topbar-logo img { height: 46px; width: auto; }
+/* 맨 위에서는 크게 보여 주고, 스크롤해 화면 위에 붙으면 본문을 덜 가리도록 작게 줄인다 */
+.topbar, .topbar-logo img, .topbar-nav, .lang-btn { transition: all .2s ease-out; }
+.topbar.scrolled { padding-block: 8px; }
+.topbar.scrolled .topbar-logo img { height: 46px; }
+.topbar.scrolled .topbar-nav { gap: 22px; font-size: 18px; padding: 4px 22px; box-shadow: 3px 3px 0 var(--ink); }
+.topbar.scrolled .lang-btn { width: 44px; height: 44px; box-shadow: 3px 3px 0 var(--ink); }
+.topbar.scrolled .lang-btn svg { width: 24px; height: 24px; }
+.topbar-logo img { height: 70px; width: auto; }
 .topbar-nav {
-  display: flex; gap: 22px; margin-left: auto; font-family: var(--font-en-display); font-size: 18px;
-  background: #fff; border: var(--line); border-radius: 99px; padding: 4px 22px; box-shadow: 3px 3px 0 var(--ink);
+  display: flex; gap: 36px; margin-left: auto; font-family: var(--font-en-display); font-size: 28px;
+  background: #fff; border: var(--line); border-radius: 99px; padding: 9px 36px; box-shadow: 4px 4px 0 var(--ink);
 }
 .topbar-nav a { text-decoration: none; }
 .topbar-nav a:hover { color: var(--wave); }
@@ -55,16 +62,38 @@ a { color: inherit; }
 .topbar-menu nav a { text-decoration: none; font-weight: 800; font-size: 17px; padding: 12px 14px; border-radius: 12px; }
 .topbar-menu nav a[aria-current] { background: var(--sky); }
 .topbar-menu nav a[aria-current]::after { content: ' ●'; color: var(--wave); font-size: 12px; }
-.lang-switch {
-  font-family: var(--font-en-display); font-size: 14px; text-decoration: none;
-  border: var(--line); border-radius: 99px; padding: 4px 14px; background: #fff;
+.lang-menu { position: relative; }
+.lang-btn {
+  display: grid; place-items: center; width: 62px; height: 62px; padding: 0; cursor: pointer; color: var(--ink);
+  background: #fff; border: var(--line); border-radius: 50%; box-shadow: 4px 4px 0 var(--ink);
 }
-/* Fredoka에 한글이 없어 '한국어'는 기본 글꼴로 그려지므로, 굵기를 올려 옆 메뉴와 맞춘다 */
-.lang-switch:lang(ko) { font-weight: 800; }
+.lang-menu:hover .lang-btn, .lang-menu.open .lang-btn { background: var(--ink); color: #fff; }
+.lang-btn svg { width: 32px; height: 32px; }
+.lang-btn:focus-visible { outline: 3px solid var(--wave); outline-offset: 3px; }
+/* 버튼 아래로 버튼 폭에 맞춘 세로 알약 목록이 내려온다. ::before는 버튼과 목록 사이 틈을 메워 마우스가 옮겨 가는 동안 닫히지 않게 한다 */
+.lang-list {
+  position: absolute; left: 50%; top: calc(100% + 10px); width: 80px; margin: 0 0 0 -40px; padding: 6px 0; list-style: none;
+  background: #fff; border: var(--line); border-radius: 99px; box-shadow: 3px 3px 0 var(--ink);
+  opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .15s, transform .15s, visibility .15s;
+}
+.lang-list::before { content: ''; position: absolute; left: -3px; right: -3px; bottom: 100%; height: 13px; }
+.lang-menu:hover .lang-list, .lang-menu:focus-within .lang-list, .lang-menu.open .lang-list { opacity: 1; visibility: visible; transform: none; }
+.lang-list li + li a { border-top: 2px solid rgba(22, 34, 79, .15); }
+.lang-list a {
+  display: block; margin: 0 12px; padding: 14px 0; text-align: center; text-decoration: none; white-space: nowrap;
+  font: 700 23px/1 var(--font-en-display); color: rgba(22, 34, 79, .4);
+}
+.lang-list a:hover, .lang-list a[aria-current] { color: var(--ink); }
+.lang-list a[aria-current] { color: var(--wave); }
 
 @media (max-width: 720px) {
   .topbar-nav { display: none; }
   .topbar-menu { display: block; }
+  .topbar-logo img { height: 46px; }
+  .lang-btn { width: 46px; height: 46px; }
+  .lang-btn svg { width: 24px; height: 24px; }
+  .lang-list { width: 60px; margin-left: -30px; }
+  .lang-list a { padding: 11px 0; font-size: 17px; }
 }
 /* 페이지를 옮길 때 화면을 이어 붙여, 작품 카드 그림이 상세 화면으로 자연스럽게 옮겨 간다 */
 @media (prefers-reduced-motion: no-preference) {

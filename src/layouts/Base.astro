@@ -11,7 +11,7 @@ interface Props {
   bodyClass?: string;
 }
 const { lang, title, description, path, bodyClass } = Astro.props;
-const other: Lang = lang === 'ko' ? 'en' : 'ko';
+const LANGS: readonly Lang[] = ['ko', 'en'];
 const t = STRINGS[lang];
 // 현재 위치는 색과 함께 aria-current로도 알린다. 작품 상세는 게임과 앱 아래로 본다
 const here = path ?? '';
@@ -51,7 +51,16 @@ const nav = [
         {nav.map((n) => <a href={localePath(lang, n.href)} aria-current={n.on ? 'page' : undefined}>{n.full}</a>)}
       </nav>
     </details>
-    {path && <a class="lang-switch" href={localePath(other, path)} hreflang={other} lang={other}>{other === 'en' ? 'EN' : '한국어'}</a>}
+    {path && (
+      <div class="lang-menu">
+        <button type="button" class="lang-btn" aria-expanded="false" aria-label={t.language}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.5" /><ellipse cx="12" cy="12" rx="4.2" ry="9.5" /><path d="M2.5 12h19" /></g></svg>
+        </button>
+        <ul class="lang-list">
+          {LANGS.map((l) => <li><a href={localePath(l, path)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a></li>)}
+        </ul>
+      </div>
+    )}
   </header>
   <slot />
   <script>
@@ -60,6 +69,13 @@ const nav = [
     const sync = () => bar?.classList.toggle('scrolled', window.scrollY > 40);
     sync();
     window.addEventListener('scroll', sync, { passive: true });
+    // 언어 목록은 마우스를 올리거나 버튼을 누르면 펼쳐진다. 탭으로 여는 휴대폰을 위해 누름도 받는다
+    const langMenu = document.querySelector('.lang-menu');
+    const langBtn = langMenu?.querySelector('.lang-btn');
+    const setLang = (open: boolean) => { langMenu?.classList.toggle('open', open); langBtn?.setAttribute('aria-expanded', String(open)); };
+    langBtn?.addEventListener('click', () => setLang(!langMenu?.classList.contains('open')));
+    document.addEventListener('click', (e) => { if (!langMenu?.contains(e.target as Node)) setLang(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setLang(false); });
   </script>
 </body>
 </html>
