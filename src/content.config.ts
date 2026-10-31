@@ -14,7 +14,8 @@ const blog = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    // YAML은 따옴표 없는 2026-10-31을 UTC 자정 Date로 읽는다. 어느 쪽으로 적어도 날짜 문자열로 맞춘다
+    date: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.date().transform((d) => d.toISOString().slice(0, 10))]),
     category: z.enum(BLOG_CATEGORY_KEYS),
     excerpt: z.string().max(140),
     tags: z.array(z.string()).min(1).max(5),

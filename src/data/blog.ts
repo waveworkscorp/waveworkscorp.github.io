@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Lang, Work } from './works';
 import { WORKS } from './works';
 import { localePath } from './i18n';
-import { findOrphans, readMinutes, sortPosts, type PostMeta } from '../lib/blog-core.ts';
+import { findOrphans, readMinutes, sortPosts, type PostMeta, type SearchEntry } from '../lib/blog-core.ts';
 import type { BLOG_CATEGORY_KEYS } from '../content.config';
 
 export type BlogCategory = (typeof BLOG_CATEGORY_KEYS)[number];
@@ -109,4 +109,15 @@ export function relatedWorks(entry: BlogEntry): Work[] {
     if (!work) console.warn(`[blog] ${entry.id}: 없는 작품 slug "${slug}"`);
     return work ? [work] : [];
   });
+}
+
+// 본문은 넣지 않는다. 색인이 글 수만큼 커져 첫 검색이 느려지기 때문이다
+export async function searchIndex(lang: Lang): Promise<SearchEntry[]> {
+  return (await getPosts(lang)).map((e) => ({
+    url: postUrl(lang, postName(e)),
+    title: e.data.title,
+    excerpt: e.data.excerpt,
+    tags: e.data.tags,
+    category: CATEGORIES[e.data.category].name[lang],
+  }));
 }

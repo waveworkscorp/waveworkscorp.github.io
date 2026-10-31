@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+import type { Lang } from '../data/works';
+import { BLOG_STRINGS, CATEGORIES, minutesOf, postName, postUrl, type BlogEntry } from '../data/blog';
+import { formatDate } from '../lib/blog-core.ts';
+
+interface Props { lang: Lang; entry: BlogEntry; wide?: boolean }
+const { lang, entry, wide = false } = Astro.props;
+const { title, excerpt, date, category, tags, cover, coverAlt } = entry.data;
+const cat = CATEGORIES[category];
+const s = BLOG_STRINGS[lang];
+---
+<a
+  class:list={['card', { wide }]}
+  href={postUrl(lang, postName(entry))}
+  style={`--cat:${cat.color}`}
+  data-cat={category}
+  data-tags={JSON.stringify(tags)}
+  data-url={postUrl(lang, postName(entry))}
+>
+  <div class="pic">
+    {cover
+      ? <Image src={cover} alt={coverAlt ?? ''} widths={[480, 800, 1200]} sizes="(max-width: 860px) 100vw, 60vw" loading="lazy" />
+      : <span class="fallback" aria-hidden="true">{cat.name[lang]}</span>}
+  </div>
+  <div class="txt">
+    <small class="badge">{cat.name[lang]}</small>
+    <h3>{title}</h3>
+    <p>{excerpt}</p>
+    <small class="meta">{formatDate(date, lang)} · {s.minRead.replace('{n}', String(minutesOf(entry)))}</small>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex; flex-direction: column; text-decoration: none; overflow: hidden; background: #fff;
+    border: 4px solid var(--ink); border-radius: 36px; box-shadow: var(--pop);
+    transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), box-shadow .2s ease-out;
+  }
+  .card:hover, .card:focus-visible { transform: translate(-4px, -6px) rotate(-.6deg); box-shadow: 10px 12px 0 var(--ink); }
+  .pic { aspect-ratio: 16 / 9; overflow: hidden; border-bottom: 4px solid var(--ink); background: var(--cat); }
+  .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease-out; }
+  .card:hover .pic img { transform: scale(1.05); }
+  /* 표지가 없으면 카테고리 색 바탕에 카테고리 이름을 크게 둬 빈 칸처럼 보이지 않게 한다 */
+  .fallback {
+    display: grid; place-items: center; height: 100%; color: #fff; font: 400 clamp(36px, 5vw, 64px)/1 var(--font-ko-display);
+    background: radial-gradient(rgba(255,255,255,.3) 2px, transparent 3px) 0 0 / 22px 22px;
+    text-shadow: 3px 3px 0 var(--ink);
+  }
+  :global(html[lang='en']) .fallback { font-family: var(--font-en-display); font-weight: 700; }
+  .txt { padding: 20px 26px 24px; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .badge { font-weight: 800; font-size: 13px; color: #fff; background: var(--cat); border: 2px solid var(--ink); border-radius: 99px; padding: 2px 10px; }
+  h3 { margin: 2px 0 0; font: 800 clamp(20px, 2vw, 25px)/1.35 var(--font-body); }
+  .txt p { margin: 0; font-weight: 500; opacity: .8; }
+  .meta { margin-top: auto; padding-top: 8px; font-weight: 700; opacity: .65; }
+  .wide { grid-column: 1 / -1; flex-direction: row-reverse; }
+  .wide .pic { flex: 1.5; border-bottom: 0; border-left: 4px solid var(--ink); }
+  .wide .txt { flex: 1; justify-content: center; padding: 36px; }
+  .wide h3 { font-size: clamp(26px, 3vw, 38px); }
+  @media (max-width: 860px) {
+    .wide { flex-direction: column; }
+    .wide .pic { flex: none; border-left: 0; border-bottom: 4px solid var(--ink); }
+    .wide .txt { padding: 20px 26px 24px; }
+  }
+</style>

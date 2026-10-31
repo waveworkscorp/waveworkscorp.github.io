@@ -9,14 +9,22 @@ interface Props {
   description: string;
   path?: string; // 언어 접두어 없는 경로, 언어 전환 링크에 씀. 언어판이 하나뿐인 법적 고지는 비운다
   bodyClass?: string;
+  // 공유 미리보기 그림. 없으면 로고
+  ogImage?: string;
+  // 언어판이 없는 페이지는 그 언어로 바꿀 때 갈 경로를 따로 준다. 준 언어는 hreflang을 달지 않는다
+  altPath?: Partial<Record<Lang, string>>;
 }
-const { lang, title, description, path, bodyClass } = Astro.props;
+const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath } = Astro.props;
 const LANGS: readonly Lang[] = ['ko', 'en'];
 const t = STRINGS[lang];
+const targetOf = (l: Lang): string => altPath?.[l] ?? path ?? '/';
+const pairs = LANGS.filter((l) => path && !altPath?.[l]);
 // 현재 위치는 색과 함께 aria-current로도 알린다. 작품 상세는 게임과 앱 아래로 본다
 const here = path ?? '';
+const isBlog = here.startsWith('/blog/');
 const nav = [
-  { href: '/works/', label: 'Works', full: t.works, on: here !== '' && !['/', '/about/', '/contact/'].includes(here) },
+  { href: '/works/', label: 'Works', full: t.works, on: here !== '' && !isBlog && !['/', '/about/', '/contact/'].includes(here) },
+  { href: '/blog/', label: 'Blog', full: t.blog, on: isBlog },
   { href: '/about/', label: 'About', full: t.about, on: here === '/about/' },
   { href: '/contact/', label: 'Contact', full: t.contact, on: here === '/contact/' },
 ];
@@ -28,11 +36,10 @@ const nav = [
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content={description}>
-  {path && <link rel="alternate" hreflang="ko" href={new URL(localePath('ko', path), Astro.site)}>}
-  {path && <link rel="alternate" hreflang="en" href={new URL(localePath('en', path), Astro.site)}>}
+  {pairs.length > 1 && pairs.map((l) => <link rel="alternate" hreflang={l} href={new URL(localePath(l, targetOf(l)), Astro.site)}>)}
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
-  <meta property="og:image" content={new URL('/img/logo1.png', Astro.site)}>
+  <meta property="og:image" content={new URL(ogImage, Astro.site)}>
   <link rel="icon" href="/img/ww3.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
@@ -57,7 +64,7 @@ const nav = [
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.5" /><ellipse cx="12" cy="12" rx="4.2" ry="9.5" /><path d="M2.5 12h19" /></g></svg>
         </button>
         <ul class="lang-list">
-          {LANGS.map((l) => <li><a href={localePath(l, path)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a></li>)}
+          {LANGS.map((l) => <li><a href={localePath(l, targetOf(l))} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a></li>)}
         </ul>
       </div>
     )}

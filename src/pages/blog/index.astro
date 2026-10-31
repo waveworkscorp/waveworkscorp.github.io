@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import BlogList from '../../components/BlogList.astro';
+import { BLOG_STRINGS } from '../../data/blog';
+
+const s = BLOG_STRINGS.ko;
+---
+<Base lang="ko" title={`${s.title} | WaveWorks`} description={s.lead} path="/blog/">
+  <BlogList lang="ko" />
+</Base>

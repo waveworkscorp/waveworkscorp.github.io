@@ -1,0 +1,169 @@
+---
+import type { Lang } from '../data/works';
+import { localePath } from '../data/i18n';
+import { BLOG_STRINGS, CATEGORIES, getPosts, type BlogCategory } from '../data/blog';
+import PostCard from './PostCard.astro';
+import SiteFooter from './SiteFooter.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = BLOG_STRINGS[lang];
+const posts = await getPosts(lang);
+// 큰 카드는 featured로 고른 가장 최신 글, 없으면 그냥 최신 글
+const lead = posts.find((p) => p.data.featured) ?? posts[0];
+const ordered = lead ? [lead, ...posts.filter((p) => p !== lead)] : [];
+const tabs: readonly { key: BlogCategory | 'all'; label: string }[] = [
+  { key: 'all', label: s.all },
+  ...(Object.keys(CATEGORIES) as BlogCategory[]).map((key) => ({ key, label: CATEGORIES[key].name[lang] })),
+];
+---
+<main data-search={localePath(lang, '/blog/search.json')}>
+  <section class="head">
+    <p class="kicker">Blog</p>
+    <h1>{s.title}</h1>
+    <p class="lead">{s.lead}</p>
+    <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
+    </svg>
+  </section>
+
+  <div class="body">
+    {posts.length === 0 ? (
+      <p class="empty">{s.empty}</p>
+    ) : (
+      <>
+        <div class="bar">
+          <nav class="tabs" aria-label={s.title}>
+            {tabs.map((tab, i) => <a href={tab.key === 'all' ? '?' : `?cat=${tab.key}`} data-key={tab.key} aria-current={i === 0 ? 'true' : undefined}>{tab.label}</a>)}
+          </nav>
+          <form class="search" role="search" action="">
+            <label class="sr" for="blog-q">{s.search}</label>
+            <input id="blog-q" name="q" type="search" placeholder={s.searchPlaceholder} autocomplete="off" />
+          </form>
+        </div>
+        <p class="tag-filter" hidden><span class="tag-name"></span><a href="?">{s.clearFilter}</a></p>
+        <div class="grid">{ordered.map((entry, i) => <PostCard lang={lang} entry={entry} wide={i === 0} />)}</div>
+        <p class="none" hidden>{s.noResults}</p>
+      </>
+    )}
+  </div>
+</main>
+<SiteFooter lang={lang} />
+
+<script>
+  import { searchPosts, type SearchEntry } from '../lib/blog-core.ts';
+
+  // 거르기는 주소의 ?cat=, ?tag=, ?q=와 맞물려 링크로 바로 열 수 있다. 스크립트가 없으면 전부 보인다
+  const root = document.querySelector<HTMLElement>('main[data-search]');
+  const cards = [...document.querySelectorAll<HTMLAnchorElement>('.grid .card')];
+  const tabs = [...document.querySelectorAll<HTMLAnchorElement>('.tabs a')];
+  const input = document.querySelector<HTMLInputElement>('#blog-q');
+  const tagBox = document.querySelector<HTMLElement>('.tag-filter');
+  let index: Promise<SearchEntry[]> | undefined;
+  // 검색 색인은 검색할 때만 받는다. 목록만 보는 사람은 내려받지 않는다
+  const loadIndex = () => (index ??= fetch(root?.dataset.search ?? '').then((r) => r.json() as Promise<SearchEntry[]>).catch(() => []));
+
+  const apply = async () => {
+    const params = new URLSearchParams(location.search);
+    const cat = params.get('cat') ?? 'all';
+    const tag = params.get('tag');
+    const q = (params.get('q') ?? '').trim();
+    const hits = q ? new Set(searchPosts(q, await loadIndex()).map((e) => e.url)) : undefined;
+    let shown = 0;
+    cards.forEach((card) => {
+      const tags = JSON.parse(card.dataset.tags ?? '[]') as string[];
+      const ok = (cat === 'all' || card.dataset.cat === cat) && (!tag || tags.includes(tag)) && (!hits || hits.has(card.dataset.url ?? ''));
+      card.hidden = !ok;
+      if (ok) shown += 1;
+    });
+    // 거르는 중에는 첫 글만 크게 보이면 어색해서 모두 같은 크기로 맞춘다
+    document.querySelector('.grid')?.classList.toggle('filtering', cat !== 'all' || Boolean(tag) || Boolean(q));
+    tabs.forEach((a) => a.toggleAttribute('aria-current', a.dataset.key === cat));
+    if (tagBox) {
+      tagBox.hidden = !tag;
+      const name = tagBox.querySelector('.tag-name');
+      if (name) name.textContent = `#${tag ?? ''}`;
+    }
+    document.querySelector<HTMLElement>('.none')?.toggleAttribute('hidden', shown > 0);
+    if (input && document.activeElement !== input) input.value = q;
+  };
+
+  const go = (params: URLSearchParams) => {
+    const qs = params.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    void apply();
+  };
+  tabs.forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(location.search);
+    params.delete('cat');
+    if (a.dataset.key !== 'all') params.set('cat', a.dataset.key ?? '');
+    go(params);
+  }));
+  tagBox?.querySelector('a')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(location.search);
+    params.delete('tag');
+    go(params);
+  });
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  input?.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const params = new URLSearchParams(location.search);
+      params.delete('q');
+      if (input.value.trim()) params.set('q', input.value.trim());
+      go(params);
+    }, 200);
+  });
+  input?.form?.addEventListener('submit', (e) => e.preventDefault());
+  void apply();
+</script>
+
+<style>
+  .head {
+    position: relative; overflow: hidden; text-align: center; padding: 150px 20px 120px;
+    background:
+      radial-gradient(rgba(255,255,255,.35) 2.5px, transparent 3.5px) 0 0 / 26px 26px,
+      var(--sky);
+  }
+  .kicker {
+    display: inline-block; margin: 0 0 16px; font: 700 18px var(--font-en-display); background: #fff; border: var(--line);
+    border-radius: 99px; padding: 4px 18px; box-shadow: 3px 3px 0 var(--ink);
+  }
+  h1 { margin: 0; font: 400 clamp(56px, 8vw, 112px)/1 var(--font-ko-display); }
+  :global(html[lang='en']) h1 { font-family: var(--font-en-display); font-weight: 700; }
+  .lead { margin: 20px auto 0; max-width: 30em; font-size: clamp(16px, 1.5vw, 20px); font-weight: 600; }
+  .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
+
+  .body { max-width: 1240px; margin: 0 auto; padding: 50px 20px 0; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tabs a {
+    font-weight: 800; font-size: 18px; text-decoration: none; border: var(--line); border-radius: 99px;
+    padding: 6px 22px; background: #fff; box-shadow: 4px 4px 0 var(--ink); transition: transform .12s ease-out;
+  }
+  .tabs a:hover { transform: translateY(-3px); }
+  .tabs a[aria-current] { background: var(--ink); color: #fff; }
+  .search input {
+    width: min(320px, 100%); font: 600 16px var(--font-body); color: var(--ink); padding: 10px 18px;
+    border: var(--line); border-radius: 99px; background: var(--foam); box-shadow: 4px 4px 0 var(--ink);
+  }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .tag-filter { display: flex; align-items: center; gap: 12px; margin: -12px 0 24px; font-weight: 800; }
+  .tag-filter a { font-size: 14px; border: 2px solid var(--ink); border-radius: 99px; padding: 2px 12px; text-decoration: none; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .grid.filtering :global(.wide) { grid-column: auto; flex-direction: column; }
+  .grid.filtering :global(.wide .pic) { flex: none; border-left: 0; border-bottom: 4px solid var(--ink); }
+  .grid.filtering :global(.wide .txt) { padding: 20px 26px 24px; }
+  .empty, .none {
+    margin: 0; padding: 28px; text-align: center; font-weight: 700; font-size: 18px;
+    border: 3px dashed var(--ink); border-radius: 28px; background: var(--foam);
+  }
+  .none { margin-top: 28px; }
+  @media (max-width: 860px) {
+    .head { padding: 120px 20px 100px; }
+    .grid { grid-template-columns: 1fr; }
+    .search, .search input { width: 100%; }
+  }
+</style>
