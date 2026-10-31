@@ -12,6 +12,10 @@ WaveWorks company site (Astro, ko/en), served at waveworkscorp.github.io. It liv
 
 Site-wide pages (home, about, contact, shared legal docs directly under `src/legal/{ko,en}/`) are edited here. Format and commands: `../../docs/platform/site-sync.md`.
 
+## Blog
+
+Posts are markdown files: Korean in `src/content/blog/ko/YYYY-MM-DD-<slug>.md` (required), English under the same name in `src/content/blog/en/` (optional; an English-only post fails the build). Covers go in `src/assets/blog/<name>/cover.png`. Frontmatter schema is in `src/content.config.ts`, categories and UI strings in `src/data/blog.ts`. Write posts with the `/blog-auto-write <topic>` skill (`.claude/skills/blog-auto-write/`). It commits locally and opens a preview; push only after the user says "올려". Design: `docs/superpowers/specs/2026-10-31-blog-design.md`.
+
 ## Check
 
 - `npx astro build`, then `npx astro preview --port 4329`. Preview serves `dist/`, so build first. Stop the preview when done.
