@@ -27,7 +27,7 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
 ---
 <main style={`--cat:${cat.color}`}>
   <header class={cover ? 'head has-cover' : 'head'}>
-    {cover && <Image class="bg" src={cover} alt={coverAlt ?? ''} widths={[800, 1600, 2400]} sizes="100vw" loading="eager" />}
+    {cover && <Image class="bg" src={cover} alt="" widths={[800, 1600]} sizes="100vw" loading="eager" aria-hidden="true" />}
     <a class="badge" href={`${listHref}?cat=${category}`}>{cat.name[lang]}</a>
     <h1>{title}</h1>
     <p class="meta">{formatDate(date, lang)} · {s.minRead.replace('{n}', String(minutesOf(entry)))}</p>
@@ -37,6 +37,12 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
   </header>
 
   <div class="wrap">
+    {cover && (
+      <figure class="cover">
+        <Image src={cover} alt={coverAlt ?? ''} widths={[800, 1200, 1600]} sizes="(max-width: 960px) 100vw, 960px" loading="eager" />
+      </figure>
+    )}
+
     <div class="layout">
       <PostToc headings={headings} label={s.toc} />
       <article class="prose"><Content /></article>
@@ -95,9 +101,10 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
     position: relative; overflow: hidden; text-align: center; padding: 140px 20px 120px;
     background: radial-gradient(rgba(255,255,255,.35) 2.5px, transparent 3.5px) 0 0 / 26px 26px, var(--sky);
   }
-  /* 표지를 따로 두면 헤더와 겹쳐 보여, 표지를 헤더 배경으로 흐리게 깔고 그 위에 제목을 얹는다 */
-  .has-cover { background: var(--sky); }
-  .has-cover::before { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, .65); }
+  /* 헤더는 표지를 어둡게 깔고 흰 제목을 얹는다. 선명한 표지는 헤더 아래 본문 첫머리에 따로 둔다 */
+  .has-cover { background: var(--ink); color: #fff; }
+  .has-cover::before { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(22, 34, 79, .62); }
+  .has-cover .meta { opacity: .9; }
   .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .has-cover > :not(.bg) { position: relative; z-index: 2; }
   .has-cover > .edge { position: absolute; }
@@ -109,6 +116,8 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
   .meta { margin: 16px 0 0; font-weight: 700; opacity: .75; }
   .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
   .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .cover { margin: 48px auto; max-width: 960px; }
+  .cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border: 4px solid var(--ink); border-radius: 32px; box-shadow: var(--pop); }
   .layout { display: grid; grid-template-columns: minmax(0, 720px); justify-content: center; }
   .head + .wrap .layout:first-child { margin-top: 48px; }
   .foot { max-width: 720px; margin: 48px auto 0; display: grid; gap: 28px; }
