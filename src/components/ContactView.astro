@@ -1,7 +1,7 @@
 ---
 import type { Lang } from '../data/works';
 import { WORKS } from '../data/works';
-import { COMPANY } from '../data/i18n';
+import { COMPANY, CONTACT_ENDPOINT } from '../data/i18n';
 import { CONTACT } from '../data/pages';
 import SiteFooter from './SiteFooter.astro';
 
@@ -24,9 +24,9 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
     </svg>
   </section>
 
-  <!-- 정적 사이트라 서버 없이 메일 앱으로 넘긴다. 스크립트가 없어도 mailto로 보내진다 -->
+  <!-- 스크립트가 문의를 공용 Apps Script 수신기로 보낸다. 스크립트가 꺼진 브라우저는 mailto로 메일 앱을 연다 -->
   <form class="form" novalidate data-err-required={c.errRequired} data-err-email={c.errEmail} action={`mailto:${COMPANY.email}`} method="post" enctype="text/plain"
-    data-to={COMPANY.email} data-prefix={c.subjectPrefix}>
+    data-endpoint={CONTACT_ENDPOINT} data-lang={lang} data-sending={c.sending}>
     <h2 id="kind-head">{c.kindLabel}</h2>
     <!-- 고른 카드가 아래 폼에 붙은 탭이 된다. 그림자는 탭과 폼을 한 덩어리로 감싸 준다 -->
     <div class="connect">
@@ -94,9 +94,13 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
         <small id="msg-hint" data-hints={JSON.stringify(c.messageHints)}>{c.messageHints[0]}</small>
       </label>
 
+      <!-- 사람에게는 안 보이는 칸. 봇이 채우면 수신기가 저장하지 않는다 -->
+      <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
       <div class="actions">
         <p class="note">{c.sendNote}</p>
-        <div class="after" role="status" hidden>{c.afterSend.map((line) => <p>{line}</p>)}</div>
+        <div class="after" role="status" hidden>{c.sent.map((line) => <p>{line}</p>)}</div>
+        <p class="failed" role="alert" hidden>{c.sendFailed}</p>
         <button type="submit">{c.send}<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z M11.3 13.7 21 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /></svg></button>
       </div>
     </div></div>
@@ -159,31 +163,67 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   form?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]').forEach((el) =>
     el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) showError(el); }));
 
-  form?.addEventListener('submit', (e) => {
+  const submit = form?.querySelector<HTMLButtonElement>('button[type=submit]');
+  const sentBox = form?.querySelector<HTMLElement>('.after');
+  const failedBox = form?.querySelector<HTMLElement>('.failed');
+
+  // 숨긴 묶음(disabled)의 칸은 FormData에서 빠지므로 보이는 칸만 보낸다
+  const collect = (f: HTMLFormElement) => {
+    const data = new FormData(f);
+    const text = (key: string) => String(data.get(key) ?? '').trim();
+    const fields: Record<string, string> = {
+      kind: text('kind'),
+      topic: text('topic'),
+      work: f.querySelector<HTMLInputElement>('.group:not([disabled]) input[name=work]:checked')?.dataset.name ?? '',
+      company: text('company'),
+      device: text('device'),
+      version: text('version'),
+    };
+    const filled = Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== ''));
+    return {
+      source: 'site',
+      lang: f.dataset.lang ?? '',
+      name: text('name'),
+      reply: text('reply'),
+      message: text('message'),
+      fields: filled,
+      extra: {},
+      website: text('website'),
+    };
+  };
+
+  // 본문을 text/plain으로 보내면 사전 요청(preflight) 없이 Apps Script에 닿는다
+  const send = async (payload: ReturnType<typeof collect>): Promise<boolean> => {
+    try {
+      const res = await fetch(form?.dataset.endpoint ?? '', { method: 'POST', body: JSON.stringify(payload) });
+      const result: unknown = await res.json();
+      return typeof result === 'object' && result !== null && 'ok' in result && result.ok === true;
+    } catch (err: unknown) {
+      console.error('contact send failed', err);
+      return false;
+    }
+  };
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!submit || submit.disabled) return;
     const invalid = required().filter((el) => !showError(el));
     if (invalid.length > 0) { invalid[0]?.focus(); return; }
-    const data = new FormData(form);
-    const work = form.querySelector<HTMLInputElement>('.group:not([disabled]) input[name=work]:checked')?.dataset.name ?? '';
-    const kind = String(data.get('kind') ?? '');
-    const topic = data.has('topic') ? String(data.get('topic')) : '';
-    const subject = [form.dataset.prefix, kind, topic || work].filter(Boolean).join(' ');
-    // 보이는 칸 중 값이 있는 것만 "이름: 값"으로 덧붙인다
-    const extras = [...form.querySelectorAll<HTMLInputElement>('.group:not([disabled]) input[data-label]')]
-      .filter((i) => i.value.trim())
-      .map((i) => `${i.dataset.label}: ${i.value.trim()}`);
-    const body = [
-      String(data.get('message') ?? ''),
-      '',
-      '---',
-      [kind, topic, work].filter(Boolean).join(' / '),
-      ...extras,
-      `${String(data.get('name') ?? '')} <${String(data.get('reply') ?? '')}>`,
-    ].join('\n');
-    location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    // 메일 앱이 열렸는지, 실제로 보냈는지는 알 수 없으므로 완료라고 하지 않고 다음 할 일을 알린다
-    const after = form.querySelector<HTMLElement>('.after');
-    if (after) after.hidden = false;
+    const label = submit.innerHTML;
+    submit.disabled = true;
+    submit.textContent = form.dataset.sending ?? '';
+    if (sentBox) sentBox.hidden = true;
+    if (failedBox) failedBox.hidden = true;
+    const ok = await send(collect(form));
+    submit.disabled = false;
+    submit.innerHTML = label;
+    if (ok) {
+      // 같은 내용을 두 번 보내지 않게 적은 글만 비운다. 이름·이메일은 남겨 이어서 문의하기 쉽게 한다
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('textarea, .group input:not([type=radio])').forEach((el) => { el.value = ''; });
+      if (sentBox) sentBox.hidden = false;
+    } else if (failedBox) {
+      failedBox.hidden = false;
+    }
   });
 
   document.querySelector<HTMLButtonElement>('.copy-btn')?.addEventListener('click', async (e) => {
@@ -302,6 +342,9 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
   [aria-invalid] { border-color: #c62828 !important; }
   .after { flex-basis: 100%; order: 3; background: var(--sky); border: 2px solid var(--ink); border-radius: 16px; padding: 12px 16px; font-weight: 700; }
   .after p { margin: 0; }
+  .failed { flex-basis: 100%; order: 3; margin: 0; background: #ffe1dc; border: 2px solid #c62828; border-radius: 16px; padding: 12px 16px; font-weight: 700; }
+  .trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  button[type=submit]:disabled { cursor: progress; opacity: .7; }
   .after p + p { margin-top: 4px; font-weight: 600; }
   .copy-failed { flex-basis: 100%; margin: 0; font-weight: 700; font-size: 15px; }
 
