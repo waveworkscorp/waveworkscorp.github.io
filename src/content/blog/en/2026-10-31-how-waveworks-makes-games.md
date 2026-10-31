@@ -1,65 +1,70 @@
 ---
-title: "How WaveWorks makes games"
+title: "What we changed after rebuilding 300 levels four times"
 date: "2026-10-31"
 category: culture
-excerpt: "We regenerated all 300 levels four times in one day on our first game. Here's what we changed after that, and why we're moving to Unity."
+excerpt: "On our first game we rebuilt all 300 levels four times in one day and wrote the release list on day 7. Here is what we changed, by date."
 tags: ["How we work", "AI", "Unity", "Level design"]
 cover: ../../../assets/blog/2026-10-31-how-waveworks-makes-games/cover.jpg
 coverAlt: "Two small robots on a studio desk stacking blocks into game screens"
 works: ["bus-jam"]
 ---
 
-On October 4, 2026, we regenerated all 300 levels four times in a single day. It was day two of building our first game, Bus Loop Escape. Of the 313 commits we made over 9 days, that day is the one we stayed stuck on longest.
+Our first game, Bus Loop Escape, took 9 days and 313 commits. The part we redid most was the levels, and the part we touched last was release prep. Both are why our working order looks different now.
 
-WaveWorks is a one-person game studio founded in October 2025. The founder decides what to make, Claude Code writes the code, and Codex draws the art. What follows covers the calls we got wrong on the first game and the order we changed afterward.
+WaveWorks is a company where one founder decides what to make, and the code and art are built with Claude Code and Codex. We wrote this by rereading the commit history in date order.
 
-## The day we rebuilt the levels four times
+## October 3, late: the generator came first
 
-The level generator ran on the first night. It's a program that decides how many buses to place, in which colors and where, so changing a rule meant we could rebuild all 300 levels at once. That was the trap. Because rebuilding was easy, we did it after every change.
+As soon as the rules worked, we built a level generator, a program that decides how many buses go where and in which colors. The first version went in at 11:18 p.m. and produced 300 levels in one go.
+
+It was convenient. Change one rule and all 300 came out fresh. The trouble was that the convenience let us skip actually playing them.
+
+## October 4: the same 300, four times
 
 | Time | What changed | Levels rebuilt |
 |---|---|---|
-| 10-04 03:04 | Generator v2: bus-count driven, reverse-escape placement | 1–300 |
-| 10-04 12:00 | Passenger queue rule v3, color curve | 1–300 |
-| 10-04 18:15 | Queue fixed at 150 slots, more buses and colors from level 11 | 11–150 |
-| 10-04 18:28 | Queue set to 152 slots | 11–300 |
+| 03:04 | Generator v2: bus-count driven, reverse-escape placement | 1–300 |
+| 12:00 | Passenger queue rule v3, color curve | 1–300 |
+| 18:15 | Queue fixed at 150 slots, more buses and colors from level 11 | 11–150 |
+| 18:28 | Queue set to 152 slots | 11–300 |
 
-Every time, we rebuilt all 300 before playing the new rule ourselves. And the levels were still easy. Two days later, around midnight on October 6, we ran a simple bot that only moves whatever bus is free. It cleared 294 of 300 levels. Adding hidden buses and containers didn't create any tense moments either. Difficulty only started to land after we switched to generator v5 at 4 a.m.
+Each time, we rebuilt all 300 before playing a few rounds under the new rule. By the end of the day we had a batch of levels with different numbers, and we still didn't know whether they were fun.
+
+## October 6, midnight: a bot cleared 294
+
+Two days later we measured the levels for the first time. A simple bot that moves whatever bus is free cleared 294 of 300. The levels left a player almost nothing to think about.
+
+The log from that night:
+
+- 01:00 Added buses with hidden colors and containers.
+- 01:15 The new pieces alone never produced a tense moment.
+- 03:39 A bot that only looked one move ahead still cleared over 90%.
+- 04:03 Switched to generator v5.
+
+After that we added two rows to the lot and rebuilt levels 4–300, then rebuilt all 300 once more at 11:35 p.m. Had we started by measuring with a bot, most of the four rebuilds on October 4 wouldn't have been needed.
 
 ![Tapping out the buses that are free to move in Bus Loop Escape](/works/bus-jam/shots/en-1.jpg)
 
-Now we don't mass-produce levels or art until one full round is built and the founder has played it. We call this step the vertical slice. We measure difficulty with a bot first and change the generator only once we have the numbers.
+Now we build one full round, the founder plays it, and a bot measures the difficulty before we make levels in bulk. We call this step the vertical slice.
 
-## Writing the release list on day 7
+## Same day: nine art swaps
 
-The game rules worked within four days. Close to half the commits, about 145, went into art and effects. On October 6 alone we swapped placeholder art for AI images one piece at a time: booster icons, the main menu, the shop, the loading screen, the backgrounds.
+October 6 was also heavy on art. Nine commits went in that replaced placeholder art with AI images one piece at a time: booster icons, the main menu, the shop, the loading screen, backgrounds. Close to half of the 9 days' commits, about 145, were art and effects.
 
-Release prep started last. Store account approval and translations were things we could have known about on day one, yet the release to-do list only got written on day 7, October 9. Japanese and Chinese text and store screenshots went in on October 19, the same day the game went live on Google Play.
+Without an art direction set in the first week, each screen got changed on its own. Now we settle art direction and key screens at the design stage and build the vertical slice in that art.
 
-Now the release sheet comes before the game plan. On day one we write down the countries and languages, store accounts, app name, revenue model and review materials, and we send off the slow account applications that day. The order after that:
+## October 9: the release to-do list, finally
 
-1. Release sheet
-2. Plan: who the game is for, in one paragraph
-3. Analysis: compare similar games and features
-4. Design: art direction and screens in the first week
-5. Vertical slice: one full round in the chosen art
-6. Build and release: add content, test on real phones
-7. Operate: look at the numbers 2, 4 and 8 weeks after launch and decide what to invest in next
+Store account approval and translations were things we could have known on day one. Yet the release to-do list was written on day 7, and the Japanese and Chinese text and store screenshots went in on October 19, the day the game went live on Google Play.
+
+So the release sheet now comes before the game plan. On day one we write down the countries and languages, store accounts, app name, revenue model and review materials, and send off the slow account applications that day. After the release sheet come the plan, a look at similar games, art and screen design, the vertical slice, and then development.
 
 ## If we did it again, Unity from the start
 
-We built Bus Loop Escape with web tech. It got us started fast, but keeping it smooth on budget phones and fitting every screen size took more and more work. On October 26, 2026, we decided to move our games to Unity.
+We built Bus Loop Escape with web tech. It got us started fast, but keeping it smooth on budget phones and fitting every screen size kept taking work. That's the decision our founder most wants to change about the first game.
 
-If we were making the first game again, we'd start in Unity. New games now do, and we're moving the existing ones over one by one.
+On October 26 we decided to move our games to Unity. New games start in Unity, and Bus Loop Escape is being moved over. The ads, payments, saving and analytics code was split out of the first game, and the next game reuses it as is.
 
-We don't rewrite ads, payments, saving and analytics for each game. We split that code out of the first game into shared packages, and the next game only swaps in its own values, like the app ID and ad units.
+## What we don't know yet
 
-## Rules every game follows
-
-- Languages: we ship in Korean, English, Japanese, and Simplified and Traditional Chinese first, then add German, French, Spanish, Brazilian Portuguese and Indonesian for ten in total. App names, store descriptions and screenshots get a version in each language too.
-- Screens: we don't ship screens made of flat single-color surfaces and plain shapes. Shadows, highlights and thickness give them depth.
-- Testing: we check three times, in the dev view, on an emulator and on a real phone. A game ships only when it holds up on both a high-end and a budget device.
-
-## What's next
-
-We've released one game on Google Play, and it's too early to talk about revenue or player numbers. Right now we're preparing the iOS version of Bus Loop Escape and its move to Unity. The next game started with a release sheet and is going through the vertical slice, and we'll keep writing up the calls we get wrong here.
+With one game out, we can't use revenue or player numbers to say whether this order was right. We plan to look at the numbers 2, 4 and 8 weeks after launch and decide what to do next. Right now we're preparing the iOS version of Bus Loop Escape and its move to Unity, and the next game started with a release sheet and is going through the vertical slice. When we get something wrong on that one, we'll write it up here with the date.
