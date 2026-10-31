@@ -1,8 +1,8 @@
 ---
-title: "What we changed after rebuilding 300 levels four times"
+title: "Bus Loop Escape: a 9-day dev retrospective"
 date: "2026-10-31"
 category: culture
-excerpt: "On our first game we rebuilt all 300 levels four times in one day and wrote the release list on day 7. Here is what we changed, by date."
+excerpt: "On our first game we rebuilt all 300 levels four times in one day and wrote the release list on day 7. Then we changed our working order."
 tags: ["How we work", "AI", "Unity", "Level design"]
 cover: ../../../assets/blog/2026-10-31-how-waveworks-makes-games/cover.jpg
 coverAlt: "Two small robots on a studio desk stacking blocks into game screens"
@@ -11,15 +11,17 @@ works: ["bus-jam"]
 
 Our first game, Bus Loop Escape, took 9 days and 313 commits. The part we redid most was the levels, and the part we touched last was release prep. Both are why our working order looks different now.
 
-WaveWorks is a company where one founder decides what to make, and the code and art are built with Claude Code and Codex. We wrote this by rereading the commit history in date order.
+WaveWorks is a company where one founder decides what to make, and the code and art are built with Claude Code and Codex.
 
-## October 3, late: the generator came first
+## Day one: the generator first
 
-As soon as the rules worked, we built a level generator, a program that decides how many buses go where and in which colors. The first version went in at 11:18 p.m. and produced 300 levels in one go.
+On October 3, as soon as the rules worked, we built a level generator, a program that decides how many buses go where and in which colors. The first version went in at 11:18 p.m. and produced 300 levels in one go.
 
 It was convenient. Change one rule and all 300 came out fresh. The trouble was that the convenience let us skip actually playing them.
 
-## October 4: the same 300, four times
+## The same 300, four times
+
+On October 4 we changed the rules four times.
 
 | Time | What changed | Levels rebuilt |
 |---|---|---|
@@ -30,9 +32,9 @@ It was convenient. Change one rule and all 300 came out fresh. The trouble was t
 
 Each time, we rebuilt all 300 before playing a few rounds under the new rule. By the end of the day we had a batch of levels with different numbers, and we still didn't know whether they were fun.
 
-## October 6, midnight: a bot cleared 294
+## Bot test: 294 of 300
 
-Two days later we measured the levels for the first time. A simple bot that moves whatever bus is free cleared 294 of 300. The levels left a player almost nothing to think about.
+Two days later, at midnight on October 6, we measured the levels for the first time. A simple bot that moves whatever bus is free cleared 294 of 300. The levels left a player almost nothing to think about.
 
 The log from that night:
 
@@ -47,19 +49,19 @@ After that we added two rows to the lot and rebuilt levels 4–300, then rebuilt
 
 Now we build one full round, the founder plays it, and a bot measures the difficulty before we make levels in bulk. We call this step the vertical slice.
 
-## Same day: nine art swaps
+## Nine art swaps
 
-October 6 was also heavy on art. Nine commits went in that replaced placeholder art with AI images one piece at a time: booster icons, the main menu, the shop, the loading screen, backgrounds. Close to half of the 9 days' commits, about 145, were art and effects.
+The same October 6 was also heavy on art. Nine commits went in that replaced placeholder art with AI images one piece at a time: booster icons, the main menu, the shop, the loading screen, backgrounds. Close to half of the 9 days' commits, about 145, were art and effects.
 
 Without an art direction set in the first week, each screen got changed on its own. Now we settle art direction and key screens at the design stage and build the vertical slice in that art.
 
-## October 9: the release to-do list, finally
+## A release list on day 7
 
-Store account approval and translations were things we could have known on day one. Yet the release to-do list was written on day 7, and the Japanese and Chinese text and store screenshots went in on October 19, the day the game went live on Google Play.
+Store account approval and translations were things we could have known on day one. Yet the release to-do list was written on day 7, October 9, and the Japanese and Chinese text and store screenshots went in on October 19, the day the game went live on Google Play.
 
 So the release sheet now comes before the game plan. On day one we write down the countries and languages, store accounts, app name, revenue model and review materials, and send off the slow account applications that day. After the release sheet come the plan, a look at similar games, art and screen design, the vertical slice, and then development.
 
-## If we did it again, Unity from the start
+## If we did it again: Unity
 
 We built Bus Loop Escape with web tech. It got us started fast, but keeping it smooth on budget phones and fitting every screen size kept taking work. That's the decision our founder most wants to change about the first game.
 
