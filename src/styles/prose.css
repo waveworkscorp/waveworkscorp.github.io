@@ -34,4 +34,5 @@
 .prose td { padding: .55rem .9rem; border-bottom: 1px solid rgba(22, 34, 79, .15); }
 .prose tr:last-child td { border-bottom: 0; }
 .prose hr { border: 0; border-top: 3px dashed var(--ink); margin: 2.5rem 0; opacity: .4; }
-.prose img { border: var(--line); border-radius: 20px; margin: 0 auto 1.5rem; }
+/* 세로 스크린샷이 화면 전체를 차지하지 않게 높이를 묶는다 */
+.prose img { display: block; max-width: 100%; max-height: 70vh; width: auto; height: auto; border: var(--line); border-radius: 20px; margin: 0 auto 1.5rem; }
