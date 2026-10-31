@@ -103,9 +103,10 @@ draft: false
 1. `codex-delegation` 스킬로 한도를 확인하고 한 줄로 알린다. 한도가 막히면 표지 없이 진행한다.
 2. `cover-prompt.md`의 문장에 주제 장면을 채워 `codex exec`로 이미지를 만든다.
 3. 결과는 `~/.codex/generated_images/<세션>/`에 생긴다. `cp`로 가져온다(`mv`·`rm` 금지, 원본은 남김).
-4. sharp로 1600×900에 맞춰 자른다.
+4. 폴더를 만들고 sharp로 1600×900에 맞춰 자른다.
 
 ```bash
+mkdir -p src/assets/blog/<이름>
 node -e "require('sharp')(process.argv[1]).resize(1600,900,{fit:'cover'}).png().toFile(process.argv[2])" <원본> src/assets/blog/<이름>/cover.png
 ```
 
@@ -126,13 +127,13 @@ npx astro build 2>&1 | tail -30
 ## 10. 커밋과 미리보기
 
 ```bash
-git add src/content/blog/ko/<이름>.md src/content/blog/en/<이름>.md src/assets/blog/<이름>/cover.png
+git add src/content/blog/ko/<이름>.md   # 영어판·표지는 실제로 만든 경우에만 경로를 덧붙인다
 git commit -m "post: <제목>"
 npx astro preview --port 4329
 open -a Aside http://localhost:4329/blog/<이름>/
 ```
 
-- 경로를 하나씩 지정해 add한다. `.omc/`는 넣지 않는다.
+- 경로를 하나씩 지정해 add한다. 만든 파일만 넣는다(영어판 `src/content/blog/en/<이름>.md`, 표지 `src/assets/blog/<이름>/cover.png`). 없는 경로를 넣으면 add가 실패한다. `.omc/`는 넣지 않는다.
 - 이 단계에서는 push하지 않는다.
 
 ## 11. 공개 (사용자가 "올려"라고 한 뒤에만)

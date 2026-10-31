@@ -51,6 +51,11 @@ export function findOrphans(ko: readonly string[], en: readonly string[]): strin
   return en.filter((name) => !ko.includes(name));
 }
 
+// 한국어판이 원본이라 한국어판을 내리면 영어판도 숨긴다. 영어판 draft는 그 글만 빠진다
+export function hiddenPostNames(posts: readonly { name: string; lang: BlogLang; draft: boolean }[]): Set<string> {
+  return new Set(posts.filter((p) => p.draft && p.lang === 'ko').map((p) => p.name));
+}
+
 export function searchPosts(query: string, index: readonly SearchEntry[]): SearchEntry[] {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (terms.length === 0) return [...index];

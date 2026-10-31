@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { findOrphans, formatDate, readMinutes, relatedPosts, searchPosts, sortPosts, type PostMeta, type SearchEntry } from './blog-core.ts';
+import { findOrphans, formatDate, hiddenPostNames, readMinutes, relatedPosts, searchPosts, sortPosts, type PostMeta, type SearchEntry } from './blog-core.ts';
 
 const post = (over: Partial<PostMeta>): PostMeta => ({
   id: 'x', lang: 'ko', title: '', date: '2026-10-01', category: 'news', tags: [], excerpt: '', featured: false, ...over,
@@ -65,4 +65,14 @@ test('searchPosts: 낱말을 모두 포함하고 대소문자는 무시', () => 
 test('formatDate: 서울 날짜 기준', () => {
   assert.equal(formatDate('2026-11-01', 'en'), 'Nov 1, 2026');
   assert.equal(formatDate('2026-11-01', 'ko'), '2026. 11. 1.');
+});
+
+test('hiddenPostNames: 한국어판 draft는 두 언어를 모두 숨기고 영어판 draft는 영어판만 숨김', () => {
+  const posts = [
+    { name: 'a', lang: 'ko' as const, draft: true },
+    { name: 'a', lang: 'en' as const, draft: false },
+    { name: 'b', lang: 'ko' as const, draft: false },
+    { name: 'b', lang: 'en' as const, draft: true },
+  ];
+  assert.deepEqual([...hiddenPostNames(posts)], ['a']);
 });

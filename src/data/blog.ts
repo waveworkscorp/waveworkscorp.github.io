@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Lang, Work } from './works';
 import { WORKS } from './works';
 import { localePath } from './i18n';
-import { findOrphans, readMinutes, sortPosts, type PostMeta, type SearchEntry } from '../lib/blog-core.ts';
+import { findOrphans, hiddenPostNames, readMinutes, sortPosts, type PostMeta, type SearchEntry } from '../lib/blog-core.ts';
 import type { BLOG_CATEGORY_KEYS } from '../content.config';
 
 export type BlogCategory = (typeof BLOG_CATEGORY_KEYS)[number];
@@ -86,9 +86,8 @@ async function loadAll(): Promise<BlogEntry[]> {
   const names = (lang: Lang) => all.filter((e) => postLang(e) === lang).map(postName);
   const orphans = findOrphans(names('ko'), names('en'));
   if (orphans.length > 0) throw new Error(`한국어판 없이 영어판만 있는 글: ${orphans.join(', ')}`);
-  // 한국어판을 draft로 내리면 영어판도 함께 숨긴다
-  const hidden = new Set(all.filter((e) => e.data.draft).map(postName));
-  return all.filter((e) => !hidden.has(postName(e)));
+  const hidden = hiddenPostNames(all.map((e) => ({ name: postName(e), lang: postLang(e), draft: e.data.draft })));
+  return all.filter((e) => !e.data.draft && !hidden.has(postName(e)));
 }
 
 export async function getPosts(lang: Lang): Promise<BlogEntry[]> {
