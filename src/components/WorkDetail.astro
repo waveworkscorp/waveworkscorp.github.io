@@ -66,9 +66,10 @@ const docs = [
   </section>
 
   <div class="body">
-    {checkBox && <InfoCard box={checkBox} lang={lang} />}
-    <section class="intro" aria-labelledby="feat-head">
+    <section class="intro" aria-labelledby="overview-head">
+      <h2 id="overview-head">{t.overviewHead}</h2>
       <p class="about">{w.about[lang]}</p>
+      {checkBox && <InfoCard box={checkBox} lang={lang} hideTitle />}
       {w.steps && (
         <>
           <h3 class="steps-head">{t.stepsHead}</h3>
@@ -193,7 +194,8 @@ const docs = [
   }
   .features b { font-size: 25px; line-height: 1.25; }
   .features span { font-size: 16px; font-weight: 600; opacity: .72; }
-  .about + .steps-head { margin-top: -40px; }
+  .about:has(+ :global(.info)) { margin-bottom: 36px; }
+  .about + .steps-head, :global(.info) + .steps-head { margin-top: -40px; }
   .steps-head { margin: 0 0 14px; font-size: 20px; }
   .steps { margin: 0 0 70px; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 10px; max-width: 40em; }
   .steps li { counter-increment: step; position: relative; padding: 4px 0 4px 50px; font-size: 18px; font-weight: 600; }

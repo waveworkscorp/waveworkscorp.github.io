@@ -15,7 +15,7 @@ export interface Work {
   steps?: readonly Text[];
   // 스크린샷마다 화면에서 하는 일. 있으면 장수와 같다
   captions?: readonly Text[];
-  // 첫 상자는 다운로드 전 확인 정보로 히어로 바로 아래, 나머지는 특징 뒤에 둔다
+  // 첫 상자는 다운로드 전 확인 정보로 개요의 소개 문단 아래, 나머지는 특징 뒤에 둔다
   info?: readonly InfoBox[];
   // public/works/<slug>/shots/<lang>-<n>.jpg 장수, 스크린샷이 없으면 0
   shots: number;
