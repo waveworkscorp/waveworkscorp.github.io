@@ -65,8 +65,8 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
       </fieldset>
 
       <fieldset class="group row" data-show="0">
-        <label class="field"><span class="label">{c.deviceLabel} <em class="mark">{c.optional}</em></span><input name="device" data-label={c.deviceLabel} placeholder={c.devicePlaceholder} /></label>
-        <label class="field"><span class="label">{c.versionLabel} <em class="mark">{c.optional}</em></span><input name="version" data-label={c.versionLabel} placeholder={c.versionPlaceholder} /></label>
+        <label class="field"><span class="label">{c.deviceLabel} <em class="mark">{c.optional}</em></span><input name="device" maxlength="500" data-label={c.deviceLabel} placeholder={c.devicePlaceholder} /></label>
+        <label class="field"><span class="label">{c.versionLabel} <em class="mark">{c.optional}</em></span><input name="version" maxlength="500" data-label={c.versionLabel} placeholder={c.versionPlaceholder} /></label>
       </fieldset>
 
       <fieldset class="group" data-show="1">
@@ -79,17 +79,17 @@ const kindImgs = ['/img/kind-help.png', '/img/kind-biz.png', '/img/kind-etc.png'
       </fieldset>
 
       <fieldset class="group" data-show="1">
-        <label class="field"><span class="label">{c.companyLabel} <em class="mark on">{c.required}</em></span><input name="company" data-label={c.companyLabel} autocomplete="organization" required /><small class="err" hidden></small></label>
+        <label class="field"><span class="label">{c.companyLabel} <em class="mark on">{c.required}</em></span><input name="company" maxlength="500" data-label={c.companyLabel} autocomplete="organization" required /><small class="err" hidden></small></label>
       </fieldset>
 
       <div class="row">
-        <label class="field"><span class="label">{c.nameLabel} <em class="mark">{c.optional}</em></span><input name="name" autocomplete="name" /></label>
-        <label class="field"><span class="label">{c.replyLabel} <em class="mark on">{c.required}</em></span><input name="reply" type="email" autocomplete="email" required /><small class="err" hidden></small></label>
+        <label class="field"><span class="label">{c.nameLabel} <em class="mark">{c.optional}</em></span><input name="name" maxlength="200" autocomplete="name" /></label>
+        <label class="field"><span class="label">{c.replyLabel} <em class="mark on">{c.required}</em></span><input name="reply" maxlength="254" type="email" autocomplete="email" required /><small class="err" hidden></small></label>
       </div>
 
       <label class="field">
         <span class="label">{c.messageLabel} <em class="mark on">{c.required}</em></span>
-        <textarea name="message" rows="7" required aria-describedby="msg-hint"></textarea>
+        <textarea name="message" maxlength="5000" rows="7" required aria-describedby="msg-hint"></textarea>
         <small class="err" hidden></small>
         <small id="msg-hint" data-hints={JSON.stringify(c.messageHints)}>{c.messageHints[0]}</small>
       </label>
