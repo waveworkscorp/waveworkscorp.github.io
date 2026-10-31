@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "node --test src/**/*.test.ts"
   },
   "devDependencies": {
     "astro": "7.3.8"
