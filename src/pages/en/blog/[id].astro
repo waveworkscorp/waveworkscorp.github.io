@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import PostView from '../../../components/PostView.astro';
+import { getPosts, postName, type BlogEntry } from '../../../data/blog';
+
+export const getStaticPaths = (async () => (await getPosts('en')).map((entry) => ({ params: { id: postName(entry) }, props: { entry } }))) satisfies GetStaticPaths;
+
+interface Props { entry: BlogEntry }
+const { entry } = Astro.props;
+const name = postName(entry);
+const og = entry.data.cover ? (await getImage({ src: entry.data.cover, width: 1200, format: 'jpg' })).src : undefined;
+---
+<Base lang="en" title={`${entry.data.title} | WaveWorks`} description={entry.data.excerpt} path={`/blog/${name}/`} ogImage={og}>
+  <PostView lang="en" entry={entry} />
+</Base>

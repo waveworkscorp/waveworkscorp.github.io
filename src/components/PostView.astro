@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import type { Lang } from '../data/works';
+import { localePath } from '../data/i18n';
+import { BLOG_STRINGS, CATEGORIES, getPosts, minutesOf, postMeta, postName, postUrl, relatedWorks, type BlogEntry } from '../data/blog';
+import { formatDate, relatedPosts } from '../lib/blog-core.ts';
+import PostToc from './PostToc.astro';
+import PostCard from './PostCard.astro';
+import SiteFooter from './SiteFooter.astro';
+import '../styles/prose.css';
+
+interface Props { lang: Lang; entry: BlogEntry }
+const { lang, entry } = Astro.props;
+const s = BLOG_STRINGS[lang];
+const { title, date, category, tags, cover, coverAlt } = entry.data;
+const cat = CATEGORIES[category];
+const { Content, headings } = await render(entry);
+const all = await getPosts(lang);
+const related = relatedPosts(postMeta(entry), all.map(postMeta))
+  .map((m) => all.find((e) => postName(e) === m.id))
+  .filter((e): e is BlogEntry => e !== undefined);
+const works = relatedWorks(entry);
+const listHref = localePath(lang, '/blog/');
+const url = new URL(postUrl(lang, postName(entry)), Astro.site).href;
+const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, url })}`;
+---
+<main style={`--cat:${cat.color}`}>
+  <header class="head">
+    <a class="badge" href={`${listHref}?cat=${category}`}>{cat.name[lang]}</a>
+    <h1>{title}</h1>
+    <p class="meta">{formatDate(date, lang)} · {s.minRead.replace('{n}', String(minutesOf(entry)))}</p>
+    <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
+    </svg>
+  </header>
+
+  <div class="wrap">
+    {cover && (
+      <figure class="cover">
+        <Image src={cover} alt={coverAlt ?? ''} widths={[800, 1200, 1600]} sizes="(max-width: 960px) 100vw, 960px" loading="eager" />
+      </figure>
+    )}
+
+    <div class="layout">
+      <PostToc headings={headings} label={s.toc} />
+      <article class="prose"><Content /></article>
+    </div>
+
+    <footer class="foot">
+      <ul class="tags" aria-label={s.tags}>
+        {tags.map((tag) => <li><a href={`${listHref}?tag=${encodeURIComponent(tag)}`}>#{tag}</a></li>)}
+      </ul>
+      <div class="share">
+        <button type="button" class="copy" data-url={url} data-done={s.copied}>{s.copyLink}</button>
+        <a href={xHref} target="_blank" rel="noopener">{s.shareX}</a>
+      </div>
+
+      {works.length > 0 && (
+        <section class="works">
+          <h2>{s.relatedWorks}</h2>
+          <div class="work-list">
+            {works.map((w) => (
+              <a class="work" href={localePath(lang, `/${w.slug}/`)} style={`--accent:${w.accent}`}>
+                <img src={w.icon} alt="" width="512" height="512" loading="lazy" />
+                <span><b>{w.name[lang]}</b><small>{w.tagline[lang]}</small></span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </footer>
+  </div>
+
+  {related.length > 0 && (
+    <section class="related">
+      <h2>{s.relatedPosts}</h2>
+      <div class="grid">{related.map((p) => <PostCard lang={lang} entry={p} />)}</div>
+    </section>
+  )}
+  <p class="back"><a href={listHref}>{s.backToList}</a></p>
+</main>
+<SiteFooter lang={lang} />
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copy').forEach((btn) => btn.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.url ?? location.href);
+      btn.textContent = btn.dataset.done ?? label;
+      setTimeout(() => { btn.textContent = label; }, 1600);
+    } catch {
+      // 권한이 막힌 브라우저는 주소창에서 복사하도록 아무것도 바꾸지 않는다
+    }
+  }));
+</script>
+
+<style>
+  .head {
+    position: relative; overflow: hidden; text-align: center; padding: 140px 20px 120px;
+    background: radial-gradient(rgba(255,255,255,.35) 2.5px, transparent 3.5px) 0 0 / 26px 26px, var(--sky);
+  }
+  .badge {
+    display: inline-block; font-weight: 800; font-size: 15px; color: #fff; text-decoration: none; background: var(--cat);
+    border: var(--line); border-radius: 99px; padding: 4px 16px; box-shadow: 3px 3px 0 var(--ink);
+  }
+  h1 { max-width: 20em; margin: 18px auto 0; font: 800 clamp(30px, 4.4vw, 54px)/1.25 var(--font-body); }
+  .meta { margin: 16px 0 0; font-weight: 700; opacity: .75; }
+  .edge { position: absolute; left: 0; bottom: -1px; width: 100%; height: 80px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .cover { margin: -40px auto 48px; max-width: 960px; position: relative; }
+  .cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border: 4px solid var(--ink); border-radius: 32px; box-shadow: var(--pop); }
+  .layout { display: grid; grid-template-columns: minmax(0, 720px); justify-content: center; }
+  .head + .wrap .layout:first-child { margin-top: 48px; }
+  .foot { max-width: 720px; margin: 48px auto 0; display: grid; gap: 28px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .tags a { font-weight: 700; text-decoration: none; border: 2px solid var(--ink); border-radius: 99px; padding: 3px 12px; background: var(--foam); }
+  .tags a:hover { background: var(--ink); color: #fff; }
+  .share { display: flex; gap: 10px; }
+  .share > * {
+    font: 800 15px var(--font-body); color: var(--ink); text-decoration: none; cursor: pointer; background: #fff;
+    border: var(--line); border-radius: 99px; padding: 6px 18px; box-shadow: 3px 3px 0 var(--ink);
+  }
+  .share > *:hover { background: var(--ink); color: #fff; }
+  h2 { margin: 0 0 18px; font: 800 24px/1.3 var(--font-body); }
+  .work-list { display: grid; gap: 14px; }
+  .work {
+    display: flex; align-items: center; gap: 16px; padding: 14px 18px; text-decoration: none; background: var(--accent);
+    border: var(--line); border-radius: 24px; box-shadow: 4px 4px 0 var(--ink);
+  }
+  .work img { width: 64px; border: 3px solid var(--ink); border-radius: 26%; }
+  .work span { display: grid; background: #fff; border-radius: 14px; padding: 6px 12px; }
+  .work small { opacity: .75; font-weight: 600; }
+  .related { max-width: 1240px; margin: 80px auto 0; padding: 0 20px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .back { text-align: center; margin: 56px 0 0; }
+  .back a { font-weight: 800; text-decoration: none; border: var(--line); border-radius: 99px; padding: 8px 24px; box-shadow: 4px 4px 0 var(--ink); }
+  @media (min-width: 1100px) {
+    .layout { grid-template-columns: minmax(0, 720px) 220px; gap: 48px; }
+    /* 옆 목차 자리만큼 넓혀 본문 왼쪽 선에 맞춘다 */
+    .foot { max-width: 988px; grid-template-columns: minmax(0, 720px); }
+  }
+  @media (max-width: 860px) {
+    .head { padding: 110px 20px 100px; }
+    .cover { margin-top: -30px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>

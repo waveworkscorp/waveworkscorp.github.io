@@ -4,6 +4,8 @@ import { STRINGS, localePath } from '../data/i18n';
 import SiteFooter from './SiteFooter.astro';
 import StoreIcon from './StoreIcon.astro';
 import InfoCard from './InfoCard.astro';
+import PostCard from './PostCard.astro';
+import { BLOG_STRINGS, getPosts } from '../data/blog';
 
 interface Props { lang: Lang; work: Work }
 const { lang, work: w } = Astro.props;
@@ -25,6 +27,7 @@ const soonStores = stores.filter((s) => !s.href);
 const [checkBox, ...moreInfo] = w.info ?? [];
 
 const listHref = localePath(lang, '/works/');
+const posts = (await getPosts(lang)).filter((p) => p.data.works.includes(w.slug)).slice(0, 2);
 
 const docs = [
   { label: t.privacy, href: w.privacy[lang], img: '/img/island-about.png' },
@@ -101,6 +104,13 @@ const docs = [
             );
           })}
         </div>
+      </section>
+    )}
+
+    {posts.length > 0 && (
+      <section class="posts" aria-labelledby="posts-head">
+        <h2 id="posts-head">{BLOG_STRINGS[lang].workPosts}</h2>
+        <div class="post-grid">{posts.map((p) => <PostCard lang={lang} entry={p} />)}</div>
       </section>
     )}
 
@@ -219,6 +229,8 @@ const docs = [
   .strip figcaption { margin-top: 26px; font-weight: 700; font-size: 16px; line-height: 1.45; text-align: center; }
   h2 { margin: 0 0 30px; font: 400 clamp(34px, 4.4vw, 60px)/1.1 var(--font-ko-display); }
   :global(html[lang='en']) h2 { font-family: var(--font-en-display); font-weight: 700; }
+  .posts { margin: 0 0 70px; }
+  .post-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
   .docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; }
   .doc {
     display: grid; justify-items: center; gap: 4px; text-decoration: none; text-align: center;

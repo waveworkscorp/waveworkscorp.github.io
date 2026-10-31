@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PostView from '../../components/PostView.astro';
+import { getPosts, hasTranslation, postName, type BlogEntry } from '../../data/blog';
+
+export const getStaticPaths = (async () => (await getPosts('ko')).map((entry) => ({ params: { id: postName(entry) }, props: { entry } }))) satisfies GetStaticPaths;
+
+interface Props { entry: BlogEntry }
+const { entry } = Astro.props;
+const name = postName(entry);
+const og = entry.data.cover ? (await getImage({ src: entry.data.cover, width: 1200, format: 'jpg' })).src : undefined;
+// 영어판이 없는 글에서 EN을 누르면 없는 주소 대신 영어 블로그 목록으로 보낸다
+const altPath = (await hasTranslation(name, 'en')) ? undefined : { en: '/blog/' };
+---
+<Base lang="ko" title={`${entry.data.title} | WaveWorks`} description={entry.data.excerpt} path={`/blog/${name}/`} ogImage={og} altPath={altPath}>
+  <PostView lang="ko" entry={entry} />
+</Base>
