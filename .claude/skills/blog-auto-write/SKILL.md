@@ -90,11 +90,27 @@ draft: false
 - 헤더 "맺음말", "결론", "마치며"
 - 이모지, 감탄 연발, "X가 아니라 Y" 대비
 
-다 쓴 뒤 `writing-pipeline` 스킬 표에 따라 한국어 윤문 스킬 하나를 돌린다(블로그는 `humanizer-ko`). 수치·날짜·이름은 윤문 중 바꾸지 않는다.
+다 쓴 뒤 `writing-pipeline` 스킬 표(전역 문체 규칙)대로 블로그 문체로 다듬는다. 윤문 스킬은 글 하나에 하나만 쓴다.
+
+| 카테고리 | 윤문 | 검사 |
+|---|---|---|
+| making, culture (개발 후기·회사 이야기) | `humanizer-ko` | `grammar-checker` → `style-guide` |
+| news (출시 공지·업데이트처럼 수치·기능을 약속하는 글) | `humanize-korean` 정밀(heavy) 모드. 입력을 스크래치패드에 복사해 그 폴더에서 돌린다(저장소에 `_workspace/`를 만들지 않음) | `grammar-checker` → `style-guide` |
+
+- 검사 스킬은 고쳐 쓰지 않는다. 걸린 곳만 고친다.
+- 윤문 뒤 수치·날짜·고유명·한정어("이상", "최대", "할 수 있습니다")를 원문과 대조한다. 강도가 바뀐 문장은 원문 쪽으로 되돌린다. news에서 서법 경고(P5)가 난 문장은 보고에 적어 사용자가 정하게 한다.
+- 합니다체는 윤문 뒤에도 유지한다. 블로그는 음슴체를 쓰지 않는다.
 
 ## 7. 영어판
 
-- 한국어판을 옮긴 뒤 `humanizer-en` 규칙으로 다듬는다. 직역 말투를 남기지 않는다.
+- 한국어판을 옮긴 뒤 `slopbeth`로 다듬는다(writing-pipeline 표, humanizer-en은 쓰지 않음). 직역 말투를 남기지 않는다.
+- 이어서 textlint write-good으로 수동태·군말·중복 단어를 검사한다. 의도한 약속 문구는 그대로 둔다.
+
+```bash
+npx -y -p textlint -p textlint-rule-write-good textlint --no-textlintrc --rule write-good src/content/blog/en/<이름>.md
+```
+
+- 윤문 뒤 숫자·이름이 한국어판과 같은지 대조한다.
 - 작품 이름은 site.json의 `name.en`을 쓴다.
 - 영어판만 있는 글은 빌드가 막으므로 한국어판을 먼저 둔다.
 
