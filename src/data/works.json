@@ -327,44 +327,6 @@
             }
           }
         ]
-      },
-      {
-        "title": {
-          "ko": "기기를 바꾸기 전 확인",
-          "en": "Before switching devices"
-        },
-        "rows": [
-          {
-            "label": {
-              "ko": "백업되는 항목",
-              "en": "What is backed up"
-            },
-            "value": {
-              "ko": "진행, 코인, 아이템, 해금, 구매 기록, 통계, 업적",
-              "en": "Progress, coins, items, unlocks, purchases, stats and achievements"
-            }
-          },
-          {
-            "label": {
-              "ko": "복원 방법",
-              "en": "How to restore"
-            },
-            "value": {
-              "ko": "iPhone은 Game Center, Android는 Google Play 게임에 로그인한 채 앱을 열면 이어집니다. 설정의 [지금 백업]으로 바로 올릴 수도 있습니다",
-              "en": "Sign in to Game Center on iPhone or Google Play Games on Android and open the game. You can also tap Back up now in Settings"
-            }
-          },
-          {
-            "label": {
-              "ko": "iOS와 Android 간 이전",
-              "en": "Between iOS and Android"
-            },
-            "value": {
-              "ko": "지원하지 않습니다. 같은 OS 기기끼리만 이어집니다",
-              "en": "Not supported. Progress moves only between devices on the same OS"
-            }
-          }
-        ]
       }
     ],
     "shots": 3,
