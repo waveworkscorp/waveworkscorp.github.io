@@ -33,6 +33,7 @@ const docs = [
   { label: t.privacy, href: w.privacy[lang], img: '/img/island-about.png' },
   ...(w.terms ? [{ label: t.terms, href: w.terms[lang], img: '/img/island-works.png' }] : []),
   ...(w.deletion ? [{ label: t.deletion, href: w.deletion[lang], img: '/img/island-contact.png' }] : []),
+  ...(w['health-data'] ? [{ label: t['health-data'], href: w['health-data'][lang], img: '/img/island-about.png' }] : []),
   { label: t.support, href: `${localePath(lang, '/contact/')}?app=${w.slug}`, img: '/img/mascot-contact.png' },
 ];
 ---

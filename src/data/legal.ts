@@ -28,7 +28,7 @@ function toRoute(file: string): string {
   return [...(lang === 'en' ? ['en'] : []), ...rest].join('/');
 }
 
-const DOC_KEYS = ['privacy', 'terms', 'deletion'] as const;
+const DOC_KEYS = ['privacy', 'terms', 'deletion', 'health-data'] as const;
 const OTHER: Record<Lang, Lang> = { ko: 'en', en: 'ko' };
 
 function toUrl(route: string): string {

@@ -27,6 +27,8 @@ export interface Work {
   privacy: Text;
   terms?: Text;
   deletion?: Text;
+  // 미국 주 건강 데이터 법용 영문 방침. 영어 한 장이라 ko 주소도 영문 문서를 가리킨다
+  'health-data'?: Text;
   stores: { play?: string; appStore?: string };
 }
 

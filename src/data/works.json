@@ -884,6 +884,10 @@
       "ko": "/babylog/deletion/",
       "en": "/en/babylog/deletion/"
     },
+    "health-data": {
+      "ko": "/en/babylog/health-data/",
+      "en": "/en/babylog/health-data/"
+    },
     "stores": {}
   }
 ]
