@@ -1,5 +1,5 @@
 ---
-title: "We now ask before baby records leave the phone"
+title: "Building the Oh My Baby consent step: when and what to ask"
 date: "2026-10-31"
 category: making
 excerpt: "Oh My Baby, our baby log app in pre-release testing, has a new consent step. It appears only when records are about to leave the phone."
@@ -11,7 +11,7 @@ works: ["babylog"]
 
 Oh My Baby is a baby log you can use with one hand during a night feed. We are testing it ahead of launch. On October 30 we added one new screen: a consent step. We started the design doc at 5:21 p.m. and had it live on the server by 8:44 p.m.
 
-It's a small screen, but every path a baby's records take off the phone now runs through it. Here's how it got its current shape.
+It's a small screen, but every path a baby's records take off the phone now runs through it.
 
 ## Records stay on the phone by default
 
@@ -46,9 +46,9 @@ We drew three layouts, compared them, and went with one card per item. Nothing i
 
 Only the person who creates the family space gets the parent question. Someone joining by invite might be a grandparent or a babysitter, and asking them to tap "I'm the parent" would push them into a false statement. We don't ask them.
 
-## Saying no costs nothing
+## What happens when you tap Not now
 
-One rule held through the whole design: declining must not take away anything you already use on your phone. Tap [Not now] and sharing or backup doesn't start; your records stay where they are. The consent step also never cuts into one-tap logging.
+Declining takes away nothing you already use on your phone. That rule never changed during the design. Tap [Not now] and sharing or backup doesn't start; your records stay where they are. The consent step also never cuts into one-tap logging.
 
 Taking consent back is as easy as giving it. The existing [Stop sharing] and [Unlink and delete] buttons do that job, and they clear the consent record on the phone too.
 
