@@ -9,13 +9,13 @@ coverAlt: "A small robot pinning cards taken from a yellow box onto a large boar
 works: []
 ---
 
-WaveWorks makes several mobile games and apps at the same time. We write the code with Claude Code, an AI coding tool that forgets the previous conversation each time we open a new one (a session). So we have to leave documents that say where we stopped and what comes next, and once we reached five apps, that document-based approach stopped holding up.
+WaveWorks makes several mobile games and apps at the same time. We develop with Claude Code, an AI coding tool, and it has a limitation: when we open a new conversation (a session), it does not remember the previous one. Managing context well is essential. We have to leave documents that say where we stopped and what comes next, and once we reached five apps, that document-based approach stopped holding up.
 
-On November 5 and 6 we replaced it. We moved the Markdown roadmap we kept by hand into a JSON file called `tasks.json`, and built a dashboard that reads this file and shows all five apps' progress.
+So we replaced it. We moved the Markdown roadmap into a JSON file called `tasks.json`, and built a dashboard that reads this file and shows all five apps' progress.
 
 ![Dashboard home. Each project card shows overall progress, nine stage chips, and one task in progress](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-home.jpg)
 
-Each project gets one card with its overall progress, the current stage out of nine, and a task in progress. This is the screen as of the afternoon of November 6.
+Each project shows its progress and current work stage, so you can see how every project is doing at a glance.
 
 ## How we tracked work before
 
@@ -47,7 +47,7 @@ The goal was a single screen per project showing the current goal, progress, wha
 
 ## Moving to a JSON file
 
-On November 5 we compared three options and chose A.
+We compared three options and chose A.
 
 | Option | Original | Why not |
 |---|---|---|
@@ -120,7 +120,7 @@ The weakness of a checkbox was that it never said what we had looked at. Now a "
 | `doc` (one section of a document) | Extract the section again and compare. A section that disappears also goes stale |
 | `env` (an environment value) | Compare the string with the value in `project.json` |
 
-Here is a real record. On the night of November 5 we tapped Oh My Baby's sleep-notification button on a physical phone, and recorded the two code files that build the notification as inputs.
+Here is a real record. We tapped Oh My Baby's sleep-notification button on a physical phone, and recorded the two code files that build the notification as inputs.
 
 ```json
 {
@@ -137,7 +137,7 @@ Here is a real record. On the night of November 5 we tapped Oh My Baby's sleep-n
 }
 ```
 
-The `method` field says the check was done by operating a physical S23 phone over adb. The `note` says that between 22:17 and 22:26 on November 5, build 1.0(7) opened the app from the [End sleep] notification button, ended the sleep, showed the edit sheet, and cleared the notification.
+The `method` field says the check was done by operating a physical S23 phone over adb. The `note` says that during the check, build 1.0(7) opened the app from the [End sleep] notification button, ended the sleep, showed the edit sheet, and cleared the notification.
 
 If either file changes, this check goes stale. Only the server code computes hashes, and it discards any hash a request sends. A `passed` record that declares no inputs cannot be judged, so it stays `unknown`.
 
@@ -175,7 +175,7 @@ We also caused an accident while checking the screens. While clicking around in 
 
 ## Results and what is left
 
-Here are the `work check` results for the five apps as of the afternoon of November 6.
+Here are the `work check` results for the five apps.
 
 | App | Tasks | Errors | Warnings |
 |---|---|---|---|
@@ -188,7 +188,7 @@ Here are the `work check` results for the five apps as of the afternoon of Novem
 
 Most warnings mean "marked done, but the verification record is missing or stale." For Oh My Baby, 14 of the 15 are `done-without-valid-verification`. We linked every remaining warning to a per-app check task, and most are items to check by hand on a physical phone.
 
-The ROADMAP.md we used to write by hand (39,731 bytes) is now a generated document (230 lines, 29,097 bytes). According to the November 6 handoff notes, the automated tests number 615 for the dashboard and 604 for the `work` tool.
+The old ROADMAP.md (39,731 bytes) is now a generated document (230 lines, 29,097 bytes). According to the handoff notes, the automated tests number 615 for the dashboard and 604 for the `work` tool.
 
 Some things are still not done.
 
