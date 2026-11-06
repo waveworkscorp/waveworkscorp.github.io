@@ -1,5 +1,5 @@
 ---
-title: "Is That Checkmark Still True? Rebuilding Task Tracking for Five Apps"
+title: "How a One-Person Studio Tracks Five Apps at Once"
 date: "2026-11-06"
 category: making
 excerpt: "Five projects on Claude Code, five growing handoff notes. We moved task state to JSON, tied checks to file hashes, and built one dashboard."
@@ -11,7 +11,7 @@ works: []
 
 ## Overview
 
-WaveWorks builds mobile games and apps, and right now we are developing five projects at the same time with Claude Code, an AI coding tool. Claude Code does not remember earlier conversations when a new one (a session) starts, so what has been done and what comes next has to be handed over in documents. Those documents grew with every session, reading them cost more each time, and a checkmark that said "done" no longer told us whether it was still true. So we moved our markdown roadmaps into JSON files, started recording completion and verification separately, and now follow all five projects on the single dashboard screen below. We have not measured the efficiency gain yet.
+WaveWorks is a one-person company that builds mobile games and apps, and right now we are developing five projects at the same time with Claude Code, an AI coding tool. Claude Code does not remember earlier conversations when a new one (a session) starts, so what has been done and what comes next has to be handed over in documents. Those documents grew with every session, reading them cost more each time, and a checkmark that said "done" no longer told us whether it was still true. So we moved our markdown roadmaps into JSON files, started recording completion and verification separately, and now follow all five projects on the single dashboard screen below. We have not measured the efficiency gain yet.
 
 ![Dashboard home. Each project card shows a progress percentage, the current stage, and one line for the task in progress](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-home.jpg)
 
