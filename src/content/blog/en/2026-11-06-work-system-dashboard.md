@@ -1,5 +1,5 @@
 ---
-title: "Is a [x] Really Done? Rebuilding Work Tracking for Five Apps"
+title: "Is a Checkmark Really Done? Rebuilding Work Tracking for Five Apps"
 date: "2026-11-06"
 category: making
 excerpt: "We replaced a Markdown roadmap with tasks.json and a dashboard. What was wrong, what we changed, and the results across five apps."
@@ -33,13 +33,13 @@ Take Oh My Baby, our baby-log app. It had two work documents.
 
 The table is in Korean, as we wrote it. Its columns are number, task, owner, prerequisite, done criteria, and evidence. R1.1 is legal research for the app, and R1.3 is an application for permission to use the WHO growth charts.
 
-The number `R1.1` only shows order. Status is `[ ]` open, `[~]` partly done, `[x]` done. When every row of a stage reached `[x]`, we folded the stage into a one-line summary to keep the file under 400 lines. The evidence for finished work (console values, check dates) lived in other documents such as `plan/release-checklist.md`. The other apps were even less uniform. Three used a table-style progress file at `plan/progress.md`, and Bus Loop Escape used yet another format that someone had to copy over by hand.
+The number `R1.1` only shows order. Status is a checkbox: open, partly done, or done. When every row of a stage was done, we folded the stage into a one-line summary to keep the file under 400 lines. The evidence for finished work (console values, check dates) lived in other documents such as `plan/release-checklist.md`. The other apps were even less uniform. Three used a table-style progress file at `plan/progress.md`, and Bus Loop Escape used yet another format that someone had to copy over by hand.
 
 ## What was wrong
 
 - The handoff document kept growing. We set a 12KB cap, but two apps' STATE.md files swelled to about 50KB, and every session has to read the whole thing.
 - One task had two numbers. The roadmap called it `R1.3`; commit messages and records called it `GAP-01`. A person linked the two in the evidence column.
-- A `[x]` carried no evidence. A checkbox records only that something is done. What we looked at is scattered across other documents, and there is no way to tell whether the code changed after the check.
+- A done mark carried no evidence. A checkbox records only that something is done. What we looked at is scattered across other documents, and there is no way to tell whether the code changed after the check.
 - Prerequisites were sentences. In the table above, R10.1 lists `R1.3 WHO 허가` as its prerequisite. A person can read that; a program cannot work out which tasks are blocked.
 - Every format needed its own reader before we could draw a screen. Only Oh My Baby's roadmap was converted one way into JSON for the dashboard, and that copy was not the original. Reading the table-style files too would have taken four parsers (programs that turn documents into data), and because numbers were assigned by order, they shifted whenever someone edited the document.
 
