@@ -15,7 +15,7 @@ WaveWorks is a one-person company that makes mobile games and apps, and right no
 
 ![Dashboard home. Each project card shows a progress percentage, the current stage, and one line for the task in progress](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-home.jpg)
 
-On this home screen every card shows the overall progress, the current stage, and the task in progress, so we can see how far each of the five projects has come without opening the repositories one by one.
+With the dashboard we built ourselves, we can see each project's overall progress, development stage, and task in progress at a glance.
 
 ## When roadmaps and handoff notes outgrew us
 
