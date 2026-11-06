@@ -9,9 +9,9 @@ coverAlt: "A baby-face notebook and a checklist card beside a locked record trav
 works: ["babylog"]
 ---
 
-Oh My Baby, an app we make at WaveWorks, is a baby log you can use with one hand during a night feed. We are testing it ahead of launch. On October 30 we added one new screen: a consent step. We started the design doc at 5:21 p.m. and had it live on the server by 8:44 p.m.
+Oh My Baby, an app we make at WaveWorks, is a baby log you can use with one hand during a night feed. We are testing it ahead of launch. On October 30 we added one new screen: a consent step.
 
-It's a small screen, but every path a baby's records take off the phone now runs through it.
+Before a baby's records leave the phone for sharing or backup, this screen asks for consent.
 
 ## Records stay on the phone by default
 
@@ -24,7 +24,7 @@ Yet at those two moments the app asked almost nothing. A pre-launch review turne
 - Nothing recorded who agreed, or when.
 - Deleted records could stay on the server for up to a year, because cleanup only ran when some device opened the app.
 
-Parents guard their baby's information more closely than anything else. We think that is where an app earns trust or loses it.
+So we decided to ask for separate consent, item by item, before health-related records go to the server.
 
 ## First, when to ask
 
@@ -36,7 +36,7 @@ We picked the third. One shared consent step appears only when records are about
 
 ![The consent step. It splits what goes to the server from what stays on the device, followed by consent cards and Agree and continue and Not now buttons](../../../assets/blog/2026-10-31-oh-my-baby-consent-step/consent-en.jpg)
 
-The top of the screen splits "Saved on our server" from "Stays on this phone." Baby info and records go to the server; photos and settings stay on the phone. The card also says where we store the data (Google Cloud, Seoul) and when it gets deleted. Read first, then decide. Below that, each consent gets its own card:
+The top of the screen splits "Saved on our server" from "Stays on this phone." Baby info and records go to the server; photos and settings stay on the phone. The card also says where we store the data (Google Cloud, Seoul) and when it gets deleted, so people can read that before they agree. Below that, each consent gets its own card:
 
 - Storing health-related records
 - Letting other caregivers view and edit records
@@ -48,13 +48,13 @@ Only the person who creates the family space gets the parent question. Someone j
 
 ## What happens when you tap Not now
 
-Declining takes away nothing you already use on your phone. That rule never changed during the design. Tap [Not now] and sharing or backup doesn't start; your records stay where they are. The consent step also never cuts into one-tap logging.
+Declining takes away nothing you already use on your phone. Tap [Not now] and sharing or backup doesn't start; your records stay where they are. The consent step also never cuts into one-tap logging.
 
-Taking consent back is as easy as giving it. The existing [Stop sharing] and [Unlink and delete] buttons do that job, and they clear the consent record on the phone too.
+To withdraw consent, use the existing [Stop sharing] or [Unlink and delete] buttons. They clear the consent record on the phone too.
 
 ## Every consent is recorded
 
-We keep a record on both the phone and the server of which item someone agreed to, which wording they saw, and when. Only that person can write their server record, and the time comes from the server's clock. Nobody can delete a consent or roll it back to older wording.
+We keep a record on both the phone and the server of which item someone agreed to, which wording they saw, and when. Only that person can write their server record, and the time comes from the server's clock. A consent record can't be silently deleted or rolled back to older wording.
 
 Each item's wording has a version number. If the wording changes, the consent step shows again the next time the app opens, and you can still choose [Turn off sharing and backup] there.
 
@@ -68,7 +68,7 @@ After building it all, we reviewed the whole flow again and found three problems
 2. The [Turn off sharing and backup] button shown at launch logged people out instead of taking them to the stop-sharing screen.
 3. The notice text didn't match what the app does: the items listed, the retention period, and the button names.
 
-We fixed all three and matched the notice to the app's real behavior in all five supported languages. The retention line now says records are deleted when every caregiver stops sharing or no device is used for 1 year. After the fixes, all 2,625 app tests and 109 server tests passed.
+We fixed all three and matched the notice to the app's real behavior in all five supported languages. The retention line now carries the condition "when every caregiver stops sharing or no device is used for 1 year." After the fixes, all 2,625 app tests and 109 server tests passed.
 
 ## What's left
 

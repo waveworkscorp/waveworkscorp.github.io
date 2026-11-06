@@ -1,23 +1,28 @@
 ---
-title: "From a Markdown Roadmap to a JSON Source of Truth and a Dashboard"
+title: "Putting Five Apps' Work Status on One Screen"
 date: "2026-11-06"
 category: making
-excerpt: "How we replaced a 40KB Markdown roadmap with a tasks.json source of truth and a dashboard, with the numbers from migrating five apps."
-tags: ["task management", "dashboard", "dev log", "retrospective"]
+excerpt: "We replaced a Markdown roadmap with tasks.json and a dashboard. What was wrong, what we changed, and the results across five apps."
+tags: ["Work tracking", "Dashboard", "Dev story", "Retrospective"]
 cover: ../../../assets/blog/2026-11-06-work-system-dashboard/cover.jpg
-coverAlt: "A small robot pins cards from a yellow file box onto a large board of colored blocks"
+coverAlt: "A small robot pinning cards taken from a yellow box onto a large board covered in colorful blocks"
 works: []
 ---
 
-WaveWorks is a company that makes mobile games and apps. We are building five at the same time. Bus Loop Escape, a puzzle about pulling buses out of a jammed parking lot, is out on Google Play. The rest are Oh My Baby, a baby log you can use with one hand; Screw Punch 3D, where you spin a 3D model and pull its screws; Yokai Hunters, a roguelike defense game played with five-element cards; and CheepDoku, a logic puzzle where you place one chick per row. We write the code together with Claude Code, an AI coding tool.
+WaveWorks makes several mobile games and apps at the same time. We write the code with Claude Code, an AI coding tool that forgets the previous conversation each time we open a new one (a session). So we have to leave documents that say where we stopped and what comes next, and once we reached five apps, that document-based approach stopped holding up.
 
-Each app now has between 46 and 176 registered tasks, and the way we wrote down "where are we and what comes next" stopped scaling. On November 5 and 6 we replaced it. The roadmap we used to keep by hand in Markdown moved into a JSON file, which is now the authoritative original for task state. We call it the source of truth in this post. We also built a dashboard that reads that file.
+On November 5 and 6 we replaced it. We moved the Markdown roadmap we kept by hand into a JSON file called `tasks.json`, and built a dashboard that reads this file and shows all five apps' progress.
 
-## The old system
+![Dashboard home. Each project card shows overall progress, nine stage chips, and one task in progress](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-home.jpg)
 
-Two documents did most of the work. `docs/STATE.md` in each app folder is the handoff document the next working session reads, and `docs/ROADMAP.md` is the list of what remains. An AI session does not remember the previous conversation. So at the end of a session we write the current state and the next steps into STATE.md, and the next session starts by reading it.
+Each project gets one card with its overall progress, the current stage out of nine, and a task in progress. This is the screen as of the afternoon of November 6.
 
-Take Oh My Baby. Just before the switch, STATE.md was 50 lines and 12,383 bytes, and ROADMAP.md was 224 lines and 39,731 bytes. The roadmap had one table per stage, and each row was one task.
+## How we tracked work before
+
+Take Oh My Baby, our baby-log app. It had two work documents.
+
+- `docs/STATE.md` is the handoff document the next session reads first. It holds the current state and the next steps. Just before the switch it was 50 lines and 12,383 bytes.
+- `docs/ROADMAP.md` is the list of remaining work: 224 lines and 39,731 bytes. Each stage has a table, and each row is one task.
 
 ```markdown
 | 번호 | 할 일 | 담당 | 선행 | 완료 기준 | 근거 |
@@ -26,49 +31,43 @@ Take Oh My Baby. Just before the switch, STATE.md was 50 lines and 12,383 bytes,
 | R10.1 | [ ] 성장 백분위 | Claude | R1.3 WHO 허가 | 기획서 관문 충족 … |
 ```
 
-(The columns are number, task, owner, prerequisite, done criteria and evidence. R1.1 is a legal-source review, R1.3 a submission to the WHO and Korea's drug regulator, and R10.1 a growth-percentile feature that waits for R1.3.)
+The table is in Korean, as we wrote it. Its columns are number, task, owner, prerequisite, done criteria, and evidence. R1.1 is legal research for the app, and R1.3 is an application for permission to use the WHO growth charts.
 
-The rules were written at the top of the file. The number `R<stage>.<sequence>` only gives order, and the status is `[ ]` open, `[~]` partial or `[x]` done. When every row of a stage is `[x]`, that stage collapses into a one-line summary, and the document stays under 400 lines. Evidence for finished work (console values, dates checked) lived in other files such as `plan/release-checklist.md`.
+The number `R1.1` only shows order. Status is `[ ]` open, `[~]` partly done, `[x]` done. When every row of a stage reached `[x]`, we folded the stage into a one-line summary to keep the file under 400 lines. The evidence for finished work (console values, check dates) lived in other documents such as `plan/release-checklist.md`. The other apps were even less uniform. Three used a table-style progress file at `plan/progress.md`, and Bus Loop Escape used yet another format that someone had to copy over by hand.
 
-The other apps were messier. Three kept a table-style progress sheet in `plan/progress.md`, and Bus Loop Escape used yet another format that we later moved by hand.
+## What was wrong
 
-## Where it broke
+- **The handoff document kept growing.** We set a 12KB cap, but two apps' STATE.md files swelled to about 50KB, and every session has to read the whole thing.
+- **One task had two numbers.** The roadmap called it `R1.3`; commit messages and records called it `GAP-01`. A person linked the two in the evidence column.
+- **A `[x]` carried no evidence.** A checkbox records only that something is done. What we looked at is scattered across other documents, and there is no way to tell whether the code changed after the check.
+- **Prerequisites were sentences.** In the table above, R10.1 lists `R1.3 WHO 허가` as its prerequisite. A person can read that; a program cannot work out which tasks are blocked.
+- **Every format needed its own reader before we could draw a screen.** Only Oh My Baby's roadmap was converted one way into JSON for the dashboard, and that copy was not the original. Reading the table-style files too would have taken four parsers (programs that turn documents into data), and because numbers were assigned by order, they shifted whenever someone edited the document.
 
-- **The handoff document kept growing.** We set a 12KB limit for handoff documents, and two apps' STATE.md files grew to around 50KB. Every session has to read the whole thing first.
-- **One task had two numbers.** The roadmap number `R1.3` only gives order, while commit messages and record files use task IDs such as `GAP-01`. A person linked the two in the evidence column.
-- **`[x]` carried no evidence.** A checkbox records that something finished. What was checked sits in prose in the evidence column and in other documents, and the checkbox cannot tell you whether the code changed after the check.
-- **Prerequisites were sentences.** Row R10.1 above has `R1.3 WHO 허가` in its prerequisite column. A person can read that; a program cannot compute "this is blocked".
-- **Every format needed its own parser.** Only Oh My Baby had a one-way conversion of the roadmap to JSON for the dashboard, and that copy was not authoritative. Reading the table-style sheets too would have taken four parsers (programs that read a document and turn it into data), and IDs numbered by position shift every time a document is edited.
+The goal was a single screen per project showing the current goal, progress, what is blocked, and what is waiting on a decision.
 
-The goal was to see each project's current goal, progress, blockers and pending decisions on one screen.
+## Moving to a JSON file
 
-## Where should the source live?
+On November 5 we compared three options and chose A.
 
-On November 5 we chose option A of three.
-
-| Option | Source of truth | Why not |
+| Option | Original | Why not |
 |---|---|---|
-| A (chosen) | `tasks.json`; the handoff document holds prose only, the roadmap is a generated view | — |
+| A (chosen) | `tasks.json`. Handoff documents hold prose only; the roadmap is a read-only document generated from the file | — |
 | B | Generate both the handoff document and the roadmap | We would have to rewrite the handoff rules and the wiki update procedure |
-| C | Keep Markdown as the source and derive JSON with parsers | Needs 4 parsers, IDs numbered by position shift whenever a document is edited, and writing means converting back to Markdown |
+| C | Keep Markdown as the original and derive JSON with parsers | Needs four parsers. Order-based numbers shift with every edit. Writing means converting back to Markdown |
 
-`tasks.json` is the source of truth, and the human-readable `ROADMAP.md` is a read-only document that a program generates from it (a generated view). Prose lives in STATE.md and design documents; numbers and status live in JSON. A generated file never overwrites prose a person wrote.
+`ROADMAP.md` is now a document the program generates from `tasks.json`. Prose stays in STATE.md and the design documents, numbers and status live in the JSON, and a generated file never overwrites what a person wrote.
 
-### The task hierarchy
+We split the work into five levels, from stage down to checklist item.
 
-There are five levels. We first called them depth 1 through depth 5, then renamed them to match common usage such as Jira's Epic, Task and Subtask. The field names in code (`stage`, `parent`) stayed as they were.
+| Level | What it holds |
+|---|---|
+| Stage | `S1` to `S9`. Every app uses the same nine stages, from setting goals through release and operation to review |
+| Epic | A large chunk of work inside one stage. Templates for each app type lay them out |
+| Task | One piece of work that is built and checked. Progress is counted from this level |
+| Subtask | Detail that appears while the work is under way |
+| Checklist item | The smallest thing to check |
 
-| Level | What it is | Progress |
-|---|---|---|
-| Stage | `S1`–`S9`; code, order and meaning are fixed for every app type | sum of children |
-| Epic | A large chunk of work inside a stage, laid down by a template | sum of children |
-| Task | One piece of work that gets built and verified; the weighting unit | weighting unit |
-| Subtask | Detail that appears during execution | no effect |
-| Checklist item | The lowest-level check | no effect |
-
-The nine stages are goal and direction, research and feasibility, product planning, design and execution plan, build, integration testing and launch prep, release, operations, marketing and growth, and retrospective. They say where a piece of work sits, and we do not treat them as gates to pass in order. What differs between app types is expressed only through epic templates, display names and a "not applicable" (`na`) marker. Work that repeats, such as a 1.1 update or a Unity port, is tied to a release (a release unit such as 1.0 or 1.1). Operations that never finish after launch collect in an always-on epic under S8 and we leave them out of the progress figure.
-
-R1.3 above became this task after conversion. The old number stays in `legacy`.
+R1.3 above became the task below after conversion. The old number stays in `legacy`.
 
 ```json
 {
@@ -87,26 +86,13 @@ R1.3 above became this task after conversion. The old number stays in `legacy`.
 }
 ```
 
-Prerequisites go in `dependsOn` as task IDs (59 of Oh My Baby's 176 tasks use it). The sentence "R1.3 WHO 허가" that row R10.1 above carries in its prerequisite column is now an ID, so `work check` blocks cycles with `dependency-cycle`. Waits that a person has to resolve, such as an outside reply, go in the `block` field (for example `kind: external`), and those tasks collect under `blocked` in `brief`.
+Prerequisites go in `dependsOn` as task IDs; 59 of Oh My Baby's 176 tasks use it. The checker rejects cycles, and waits that a person has to resolve, such as an external reply, go in a `block` field.
 
-### What we store and what we compute
+Completion and verification are handled separately. A task's `status: done` is a fact about the past, so we store it. Whether its verification is still valid, and the progress figure, are computed each time the file is read. That way an outdated check never erases the fact that the work was finished.
 
-We split completion and verification into separate layers.
+## When several sessions write at once
 
-| Layer | Value | Stored |
-|---|---|---|
-| Task completion | `status: done`; a past fact, kept even if verification goes stale | stored |
-| Verification validity | `current` / `stale` / `unknown` / `n/a` | derived |
-| Gate | whether it passes right now | derived |
-| Progress | based on completed tasks, independent of verification state | derived |
-
-Progress uses the task (level 3) as the weighting unit and divides weight evenly among children. `cancel` and `na` leave the denominator, and so do skeleton items whose children are not yet defined (`plan: tbd`). That is why we publish progress and plan refinement (defined tasks / total) as two separate figures.
-
-A task belongs to exactly one release. If a new release reuses a result as is, it references it with `inherits`; if requirements change, a new task is linked with `supersedes`; and if verification from an earlier release has gone stale, a new verification task connects through `reverifies`. A finished release is frozen into `archive/*.json` and its sha256 is registered in `project.json`. If the file changes, the check raises `archive-modified`.
-
-## Write rules and verification fingerprints
-
-A request to change a task's status looks like this.
+One person runs several AI sessions at the same time, so two sessions sometimes edit the same file. A request to change a status carries the value it read.
 
 ```json
 {
@@ -117,24 +103,24 @@ A request to change a task's status looks like this.
 }
 ```
 
-The server takes a file lock (so only one writer goes at a time) and **rereads the latest file.** A changed `baseHash` (the hash of the file the request read) alone does not cause a rejection. For each field in `set`, it checks that `expect` equals the latest value. If every field matches, the patch applies even when other fields changed. If any field differs, the whole request is rejected and the latest value is returned.
+The server takes a lock (a device that lets only one writer in at a time) and rereads the latest file. For each field being set, it checks that `expect` equals the latest value. If all match, it applies the change even if other fields moved in the meantime. If any differ, it rejects the whole request and returns the latest values.
 
-- Accepted: A tries to write `status` from `doing` to `done` while B changes only `block` on the same task. `baseHash` differs, but `expect.status` matches the latest value, so it applies.
-- Rejected: B changes `status` to `hold` first. A's `expect.status = doing` no longer matches, so the request is rejected and the latest value `hold` comes back.
+- Applied: while A writes `status` from `doing` to `done`, B changes only the same task's `block`. `status` still matches, so the write goes through.
+- Rejected: B first changed `status` to `hold`. A's `expect.status = doing` no longer matches, so the write is refused and `hold` comes back.
 
-Writes go to a temporary file that is then renamed, and every changed field adds one line to `changes.jsonl` (165 lines for Oh My Baby). Locks expire after 60 seconds, and only three fields are writable: `status`, `block` and `verification`. There are six rejection reasons: `conflict`, `invalid-request`, `archived`, `invalid-file`, `locked` and `write-failed`. One person runs several sessions at once, so a claim on a task (4 hours) is advisory only and never blocks a write. If another session holds the claim, the result carries a warning.
+Every changed field adds one line to `changes.jsonl` (165 lines for Oh My Baby). Only three fields can be written this way: `status`, `block`, and `verification`.
 
-### Verification is compared by fingerprint
+## Finding out that a finished check has gone stale
 
-When we record "checked", we store a fingerprint of what we checked it against. A fingerprint is the file content reduced to a hash (sha256), so changing a single character changes it.
+The weakness of a checkbox was that it never said what we had looked at. Now a "checked" record also stores the hash (sha256) of the files we checked. A hash squeezes a file's content into a short value that changes if even one character changes. Later we recompute it from the same files, and if it differs, the check is marked stale (`stale`).
 
-| Input kind | Recorded value | How it is compared now |
-|---|---|---|
-| `path` | list of file paths, sha256 of the sorted `path\0file-sha256` lines | rehash the working-tree files; any deletion, addition or content change makes it stale |
-| `doc` | `path#section title`, sha256 of the section text | extract the section again and compare; if the section disappears it is stale |
-| `env` | environment name and value | string comparison with the value in `project.json` |
+| What was checked | How we compare it again |
+|---|---|
+| `path` (several files) | Recompute the files in the working tree. Deleting, adding, or editing any of them makes the check stale |
+| `doc` (one section of a document) | Extract the section again and compare. A section that disappears also goes stale |
+| `env` (an environment value) | Compare the string with the value in `project.json` |
 
-Only server code computes fingerprints, and any fingerprint a request sends is discarded. A `passed` with no declared inputs cannot be judged, so it stays `unknown`. A real record looks like this.
+Here is a real record. On the night of November 5 we tapped Oh My Baby's sleep-notification button on a physical phone, and recorded the two code files that build the notification as inputs.
 
 ```json
 {
@@ -151,45 +137,45 @@ Only server code computes fingerprints, and any fingerprint a request sends is d
 }
 ```
 
-(The method is a hands-on check on a real Android device; the note records the date, the build, and what happened when the notification buttons were tapped.) If either file changes after the build we checked on a real device, this verification becomes `stale`. Before declaring inputs we first confirm with `git diff <checked build commit> HEAD -- <path>` that the files have not changed since that build, and if they have, we declare no inputs.
+The `method` field says the check was done by operating a physical S23 phone over adb. The `note` says that between 22:17 and 22:26 on November 5, build 1.0(7) opened the app from the [End sleep] notification button, ended the sleep, showed the edit sheet, and cleared the notification.
 
-`work check` validates the files with more than 30 rules: duplicate IDs (`duplicate-id`), dependency cycles (`dependency-cycle`), a parent marked done while its children are not (`parent-done-open-children`), a done task without valid verification (`done-without-valid-verification`), and mismatched releases between parent and child (`release-mismatch`). Editing a generated view by hand returns exit code 1. We also set hooks in the working environment. Editing generated views such as `ROADMAP.md`, or frozen originals, is blocked the moment it is attempted, and editing `tasks.json` directly raises a warning.
+If either file changes, this check goes stale. Only the server code computes hashes, and it discards any hash a request sends. A `passed` record that declares no inputs cannot be judged, so it stays `unknown`.
 
-## Migration
+`work check` validates the whole file with more than 30 rules. It catches dependency cycles, a parent marked done while its children are not, and a task marked done without a valid verification, and it exits with code 1 if someone edited a generated document by hand. We also set up hooks in the working environment. They block an edit to generated documents such as `ROADMAP.md` and to frozen originals the moment it is attempted, and they warn when someone edits `tasks.json` directly.
 
-We moved **Oh My Baby** first. A conversion rule turned old items into tasks and kept the old numbers in `legacy`. We checked that all 132 old roadmap items mapped to new tasks and that the 29 items marked exempt were still there, and `work check` reported 0 errors and 47 warnings. The original was frozen as `docs/legacy/ROADMAP-2026-11-05.md` and its sha256 recorded in `project.json`.
+## Moving the old documents
 
-The **three apps with table-style progress sheets** were rehearsed on copies first. They became 83, 78 and 30 tasks, with 0 errors each. We ran both rollback paths, before and after the commit, and confirmed the original file's sha256 matched. A review comment led us to add one more hash check before the original is deleted. The real conversions produced 104, 99 and 34 tasks. Right after conversion, one app's progress read higher than reality because its remaining plan had not been entered yet, so only finished work showed. Entering that plan fixed it.
+We moved Oh My Baby first. We checked that all 132 old items map to new tasks and that the 29 items we exempted were still there. `work check` gave 0 errors and 47 warnings. We froze the original as `docs/legacy/ROADMAP-2026-11-05.md` and wrote its hash into `project.json`.
 
-We changed the **epic template** once. Version 1 had 121 template epics, only 47 of which had child tasks, so the screen filled with empty epics. No epic said where "done" begins, and when a template changed there was no way to carry existing apps over. Version 2 puts the completion condition in the existing `done` field instead of a new schema field. Empty epics are collapsed by default and excluded from progress. For existing apps, rather than converting old epics in place, we lay down new epics with new IDs, move the child tasks across, delete the old epics and record the old IDs under `legacy`. Epics that split or merge follow the same rule, running it twice gives the same result, and a future version 3 can use the same command. We moved five apps with one command and 19 `check:apps` runs passed.
+The three apps with table-style progress files went through a dry run on copies first. They became 83, 78, and 30 tasks, all with 0 errors. We ran both rollback paths (before and after commit) and confirmed that the original's hash matched, and a review comment led us to add one more hash check before deleting an original. The real conversions produced 104, 99, and 34 tasks. One app showed progress higher than reality right after the switch, because its remaining plan was not yet registered and only finished work was visible. We fixed it by registering the remaining plan.
+
+We revised the epic templates once. The first version had 121 template epics, and only 47 had child tasks, so the screen filled with empty epics. No epic said where "done" ended, and existing apps had no way to follow a template change. The second version puts the completion criteria in the existing `done` field, folds empty epics by default, and leaves them out of progress. For an existing app, the tool creates epics under new IDs, moves the child tasks, deletes the old epic, and keeps the old ID in `legacy`. Running it again gives the same result, so a third version can be rolled out with the same command. We moved all five apps with one command, and 19 `check:apps` checks passed.
 
 ## The dashboard
 
-The server is a single `node:http` file, and we kept Vite and React inside the `work/dashboard` folder so the root `package.json` stays untouched. The server watches the task files and refreshes the screen when they change. If a file fails validation it keeps the last good screen and shows a yellow banner at the top. We met that banner while capturing screenshots for this post. The server that was already running had loaded an old schema and showed only `should NOT have additional properties`. We started a new server on another port and that fixed it.
+We built the server with Node's `node:http` module, and the screens with Vite and React, kept inside the `work/dashboard` folder. The server watches the task file and refreshes the screen on change. If the file fails validation, it keeps showing the last good screen and adds a yellow banner on top. We saw that banner ourselves while capturing screenshots for this post: a server that had been running since before the change was reading the file with the old schema and showed only `should NOT have additional properties`. We started a new server on another port.
 
-![Dashboard home screen: each project card shows overall progress, nine stage chips and one line for the task in progress](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-home.jpg)
+We drew three card designs for the home screen. The first version had three bars, a full epic list, and three chips, and it did not quickly answer "how far along are we, and what are we doing now." We picked the one with a large overall percentage and a single row of stage chips.
 
-Home has one card per project. The big number is overall progress, and in the nine stage chips below it the current stage is drawn solid and any parallel stage is drawn faded. The last line is the task in progress. The screenshot is from the afternoon of November 6, so progress for unreleased works is the value at that time. Our first card carried three bars, the full epic list and three chips, and it could not answer "how far along are we and what are we doing now". We compared three mockups, picked the one with a large overall percentage and a single row of stage chips, and took only the theme and density from the other two.
+![Oh My Baby overview. Progress bars per stage, 6 tasks in progress, 2 waiting on outside input](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-overview.jpg)
 
-![Oh My Baby overview: per-stage progress bars, 6 tasks in progress and 2 external waits](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-overview.jpg)
+Opening a project shows the Overview tab with progress per stage (`S1` to `S9`), tasks in progress, tasks waiting, and changes not yet committed. Both waiting items are external. One waits for a native speaker's review; the other is research into Firebase versions, postponed until after launch.
 
-Opening a project shows the overview tab with per-stage progress (`S1`–`S9`), tasks in progress, tasks that are waiting, and changes that are not yet committed. Both waiting items are external waits. One is waiting for native-speaker reviews of the Japanese and Chinese text, and the other is a Firebase version upgrade we postponed until after launch.
+![Oh My Baby Tasks tab. A task tree that folds by stage, with completion badges](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-tasks.jpg)
 
-![Oh My Baby tasks tab: a collapsible task tree grouped by stage, with status badges](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-tasks.jpg)
+The Tasks tab expands as a tree: epics under each stage, tasks under each epic. An epic shows a status computed from its children ("Done (aggregate)"), and the "Done before migration" tasks we created during conversion are marked separately. The number on the right is how many documents are linked to that task.
 
-The tasks tab unfolds as a tree of stages, epics and tasks. Epics show a status computed from their children ("Done (rolled up)"), and the "Done before migration" tasks we created during conversion are labeled separately. The number on the right is how many documents are linked to the task.
+![Task panel. Two completion criteria, six subtasks, and linked documents](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-task-panel.jpg)
 
-![Task panel showing 2 completion conditions, 6 child tasks and linked documents](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-task-panel.jpg)
+Clicking a task opens a panel on the right with its completion criteria, subtasks, and linked design documents in one place, with buttons for the previous and next task.
 
-Selecting a task opens a panel on the right. Completion conditions, child tasks and linked design documents sit in one place, with previous and next buttons for moving between tasks.
+We opened editing only as far as needed. Status can be changed only on tasks that have no children, and epic and stage progress cannot be edited because they are computed from the children. Writes go through the same module as the command-line tool, because if the server had its own write code, the lock and conflict rules would exist twice. A document body is sent with the hash of the version it was loaded from; on save, a mismatch with the current value rejects the save and reloads the latest body. AI sessions do not use the lock, so this comparison is the only protection.
 
-We opened editing only as far as needed. Only leaf tasks (those without children) can change status, and epic and stage progress cannot be edited because it is computed from children. Writes go through the same module the CLI uses. If the server had its own write code, we would have two sets of lock and conflict rules. A document edit sends the sha256 of the version you loaded, and a save whose hash differs from the current one is rejected and the latest text is loaded again. AI sessions do not use the lock, so that hash check is the only defense. A different Origin gets 403, a `text/plain` request gets 415, and saving again with a stale hash gets 409. We also built section-level editing so documents over 256KB can still be changed.
+We also caused an accident while checking the screens. While clicking around in a browser, we pressed a status button on a real project and changed one Oh My Baby task (`BL-027`). We restored that file to its `HEAD` state and limited later checks to actions that do not touch status buttons. We also hit a problem where a hidden tab held a live connection and used up the browser's connection limit, and fixed it.
 
-We caused an accident while checking. Looking at the screen in a browser, we clicked a status button on a real project and changed one Oh My Baby task (`BL-027`). We restored that file to `HEAD`, and from then on limited checks to what does not touch the status buttons. A hidden tab holding a live connection open used up the browser's connection limit as well, and we fixed that. There is also a screen for this site (waveworkscorp.github.io). It shows our works, the blog, sync status and visit statistics, and it reads the statistics from Cloudflare Web Analytics, which uses no cookies or browser storage.
+## Results and what is left
 
-## Results
-
-These are the `work check` results for the five apps on the afternoon of November 6.
+Here are the `work check` results for the five apps as of the afternoon of November 6.
 
 | App | Tasks | Errors | Warnings |
 |---|---|---|---|
@@ -200,42 +186,42 @@ These are the `work check` results for the five apps on the afternoon of Novembe
 | Yokai Hunters | 46 | 0 | 3 |
 | Total | 510 | 0 | 85 |
 
-Most warnings mean "marked done, but the verification record is missing or stale". Of Oh My Baby's 15, 14 are `done-without-valid-verification`. We cut the 115 warnings across four apps to 108 and linked every remaining one to a per-app verification task, and the count is 85 now. Most are items that need a real device.
+Most warnings mean "marked done, but the verification record is missing or stale." For Oh My Baby, 14 of the 15 are `done-without-valid-verification`. We linked every remaining warning to a per-app check task, and most are items to check by hand on a physical phone.
 
-The hand-written ROADMAP.md (39,731 bytes) is now a generated view (230 lines, 29,097 bytes). The automated tests number 615 for the dashboard and 604 for the `work` tooling (from the handoff record of November 6).
+The ROADMAP.md we used to write by hand (39,731 bytes) is now a generated document (230 lines, 29,097 bytes). According to the November 6 handoff notes, the automated tests number 615 for the dashboard and 604 for the `work` tool.
 
-Some things are not done.
+Some things are still not done.
 
-- We have not shrunk the handoff documents. Two apps' STATE.md files are still 50,093 and 49,733 bytes.
-- We have not checked some dashboard screens by eye: focus movement between the drawer and the task panel below 900px, the bottom bar when the window height is reduced, and focus overlap when the command palette opens while closing the drawer.
-- The server must be restarted for code changes to take effect.
-- The root `npm run check` does not include `work/`, so it has to be run separately.
-- There is no way to collapse an empty epic again.
+- We have not shrunk the handoff document, which was the original problem. We now have a rule against copying the task list into STATE.md, but two apps' STATE.md files are still 50,093 and 49,733 bytes.
+- We have not looked at some dashboard screens by eye: focus movement between the menu and the task panel below 900px wide, bottom pinning when the window is made shorter, and overlapping focus when the command palette opens while closing the menu.
+- The server needs a restart to pick up code changes.
+- The root repository's `npm run check` does not include `work/`, so we run it separately.
+- There is no way to fold an empty epic again.
 
-## How we work with it now
+## How we work now
 
-A working session goes like this.
+One work session goes like this.
 
 ```bash
-# At session start: progress for the current release and the tasks in progress, ready and blocked, as JSON
+# Open a session: get progress for the current release and tasks that are doing, ready, or blocked, as JSON
 node work/bin/work.ts brief --dir docs/work
 
-# When work comes up that was not planned, register it as we start
+# If something unplanned comes up, register it when we start
 node work/bin/work.ts add --dir docs/work --parent S5 --title "알림 버튼 재확인" --status doing
 
-# When it is done, change the status, sending the value we read as expect
+# When done, change the status, sending the value we read as expect
 node work/bin/work.ts set <task ID> --dir docs/work --set '{"status":"done"}' --expect '{"status":"doing"}'
 
-# Before committing, regenerate the view and run the checks
+# Before committing, regenerate the generated documents and check
 node work/bin/work.ts render --dir docs/work
 node work/bin/work.ts check --dir docs/work
 ```
 
-`brief` returns keys such as `doing`, `ready`, `blocked`, `standing`, `verification` and `check`. For Oh My Baby, `blocked` holds the two external waits and `standing` holds the post-launch always-on epics (inquiries and errors, acquisition and metrics, return visits and improvements).
+`brief` returns keys such as `doing`, `ready`, `blocked`, `standing`, `verification`, and `check`. For Oh My Baby, `blocked` lists the two external waits, and `standing` lists the post-launch standing epics (inquiries and errors, acquisition and metrics, return visits and feature improvements).
 
-- Requests that were not planned are registered with `work add` when we start them. We close them with `work set`, and any design document or verification report made for the task is linked to it with `work doc-add`.
-- Before a commit we run `work render` and `work check` (0 errors) and commit `docs/work` and the generated view together.
-- STATE.md holds only prose for the next session. It does not copy the task list and refers to tasks by ID.
-- A new app starts with `work init`, which lays down the template epics for its type (app, game or web) across S1–S9.
+- A request that was not in the plan is registered with `work add` when we start it. When it is finished we close it with `work set`, and any design document or verification report we made for it is attached with `work doc-add`.
+- Before a commit we run `work render` and `work check` (0 errors), and commit `docs/work` and the generated documents together.
+- STATE.md holds only the prose for the next session. It points to tasks by task ID and does not copy the task list.
+- A new app starts with `work init`, which lays out template epics across S1 to S9 for its type (app, game, web).
 
-Next are the screens we have not seen. After the status-button accident, we will look at them in a way that leaves real project data alone.
+Next are the screens we have not looked at by eye. After the status-button accident, we will check them without touching real project data.

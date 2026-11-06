@@ -9,9 +9,9 @@ coverAlt: "Two small robots on a studio desk stacking blocks into game screens"
 works: ["bus-jam"]
 ---
 
-WaveWorks is a company that makes mobile games and apps. Our first game, Bus Loop Escape (a puzzle about pulling buses out of a parking lot), took 9 days and 313 commits, the units of saved work in our code history. The part we redid most was the levels, and the part we touched last was release prep. Both are why our working order looks different now.
+WaveWorks is a company that makes mobile games and apps. Our first game, Bus Loop Escape (a puzzle about pulling buses out of a parking lot), took 9 days. Along the way we recorded 313 commits, the saved units of work in our code history. The part we redid most was the levels, and the part we touched last was release prep. Those setbacks changed the order in which we develop games.
 
-We decide what to make, and two AI tools share the work: Claude Code writes the code and Codex makes the art.
+We plan the games ourselves. Claude Code, an AI coding tool, writes the code, and Codex, another AI tool, makes the art.
 
 ## Day one: the generator first
 
@@ -30,11 +30,11 @@ On October 4 we changed the rules four times.
 | 18:15 | Queue fixed at 150 slots, more buses and colors from level 11 | 11–150 |
 | 18:28 | Queue set to 152 slots | 11–300 |
 
-Each time, we rebuilt all 300 before playing a few rounds under the new rule. By the end of the day we had a batch of levels with different numbers, and we still didn't know whether they were fun.
+Each time, we rebuilt levels before playing a few rounds under the new rule. By the end of the day we had a batch of levels with different numbers, and we still didn't know whether they were fun.
 
 ## Bot test: 294 of 300
 
-Two days later, at midnight on October 6, we measured the levels for the first time. A simple bot that moves whatever bus is free cleared 294 of 300. The levels left a player almost nothing to think about.
+Two days later, at midnight on October 6, we measured the levels for the first time. A simple bot that moves whatever bus is free cleared 294 of 300. Even that simple strategy cleared almost every level.
 
 The log from that night:
 
@@ -47,11 +47,11 @@ After that we added two rows to the lot and rebuilt levels 4–300, then rebuilt
 
 ![Tapping out the buses that are free to move in Bus Loop Escape](/works/bus-jam/shots/en-1.jpg)
 
-Now we build one full round, play it ourselves, and have a bot measure the difficulty before we make levels in bulk. We call this step the vertical slice.
+Now we build one full round, play it ourselves, and have a bot measure the difficulty before we make levels in bulk. We call this step a vertical slice: one real round, finished end to end.
 
 ## Nine art swaps
 
-The same October 6 was also heavy on art. Nine commits went in that replaced placeholder art with AI images one piece at a time: booster icons, the main menu, the shop, the loading screen, backgrounds. Close to half of the 9 days' commits, about 145, were art and effects.
+October 6 also had a burst of art work. Nine commits replaced placeholder art with AI images one piece at a time: booster icons, the main menu, the shop, the loading screen, backgrounds. Close to half of the 9 days' commits, about 145, were art and effects.
 
 Without an art direction set in the first week, each screen got changed on its own. Now we settle art direction and key screens at the design stage and build the vertical slice in that art.
 
