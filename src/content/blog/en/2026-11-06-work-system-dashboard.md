@@ -37,11 +37,11 @@ The number `R1.1` only shows order. Status is `[ ]` open, `[~]` partly done, `[x
 
 ## What was wrong
 
-- **The handoff document kept growing.** We set a 12KB cap, but two apps' STATE.md files swelled to about 50KB, and every session has to read the whole thing.
-- **One task had two numbers.** The roadmap called it `R1.3`; commit messages and records called it `GAP-01`. A person linked the two in the evidence column.
-- **A `[x]` carried no evidence.** A checkbox records only that something is done. What we looked at is scattered across other documents, and there is no way to tell whether the code changed after the check.
-- **Prerequisites were sentences.** In the table above, R10.1 lists `R1.3 WHO 허가` as its prerequisite. A person can read that; a program cannot work out which tasks are blocked.
-- **Every format needed its own reader before we could draw a screen.** Only Oh My Baby's roadmap was converted one way into JSON for the dashboard, and that copy was not the original. Reading the table-style files too would have taken four parsers (programs that turn documents into data), and because numbers were assigned by order, they shifted whenever someone edited the document.
+- The handoff document kept growing. We set a 12KB cap, but two apps' STATE.md files swelled to about 50KB, and every session has to read the whole thing.
+- One task had two numbers. The roadmap called it `R1.3`; commit messages and records called it `GAP-01`. A person linked the two in the evidence column.
+- A `[x]` carried no evidence. A checkbox records only that something is done. What we looked at is scattered across other documents, and there is no way to tell whether the code changed after the check.
+- Prerequisites were sentences. In the table above, R10.1 lists `R1.3 WHO 허가` as its prerequisite. A person can read that; a program cannot work out which tasks are blocked.
+- Every format needed its own reader before we could draw a screen. Only Oh My Baby's roadmap was converted one way into JSON for the dashboard, and that copy was not the original. Reading the table-style files too would have taken four parsers (programs that turn documents into data), and because numbers were assigned by order, they shifted whenever someone edited the document.
 
 The goal was a single screen per project showing the current goal, progress, what is blocked, and what is waiting on a decision.
 
