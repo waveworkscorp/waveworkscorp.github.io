@@ -285,7 +285,7 @@ site.json에 없는 규칙·수치·기능 설명은 지어내지 않는다. 부
 ## 8. 표지
 
 1. `codex-delegation` 스킬로 한도를 확인하고 한 줄로 알린다. 한도가 막히면 표지 없이 진행한다.
-2. `cover-prompt.md`의 문장에 주제 장면을 채우고 마스코트 참고 이미지(`-i public/img/mascot-about.png`)를 붙여 `codex exec`로 이미지를 만든다. 로봇은 그리지 않는다.
+2. `cover-prompt.md`의 문장에 주제 장면을 채우고 마스코트 참고 이미지를 붙여 이미지를 만든다. 프롬프트는 파일에 저장해 표준입력으로 넘긴다: `cat <프롬프트 파일> | codex exec --skip-git-repo-check -i public/img/mascot-about.png -` (`-i`가 뒤따르는 인자를 모두 이미지로 읽어서 프롬프트를 인자로 주면 멈춘다. macOS에는 `timeout` 명령이 없다). Codex가 `public/img/`에 사본을 만들면 지운다. 로봇은 그리지 않는다.
 3. 결과는 `~/.codex/generated_images/<세션>/`에 생긴다. `cp`로 가져온다(`mv`·`rm` 금지, 원본은 남김).
 4. 폴더를 만들고 sharp로 1600×900에 맞춰 자른다.
 
