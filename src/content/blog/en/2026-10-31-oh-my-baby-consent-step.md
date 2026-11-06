@@ -9,7 +9,7 @@ coverAlt: "A baby-face notebook and a checklist card beside a locked record trav
 works: ["babylog"]
 ---
 
-Oh My Baby is a baby log you can use with one hand during a night feed. We are testing it ahead of launch. On October 30 we added one new screen: a consent step. We started the design doc at 5:21 p.m. and had it live on the server by 8:44 p.m.
+Oh My Baby, an app we make at WaveWorks, is a baby log you can use with one hand during a night feed. We are testing it ahead of launch. On October 30 we added one new screen: a consent step. We started the design doc at 5:21 p.m. and had it live on the server by 8:44 p.m.
 
 It's a small screen, but every path a baby's records take off the phone now runs through it.
 

@@ -10,9 +10,9 @@ works: ["bus-jam"]
 featured: true
 ---
 
-Bus Loop Escape, the first game from WaveWorks, came out on Google Play on October 19. [Get it on Google Play](https://play.google.com/store/apps/details?id=com.waveworks.busloopescape)
+Bus Loop Escape, the first game from WaveWorks, a company that makes mobile games and apps, came out on Google Play on October 19. [Get it on Google Play](https://play.google.com/store/apps/details?id=com.waveworks.busloopescape)
 
-It's a puzzle about pulling tangled, color-coded buses out one at a time and sending off passengers of the same color. Tap a bus with a clear path and it drives out of the lot; once every passenger has left, the level is done. Pick the wrong order and the free parking spots fill up fast. With two or three spots left, you stop and work out which bus has to go first. Our founder calls that the most fun moment in the game.
+It's a puzzle about pulling tangled, color-coded buses out one at a time and sending off passengers of the same color. Tap a bus with a clear path and it drives out of the lot; once every passenger has left, the level is done. Pick the wrong order and the free parking spots fill up fast. With two or three spots left, you stop and work out which bus has to go first. We call that the most fun moment in the game.
 
 ![Tapping out the buses that are free to move](/works/bus-jam/shots/en-1.jpg)
 

@@ -9,9 +9,9 @@ coverAlt: "A yellow school bus and a baby-face notebook circling a smiling globe
 works: ["bus-jam", "babylog"]
 ---
 
-When Bus Loop Escape went live on Google Play on October 19, it spoke two languages: English and Korean. At 4:51 p.m. that day we decided to add Japanese and Traditional Chinese. By 10:53 p.m. we had built version 1.0.2 with five languages, Simplified Chinese included.
+When our first game, the bus puzzle Bus Loop Escape, went live on Google Play on October 19, it spoke two languages: English and Korean. At 4:51 p.m. that day we decided to add Japanese and Traditional Chinese. By 10:53 p.m. we had built version 1.0.2 with five languages, Simplified Chinese included.
 
-WaveWorks is a company where one founder decides what to make, and the code and art are built with Claude Code and Codex. Claude wrote the translation drafts too.
+WaveWorks is a company that makes mobile games and apps. We decide what to make, and the code and art are built with the AI tools Claude Code and Codex. Claude wrote the translation drafts too. Here, localization means adapting a game's text and its store text for each language.
 
 ## Two languages on launch day
 

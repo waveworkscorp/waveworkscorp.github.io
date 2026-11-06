@@ -11,7 +11,7 @@ works: []
 
 WaveWorks is a company that makes mobile games and apps. We are building five at the same time. Bus Loop Escape, a puzzle about pulling buses out of a jammed parking lot, is out on Google Play. The rest are Oh My Baby, a baby log you can use with one hand; Screw Punch 3D, where you spin a 3D model and pull its screws; Yokai Hunters, a roguelike defense game played with five-element cards; and CheepDoku, a logic puzzle where you place one chick per row. We write the code together with Claude Code, an AI coding tool.
 
-Each app now has between 46 and 176 registered tasks, and the way we wrote down "where are we and what comes next" stopped scaling. On November 5 and 6 we replaced it. The roadmap we used to keep by hand in Markdown moved into a JSON file, and we built a dashboard that reads that file.
+Each app now has between 46 and 176 registered tasks, and the way we wrote down "where are we and what comes next" stopped scaling. On November 5 and 6 we replaced it. The roadmap we used to keep by hand in Markdown moved into a JSON file, which is now the authoritative original for task state. We call it the source of truth in this post. We also built a dashboard that reads that file.
 
 ## The old system
 
@@ -38,7 +38,7 @@ The other apps were messier. Three kept a table-style progress sheet in `plan/pr
 - **One task had two numbers.** The roadmap number `R1.3` only gives order, while commit messages and record files use task IDs such as `GAP-01`. A person linked the two in the evidence column.
 - **`[x]` carried no evidence.** A checkbox records that something finished. What was checked sits in prose in the evidence column and in other documents, and the checkbox cannot tell you whether the code changed after the check.
 - **Prerequisites were sentences.** Row R10.1 above has `R1.3 WHO 허가` in its prerequisite column. A person can read that; a program cannot compute "this is blocked".
-- **Every format needed its own parser.** Only Oh My Baby had a one-way conversion of the roadmap to JSON for the dashboard, and that copy was not authoritative. Reading the table-style sheets too would have taken four parsers, and IDs numbered by position shift every time a document is edited.
+- **Every format needed its own parser.** Only Oh My Baby had a one-way conversion of the roadmap to JSON for the dashboard, and that copy was not authoritative. Reading the table-style sheets too would have taken four parsers (programs that read a document and turn it into data), and IDs numbered by position shift every time a document is edited.
 
 The goal was to see each project's current goal, progress, blockers and pending decisions on one screen.
 
@@ -52,7 +52,7 @@ On November 5 we chose option A of three.
 | B | Generate both the handoff document and the roadmap | We would have to rewrite the handoff rules and the wiki update procedure |
 | C | Keep Markdown as the source and derive JSON with parsers | Needs 4 parsers, IDs numbered by position shift whenever a document is edited, and writing means converting back to Markdown |
 
-`tasks.json` is the source of truth, and the human-readable `ROADMAP.md` is a view generated from it. Prose lives in STATE.md and design documents; numbers and status live in JSON. A generated file never overwrites prose a person wrote.
+`tasks.json` is the source of truth, and the human-readable `ROADMAP.md` is a read-only document that a program generates from it (a generated view). Prose lives in STATE.md and design documents; numbers and status live in JSON. A generated file never overwrites prose a person wrote.
 
 ### The task hierarchy
 
@@ -66,7 +66,7 @@ There are five levels. We first called them depth 1 through depth 5, then rename
 | Subtask | Detail that appears during execution | no effect |
 | Checklist item | The lowest-level check | no effect |
 
-The nine stages are goal and direction, research and feasibility, product planning, design and execution plan, build, integration testing and launch prep, release, operations, marketing and growth, and retrospective. They say where a piece of work sits, and we do not treat them as gates to pass in order. What differs between app types is expressed only through epic templates, display names and a "not applicable" (`na`) marker. Work that repeats, such as a 1.1 update or a Unity port, goes on a release axis. Operations that never finish after launch collect in an always-on epic under S8 and we leave them out of the progress figure.
+The nine stages are goal and direction, research and feasibility, product planning, design and execution plan, build, integration testing and launch prep, release, operations, marketing and growth, and retrospective. They say where a piece of work sits, and we do not treat them as gates to pass in order. What differs between app types is expressed only through epic templates, display names and a "not applicable" (`na`) marker. Work that repeats, such as a 1.1 update or a Unity port, is tied to a release (a release unit such as 1.0 or 1.1). Operations that never finish after launch collect in an always-on epic under S8 and we leave them out of the progress figure.
 
 R1.3 above became this task after conversion. The old number stays in `legacy`.
 
@@ -86,6 +86,8 @@ R1.3 above became this task after conversion. The old number stays in `legacy`.
   "done": [{ "text": "접수 번호를 `plan/GAP-01-gates.md`에 적음" }]
 }
 ```
+
+Prerequisites go in `dependsOn` as task IDs (59 of Oh My Baby's 176 tasks use it). The sentence "R1.3 WHO 허가" that row R10.1 above carries in its prerequisite column is now an ID, so `work check` blocks cycles with `dependency-cycle`. Waits that a person has to resolve, such as an outside reply, go in the `block` field (for example `kind: external`), and those tasks collect under `blocked` in `brief`.
 
 ### What we store and what we compute
 
@@ -115,7 +117,7 @@ A request to change a task's status looks like this.
 }
 ```
 
-The server takes a file lock and **rereads the latest file.** A changed `baseHash` alone does not cause a rejection. For each field in `set`, it checks that `expect` equals the latest value. If every field matches, the patch applies even when other fields changed. If any field differs, the whole request is rejected and the latest value is returned.
+The server takes a file lock (so only one writer goes at a time) and **rereads the latest file.** A changed `baseHash` (the hash of the file the request read) alone does not cause a rejection. For each field in `set`, it checks that `expect` equals the latest value. If every field matches, the patch applies even when other fields changed. If any field differs, the whole request is rejected and the latest value is returned.
 
 - Accepted: A tries to write `status` from `doing` to `done` while B changes only `block` on the same task. `baseHash` differs, but `expect.status` matches the latest value, so it applies.
 - Rejected: B changes `status` to `hold` first. A's `expect.status = doing` no longer matches, so the request is rejected and the latest value `hold` comes back.
@@ -124,7 +126,7 @@ Writes go to a temporary file that is then renamed, and every changed field adds
 
 ### Verification is compared by fingerprint
 
-When we record "checked", we store a fingerprint of what we checked it against.
+When we record "checked", we store a fingerprint of what we checked it against. A fingerprint is the file content reduced to a hash (sha256), so changing a single character changes it.
 
 | Input kind | Recorded value | How it is compared now |
 |---|---|---|
@@ -167,7 +169,7 @@ The server is a single `node:http` file, and we kept Vite and React inside the `
 
 ![Dashboard home screen: each project card shows overall progress, nine stage chips and one line for the task in progress](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-home.jpg)
 
-Home has one card per project. The big number is overall progress, and in the nine stage chips below it the current stage is drawn solid and any parallel stage is drawn faded. The last line is the task in progress. Our first card carried three bars, the full epic list and three chips, and it could not answer "how far along are we and what are we doing now". We compared three mockups, picked the one with a large overall percentage and a single row of stage chips, and took only the theme and density from the other two.
+Home has one card per project. The big number is overall progress, and in the nine stage chips below it the current stage is drawn solid and any parallel stage is drawn faded. The last line is the task in progress. The screenshot is from the afternoon of November 6, so progress for unreleased works is the value at that time. Our first card carried three bars, the full epic list and three chips, and it could not answer "how far along are we and what are we doing now". We compared three mockups, picked the one with a large overall percentage and a single row of stage chips, and took only the theme and density from the other two.
 
 ![Oh My Baby overview: per-stage progress bars, 6 tasks in progress and 2 external waits](../../../assets/blog/2026-11-06-work-system-dashboard/dashboard-overview.jpg)
 

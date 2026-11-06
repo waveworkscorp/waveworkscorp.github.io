@@ -9,9 +9,9 @@ coverAlt: "Two small robots on a studio desk stacking blocks into game screens"
 works: ["bus-jam"]
 ---
 
-Our first game, Bus Loop Escape, took 9 days and 313 commits. The part we redid most was the levels, and the part we touched last was release prep. Both are why our working order looks different now.
+WaveWorks is a company that makes mobile games and apps. Our first game, Bus Loop Escape (a puzzle about pulling buses out of a parking lot), took 9 days and 313 commits, the units of saved work in our code history. The part we redid most was the levels, and the part we touched last was release prep. Both are why our working order looks different now.
 
-WaveWorks is a company where one founder decides what to make, and the code and art are built with Claude Code and Codex.
+We decide what to make, and two AI tools share the work: Claude Code writes the code and Codex makes the art.
 
 ## Day one: the generator first
 
@@ -47,7 +47,7 @@ After that we added two rows to the lot and rebuilt levels 4–300, then rebuilt
 
 ![Tapping out the buses that are free to move in Bus Loop Escape](/works/bus-jam/shots/en-1.jpg)
 
-Now we build one full round, the founder plays it, and a bot measures the difficulty before we make levels in bulk. We call this step the vertical slice.
+Now we build one full round, play it ourselves, and have a bot measure the difficulty before we make levels in bulk. We call this step the vertical slice.
 
 ## Nine art swaps
 
@@ -63,7 +63,7 @@ So the release sheet now comes before the game plan. On day one we write down th
 
 ## If we did it again: Unity
 
-We built Bus Loop Escape with web tech. It got us started fast, but keeping it smooth on budget phones and fitting every screen size kept taking work. That's the decision our founder most wants to change about the first game.
+We built Bus Loop Escape with web tech. It got us started fast, but keeping it smooth on budget phones and fitting every screen size kept taking work. That's the decision we most want to change about the first game.
 
 On October 26 we decided to move our games to Unity. New games start in Unity, and Bus Loop Escape is being moved over. The ads, payments, saving and analytics code was split out of the first game, and the next game reuses it as is.
 
