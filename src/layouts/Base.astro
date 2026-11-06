@@ -2,6 +2,7 @@
 import type { Lang } from '../data/works';
 import { STRINGS, localePath } from '../data/i18n';
 import '../styles/global.css';
+import { CF_BEACON_TOKEN, ANALYTICS_HOST } from '../data/analytics';
 
 interface Props {
   lang: Lang;
@@ -44,6 +45,17 @@ const nav = [
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  {import.meta.env.PROD && CF_BEACON_TOKEN !== '' && (
+    <script is:inline define:vars={{ token: CF_BEACON_TOKEN, host: ANALYTICS_HOST }}>
+      if (location.hostname === host) {
+        const s = document.createElement('script');
+        s.type = 'module';
+        s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        s.setAttribute('data-cf-beacon', JSON.stringify({ token }));
+        document.head.appendChild(s);
+      }
+    </script>
+  )}
 </head>
 <body class={bodyClass}>
   <header class="topbar">

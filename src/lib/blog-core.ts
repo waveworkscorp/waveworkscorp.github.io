@@ -1,3 +1,4 @@
+// 대시보드 `work/dashboard/server/site-blog.ts`가 같은 규칙을 씀. 바꾸면 함께 고침
 // Astro에 기대지 않는 순수 함수만 둔다. node --test로 바로 돌리기 위해서다
 export type BlogLang = 'ko' | 'en';
 
