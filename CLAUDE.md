@@ -1,6 +1,6 @@
-# waveworks-site
+# waveworks-corp
 
-WaveWorks company site (Astro, ko/en), served at waveworkscorp.github.io. It lives inside the app-factory monorepo at `sites/waveworks-site` but is its own git repository. Root rules (`../../CLAUDE.md`) still apply when the session is opened from the root.
+WaveWorks company site (Astro, ko/en), served at waveworkscorp.github.io. It lives inside the app-factory monorepo at `sites/waveworks-corp` but is its own git repository. Root rules (`../../CLAUDE.md`) still apply when the session is opened from the root.
 
 ## Generated files (do not hand-edit)
 
