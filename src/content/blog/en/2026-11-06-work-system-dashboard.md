@@ -1,5 +1,5 @@
 ---
-title: "How a One-Person Studio Tracks Five Apps at Once"
+title: "How a One-Person Company Tracks Five Apps at Once"
 date: "2026-11-06"
 category: making
 excerpt: "Five projects on Claude Code, five growing handoff notes. We moved task state to JSON, tied checks to file hashes, and built one dashboard."
