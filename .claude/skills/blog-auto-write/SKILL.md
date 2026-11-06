@@ -280,7 +280,7 @@ site.json에 없는 규칙·수치·기능 설명은 지어내지 않는다. 부
 ## 8. 표지
 
 1. `codex-delegation` 스킬로 한도를 확인하고 한 줄로 알린다. 한도가 막히면 표지 없이 진행한다.
-2. `cover-prompt.md`의 문장에 주제 장면을 채워 `codex exec`로 이미지를 만든다.
+2. `cover-prompt.md`의 문장에 주제 장면을 채우고 마스코트 참고 이미지(`-i public/img/mascot-about.png`)를 붙여 `codex exec`로 이미지를 만든다. 로봇은 그리지 않는다.
 3. 결과는 `~/.codex/generated_images/<세션>/`에 생긴다. `cp`로 가져온다(`mv`·`rm` 금지, 원본은 남김).
 4. 폴더를 만들고 sharp로 1600×900에 맞춰 자른다.
 
