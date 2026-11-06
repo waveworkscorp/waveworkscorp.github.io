@@ -1,5 +1,5 @@
 ---
-title: "Putting Five Apps' Work Status on One Screen"
+title: "Is a [x] Really Done? Rebuilding Work Tracking for Five Apps"
 date: "2026-11-06"
 category: making
 excerpt: "We replaced a Markdown roadmap with tasks.json and a dashboard. What was wrong, what we changed, and the results across five apps."
