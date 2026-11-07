@@ -73,7 +73,7 @@ In total, 836,544 tokens became 578,705, a drop of 257,839 tokens or about 31%, 
 
 In bytes the total went the other way. The 174 files grew 4%, from 2,101,221 to 2,185,228 bytes, because a Korean character takes 3 bytes, so the byte count stays about the same even when English needs more characters, and the keyword lines and Korean summaries were added on top. File size therefore shows no saving at all; it is visible only in tokens.
 
-## Short documents that got longer
+## When it gets longer instead
 
 Not every document shrank. Three sample design docs grew in estimated tokens once the keyword line and Korean summary were added.
 
