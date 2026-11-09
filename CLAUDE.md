@@ -14,7 +14,7 @@ Site-wide pages (home, about, contact, shared legal docs directly under `src/leg
 
 ## Blog
 
-Posts are markdown files: Korean in `src/content/blog/ko/YYYY-MM-DD-<slug>.md` (required), English under the same name in `src/content/blog/en/` (optional; an English-only post fails the build). Covers go in `src/assets/blog/<name>/cover.png`. Frontmatter schema is in `src/content.config.ts`, categories and UI strings in `src/data/blog.ts`. Write posts with the `/blog-auto-write <topic>` skill (`.claude/skills/blog-auto-write/`). It commits locally and opens a preview; push only after the user says "올려". Design: `docs/superpowers/specs/2026-10-31-blog-design.md`.
+Posts are markdown files: Korean in `src/content/blog/ko/YYYY-MM-DD-<slug>.md` (required), English under the same name in `src/content/blog/en/` (optional; an English-only post fails the build). Covers go in `src/assets/blog/<name>/cover.png`. Frontmatter schema is in `src/content.config.ts`, categories and UI strings in `src/data/blog.ts`. Write posts with the `/ww:blog-auto-write <topic>` skill (source: ww-forge root `skills/blog-auto-write/`, moved 2026-11-09 so root and app sessions can write posts right after their work; edit and commit it in the root repo). It commits locally and opens a preview; push only after the user says "올려". Design: `docs/superpowers/specs/2026-10-31-blog-design.md`.
 
 Every post must meet three criteria, in this order of priority (user decision 2026-10-31). Details are in §0 of the skill.
 
