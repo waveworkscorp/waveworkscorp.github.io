@@ -13,7 +13,7 @@ draft: false
 
 ## Overview
 
-WaveWorks is a one-person company that makes mobile games and apps, and we do both development and company blog writing with Claude Code, an AI coding tool. Each blog post is handled by a single Claude Code skill (an instruction file that spells out a work procedure), from research through proofreading. The posts it produced had long sentences and long paragraphs, though, and we wanted to hand it a reference blog by URL rather than one article at a time. So we added a style-learning mode that turns a blog URL into a style profile of how that blog structures and phrases its posts, and built a combined profile from five Korean tech blogs. This post is the first test of that profile; our two previous posts averaged 68 and 63 characters per sentence against the profile's 50.
+We write our company blog posts with a writing skill in Claude Code, an AI coding tool; that one skill (an instruction file that spells out a work procedure) handles each post from research through proofreading. The posts it produced had long sentences and long paragraphs, though, and we wanted to hand it a reference blog by URL rather than one article at a time. So we added a style-learning mode that turns a blog URL into a style profile of how that blog structures and phrases its posts, and built a combined profile from five Korean tech blogs. This post is the first test of that profile; our two previous posts averaged 68 and 63 characters per sentence against the profile's 50.
 
 ## What it takes to learn from a URL
 
@@ -52,7 +52,7 @@ Measured against this combined profile, three of the four figures for our two ea
 | Metric | Combined profile (48 posts) | Nov 6 post | Nov 7 post | This post |
 |---|---|---|---|---|
 | Average sentence length | 50 chars | 68 chars | 63 chars | 53 chars |
-| Median | 45 chars | 69 chars | 63 chars | 53 chars |
+| Median | 45 chars | 69 chars | 63 chars | 52 chars |
 | Sentences under 40 chars | 40% | 22% | 19% | 27% |
 | Sentences per paragraph | 2.4 | 3.2 | 2.9 | 2.3 |
 | Formal endings | 57% | 100% | 100% | 98% |
