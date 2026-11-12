@@ -6,6 +6,7 @@ import StoreIcon from './StoreIcon.astro';
 import InfoCard from './InfoCard.astro';
 import PostCard from './PostCard.astro';
 import { BLOG_STRINGS, getPosts } from '../data/blog';
+import { buildFaq } from '../lib/faq-core';
 
 interface Props { lang: Lang; work: Work }
 const { lang, work: w } = Astro.props;
@@ -25,6 +26,8 @@ const stores = [
 const openStores = stores.filter((s) => s.href);
 const soonStores = stores.filter((s) => !s.href);
 const [checkBox, ...moreInfo] = w.info ?? [];
+
+const faq = buildFaq(w, lang).entries;
 
 const listHref = localePath(lang, '/works/');
 const posts = (await getPosts(lang)).filter((p) => p.data.works.includes(w.slug)).slice(0, 2);
@@ -112,6 +115,20 @@ const docs = [
       <section class="posts" aria-labelledby="posts-head">
         <h2 id="posts-head">{BLOG_STRINGS[lang].workPosts}</h2>
         <div class="post-grid">{posts.map((p) => <PostCard lang={lang} entry={p} />)}</div>
+      </section>
+    )}
+
+    {faq.length > 0 && (
+      <section class="faq" aria-labelledby="faq-head">
+        <h2 id="faq-head">{t.faqHead}</h2>
+        <div class="qa">
+          {faq.map((e) => (
+            <div>
+              <h3>{e.q}</h3>
+              <p>{e.a}</p>
+            </div>
+          ))}
+        </div>
       </section>
     )}
 
@@ -232,6 +249,10 @@ const docs = [
   :global(html[lang='en']) h2 { font-family: var(--font-en-display); font-weight: 700; }
   .posts { margin: 0 0 70px; }
   .post-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+  .qa { margin: 0; display: grid; gap: 14px; max-width: 52em; }
+  .qa div { background: #fff; border: var(--line); border-radius: 26px; box-shadow: var(--pop); padding: 20px 26px; }
+  .qa h3 { margin: 0 0 6px; font-size: 20px; line-height: 1.35; }
+  .qa p { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.6; opacity: .78; overflow-wrap: anywhere; }
   .docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; }
   .doc {
     display: grid; justify-items: center; gap: 4px; text-decoration: none; text-align: center;

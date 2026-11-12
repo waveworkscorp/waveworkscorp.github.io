@@ -1,8 +1,9 @@
 import type { BlogEntry } from './blog';
 import { postName, postUrl } from './blog';
 import { COMPANY, DEVELOPER_STORES, localePath } from './i18n';
+import { buildFaq } from '../lib/faq-core';
 import { isAvailable, platformsOf, type Lang, type Work } from './works';
-import { blogPostingLd, organizationLd, softwareLd, websiteLd, type JsonLd } from '../lib/seo-core';
+import { blogPostingLd, faqPageLd, organizationLd, softwareLd, websiteLd, type JsonLd } from '../lib/seo-core';
 
 // 페이지에서 Astro.site를 받아 사이트 데이터로 구조화 데이터를 만든다. 형식은 lib/seo-core.ts
 const origin = (site: URL | undefined): string => (site ?? new URL('https://waveworkscorp.github.io')).origin;
@@ -25,9 +26,13 @@ export function homeLd(site: URL | undefined, lang: Lang): JsonLd[] {
 }
 
 export function workLd(site: URL | undefined, lang: Lang, work: Work): JsonLd[] {
-  return [softwareLd({
+  const url = abs(site, localePath(lang, `/${work.slug}/`));
+  const { entries, unknownLabels } = buildFaq(work, lang);
+  // 새 앱이 질문표에 없는 info 라벨을 쓰면 빌드 때 알린다. 그 줄은 FAQ에서 빠지고 빌드는 계속된다
+  if (lang === 'ko') unknownLabels.forEach((label) => console.warn(`[faq] ${work.slug}: 질문표(src/lib/faq-core.ts)에 없는 info 라벨 "${label}"`));
+  const software = softwareLd({
     site: origin(site),
-    url: abs(site, localePath(lang, `/${work.slug}/`)),
+    url,
     name: work.name[lang],
     description: work.about[lang],
     image: abs(site, work.icon),
@@ -35,7 +40,8 @@ export function workLd(site: URL | undefined, lang: Lang, work: Work): JsonLd[] 
     lang,
     operatingSystems: isAvailable(work) ? platformsOf(work) : [],
     storeUrls: [work.stores.play, work.stores.appStore].filter((u): u is string => Boolean(u)),
-  })];
+  });
+  return entries.length > 0 ? [software, faqPageLd(url, entries)] : [software];
 }
 
 export function postLd(site: URL | undefined, lang: Lang, entry: BlogEntry, image: string | undefined): JsonLd[] {
