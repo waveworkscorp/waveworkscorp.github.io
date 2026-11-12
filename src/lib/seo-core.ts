@@ -148,3 +148,13 @@ export function blogPostingLd(p: BlogPostingInput): JsonLd {
     publisher: orgRef(p.site),
   };
 }
+
+// Google은 FAQ 리치 결과를 정부·보건 사이트에만 보여 준다. 여기서는 AI 답변·음성 비서가 문답을 인용하도록 둔다
+export function faqPageLd(url: string, entries: readonly { q: string; a: string }[]): JsonLd {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    url,
+    mainEntity: entries.map((e) => ({ '@type': 'Question', name: e.q, acceptedAnswer: { '@type': 'Answer', text: e.a } })),
+  };
+}

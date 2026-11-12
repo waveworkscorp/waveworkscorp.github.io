@@ -17,6 +17,8 @@ export interface Work {
   captions?: readonly Text[];
   // 첫 상자는 다운로드 전 확인 정보로 개요의 소개 문단 아래, 나머지는 특징 뒤에 둔다
   info?: readonly InfoBox[];
+  // 작품 페이지 '자주 묻는 질문'에 info 문답보다 먼저 싣는 앱 고유 문답
+  faq?: readonly { q: Text; a: Text }[];
   // public/works/<slug>/shots/<lang>-<n>.jpg 장수, 스크린샷이 없으면 0
   shots: number;
   icon: string;

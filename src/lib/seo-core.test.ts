@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { blogPostingLd, organizationLd, rssXml, sitemapXml, softwareLd, xmlEscape } from './seo-core.ts';
+import { blogPostingLd, faqPageLd, organizationLd, rssXml, sitemapXml, softwareLd, xmlEscape } from './seo-core.ts';
 
 const SITE = 'https://example.com';
 
@@ -78,4 +78,11 @@ test('blogPostingLd: 제목·날짜·언어·대표 이미지를 담는다', () 
   assert.equal(ld.image, `${SITE}/c.jpg`);
   assert.equal(ld.keywords, 'a, b');
   assert.deepEqual(ld.mainEntityOfPage, { '@type': 'WebPage', '@id': `${SITE}/blog/p/` });
+});
+
+test('faqPageLd: 문답을 Question과 acceptedAnswer로 담는다', () => {
+  const ld = faqPageLd(`${SITE}/a/`, [{ q: 'Q', a: 'A' }]);
+  assert.equal(ld['@type'], 'FAQPage');
+  assert.equal(ld.url, `${SITE}/a/`);
+  assert.deepEqual((ld.mainEntity as unknown[])[0], { '@type': 'Question', name: 'Q', acceptedAnswer: { '@type': 'Answer', text: 'A' } });
 });
