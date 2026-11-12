@@ -1,6 +1,7 @@
 ---
 title: "Bus Loop Escape is out on Google Play"
 date: "2026-10-31"
+updated: "2026-11-12"
 category: news
 excerpt: "Bus Loop Escape came out on Google Play on October 19. Clear a jammed parking lot one bus at a time, with no timer."
 tags: ["Bus Loop Escape", "Launch", "Puzzle"]
@@ -12,16 +13,24 @@ featured: true
 
 WaveWorks makes mobile games and apps. Our first game, Bus Loop Escape, came out on Google Play on October 19. [Get it on Google Play](https://play.google.com/store/apps/details?id=com.waveworks.busloopescape)
 
+## What kind of game is it
+
 It's a puzzle about moving color-coded buses out of a crowded parking lot one at a time and sending off passengers of the same color. Tap a bus with a clear path and it drives out of the lot; once every passenger has left, the level is done. Pick the wrong order and the free parking spots fill up fast. With two or three spots left, you stop and work out which bus has to go first. That is the moment we enjoy most.
 
 ![Tapping out the buses that are free to move](/works/bus-jam/shots/en-1.jpg)
 
 We left out a timer on purpose. You can stare at one bus for as long as you like, or play a single level and put the phone down. It's built for people who like tidy-up puzzles and want to solve them at their own pace.
 
+## Levels and boosters
+
 There are more than 300 levels. From level 22, container buses appear alongside buses whose colors stay hidden until the bus in front moves. The scenery changes every 10 levels: park, plaza, beach, playground, snowy town.
 
 When you're stuck there are four boosters (VIP, Sort, Shuffle, Open Parking Spot), and clearing a level earns coins.
 
+## Devices, languages and ads
+
 A few things to know before you download. It runs on Android 7.0 and up and is available in Korean, English, Japanese, and Simplified and Traditional Chinese. It has rewarded ads, plus interstitial ads from level 11, and sells ad removal, coins and bundles in the app. Ads and purchases need an internet connection.
+
+## iOS version and feedback
 
 We're working on the iOS version and will post here when it's out. If a level felt too easy or too hard, just send us its number through the [contact page](/en/contact/). That alone helps a lot.
