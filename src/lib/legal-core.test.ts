@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { chromeLang, langLinks, toRoute } from './legal-core.ts';
+import { chromeLang, docHref, langLinks, toRoute } from './legal-core.ts';
 
 test('toRoute: ko는 접두어 없이, 다른 언어는 언어 접두어를 붙인다', () => {
   assert.deepEqual(toRoute('../legal/ko/a/privacy.html'), { route: 'a/privacy', docLang: 'ko' });
@@ -23,4 +23,11 @@ test('langLinks: 문서에 있는 언어만 정해진 순서로, 지금 문서�
 test('langLinks: 같은 주소를 가리키는 언어는 한 번만 둔다(영어 한 장짜리 건강 데이터 방침)', () => {
   const links = langLinks({ ko: '/en/a/health-data/', en: '/en/a/health-data/' }, '/en/a/health-data/');
   assert.equal(links.length, 1);
+});
+
+test('docHref: 문서 탭은 같은 언어판이 있으면 그것을, 없으면 화면 틀 언어판을 가리킨다', () => {
+  const deletion = { ko: '/a/deletion/', en: '/en/a/deletion/', ja: '/ja/a/deletion/' };
+  assert.equal(docHref(deletion, 'ja'), '/ja/a/deletion/');
+  assert.equal(docHref(deletion, 'zh-hans'), '/en/a/deletion/');
+  assert.equal(docHref(deletion, 'ko'), '/a/deletion/');
 });

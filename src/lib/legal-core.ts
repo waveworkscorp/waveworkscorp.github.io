@@ -26,6 +26,11 @@ export function chromeLang(docLang: LegalLang): 'ko' | 'en' {
   return docLang === 'ko' ? 'ko' : 'en';
 }
 
+// 문서 탭: 읽던 언어판이 있으면 그 언어로 머물고, 없으면 화면 틀 언어판으로
+export function docHref(doc: Partial<Record<LegalLang, string>>, docLang: LegalLang): string | undefined {
+  return doc[docLang] ?? doc[chromeLang(docLang)];
+}
+
 export function langLinks(doc: Partial<Record<LegalLang, string>>, current: string): LegalLangLink[] {
   // 영어 한 장뿐인 문서는 ko 주소도 영문을 가리키니 같은 주소는 처음 언어 하나만 남긴다
   return LEGAL_LANGS.flatMap((lang, index) => {

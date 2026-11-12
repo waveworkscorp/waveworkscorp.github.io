@@ -1,6 +1,6 @@
 import { WORKS, type Lang } from './works';
 import { STRINGS, localePath } from './i18n';
-import { chromeLang, langLinks, toRoute, type LegalLang, type LegalLangLink } from '../lib/legal-core';
+import { chromeLang, docHref, langLinks, toRoute, type LegalLang, type LegalLangLink } from '../lib/legal-core';
 
 // 스토어에 등록한 법적 고지 원문(src/legal/**.html)을 그대로 읽어 사이트 테마로 감싼다.
 // 원문은 <언어>/ 아래에 두고, 주소는 /<게임>/<문서>/, /en/<게임>/<문서>/, /ja/<게임>/<문서>/ 등이 된다
@@ -33,12 +33,13 @@ function toUrl(route: string): string {
 }
 
 // 문서 탭은 원문 nav 대신 works.ts의 문서 목록으로 만든다. 같은 게임의 문서를 화면 틀 언어로 두고, 지금 문서의 언어들은 따로 줄을 둔다
-function buildLinks(url: string, lang: Lang): { links: LegalLink[]; langs: LegalLangLink[] } {
+function buildLinks(url: string, docLang: LegalLang): { links: LegalLink[]; langs: LegalLangLink[] } {
   for (const w of WORKS) {
     const key = DOC_KEYS.find((k) => Object.values(w[k] ?? {}).includes(url));
     if (!key) continue;
+    const lang = chromeLang(docLang);
     const links = DOC_KEYS.flatMap((k) => {
-      const href = w[k]?.[lang];
+      const href = docHref(w[k] ?? {}, docLang);
       return href ? [{ href, label: STRINGS[lang][k], current: k === key }] : [];
     });
     const langs = langLinks(w[key] ?? {}, url);
@@ -66,7 +67,7 @@ function parse(file: string, html: string): LegalPage {
     title,
     description: pick(html, /<meta name="description" content="([^"]*)"/) || title,
     heading,
-    ...buildLinks(toUrl(route), lang),
+    ...buildLinks(toUrl(route), docLang),
     back: backPath(route, lang),
     body: main.replace(/<h1>[\s\S]*?<\/h1>/, '').trim(),
   };
