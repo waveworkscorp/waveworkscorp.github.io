@@ -874,7 +874,10 @@
     "banner": "/works/babylog/banner.png",
     "privacy": {
       "ko": "/babylog/privacy/",
-      "en": "/en/babylog/privacy/"
+      "en": "/en/babylog/privacy/",
+      "ja": "/ja/babylog/privacy/",
+      "zh-hans": "/zh-hans/babylog/privacy/",
+      "zh-hant": "/zh-hant/babylog/privacy/"
     },
     "terms": {
       "ko": "/babylog/terms/",
@@ -882,7 +885,10 @@
     },
     "deletion": {
       "ko": "/babylog/deletion/",
-      "en": "/en/babylog/deletion/"
+      "en": "/en/babylog/deletion/",
+      "ja": "/ja/babylog/deletion/",
+      "zh-hans": "/zh-hans/babylog/deletion/",
+      "zh-hant": "/zh-hant/babylog/deletion/"
     },
     "health-data": {
       "ko": "/en/babylog/health-data/",
