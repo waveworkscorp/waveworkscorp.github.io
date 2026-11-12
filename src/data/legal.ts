@@ -1,6 +1,6 @@
 import { WORKS, type Lang } from './works';
 import { STRINGS, localePath } from './i18n';
-import { chromeLang, docHref, langLinks, toRoute, type LegalLang, type LegalLangLink } from '../lib/legal-core';
+import { chromeLang, docHref, htmlLangOf, langLinks, stripLangPrefix, toRoute, type LegalLang, type LegalLangLink } from '../lib/legal-core';
 
 // 스토어에 등록한 법적 고지 원문(src/legal/**.html)을 그대로 읽어 사이트 테마로 감싼다.
 // 원문은 <언어>/ 아래에 두고, 주소는 /<게임>/<문서>/, /en/<게임>/<문서>/, /ja/<게임>/<문서>/ 등이 된다
@@ -49,7 +49,7 @@ function buildLinks(url: string, docLang: LegalLang): { links: LegalLink[]; lang
 }
 
 function backPath(route: string, lang: Lang): string | null {
-  const work = WORKS.find((w) => route.replace(/^(en|ja|zh-hans|zh-hant)\//, '').startsWith(`${w.slug}/`));
+  const work = WORKS.find((w) => stripLangPrefix(route).startsWith(`${w.slug}/`));
   return work ? localePath(lang, `/${work.slug}/`) : null;
 }
 
@@ -63,7 +63,7 @@ function parse(file: string, html: string): LegalPage {
     route,
     lang,
     docLang,
-    htmlLang: pick(html, /<html lang="([^"]+)"/) || docLang,
+    htmlLang: htmlLangOf(html, docLang),
     title,
     description: pick(html, /<meta name="description" content="([^"]*)"/) || title,
     heading,

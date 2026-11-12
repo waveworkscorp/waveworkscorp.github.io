@@ -11,7 +11,11 @@ export const LANG_LABELS: Readonly<Record<LegalLang, string>> = {
   'zh-hant': '中文(繁體)',
 };
 
-export interface LegalLangLink { href: string; label: string; current: boolean }
+// <link hreflang>에 쓰는 BCP 47 표기
+const HREFLANGS: Readonly<Record<LegalLang, string>> = { ko: 'ko', en: 'en', ja: 'ja', 'zh-hans': 'zh-Hans', 'zh-hant': 'zh-Hant' };
+const OG_LOCALES: Readonly<Record<LegalLang, string>> = { ko: 'ko_KR', en: 'en_US', ja: 'ja_JP', 'zh-hans': 'zh_CN', 'zh-hant': 'zh_TW' };
+
+export interface LegalLangLink { href: string; label: string; hreflang: string; current: boolean }
 
 const isLegalLang = (value: string): value is LegalLang => LEGAL_LANGS.some((lang) => lang === value);
 
@@ -20,6 +24,23 @@ export function toRoute(file: string): { route: string; docLang: LegalLang } {
   const [first = '', ...rest] = file.replace('../legal/', '').replace(/\.html$/, '').split('/');
   const docLang = isLegalLang(first) ? first : 'ko';
   return { route: [...(docLang === 'ko' ? [] : [docLang]), ...rest].join('/'), docLang };
+}
+
+// 법률 문서 주소에서 언어 접두어를 뗀 나머지(<id>/<doc>)
+export function stripLangPrefix(route: string): string {
+  const [first = '', ...rest] = route.split('/');
+  return isLegalLang(first) ? rest.join('/') : route;
+}
+
+// ko·en 문서는 html[lang='en'] 글꼴 규칙이 맞도록 ko·en으로 고정하고, 추가 언어는 원문 값(zh-Hant 등)을 쓴다
+export function htmlLangOf(html: string, docLang: LegalLang): string {
+  if (docLang === 'ko' || docLang === 'en') return docLang;
+  return /<html[^>]*\slang="([^"]+)"/.exec(html)?.[1] ?? docLang;
+}
+
+export function ogLocale(lang: string): string {
+  const key = LEGAL_LANGS.find((l) => l === lang.toLowerCase()) ?? 'en';
+  return OG_LOCALES[key];
 }
 
 export function chromeLang(docLang: LegalLang): 'ko' | 'en' {
@@ -36,6 +57,6 @@ export function langLinks(doc: Partial<Record<LegalLang, string>>, current: stri
   return LEGAL_LANGS.flatMap((lang, index) => {
     const href = doc[lang];
     const seen = LEGAL_LANGS.slice(0, index).some((before) => doc[before] === href);
-    return href && !seen ? [{ href, label: LANG_LABELS[lang], current: href === current }] : [];
+    return href && !seen ? [{ href, label: LANG_LABELS[lang], hreflang: HREFLANGS[lang], current: href === current }] : [];
   });
 }

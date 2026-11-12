@@ -4,6 +4,7 @@ import { STRINGS, localePath } from '../data/i18n';
 import '../styles/global.css';
 import { CF_BEACON_TOKEN, ANALYTICS_HOST } from '../data/analytics';
 import type { JsonLd } from '../lib/seo-core';
+import { ogLocale } from '../lib/legal-core';
 
 interface Props {
   lang: Lang;
@@ -21,8 +22,10 @@ interface Props {
   jsonLd?: readonly JsonLd[];
   // 본문 언어가 화면 틀과 다를 때(ja·zh 법적 고지) <html lang>에 쓸 값
   htmlLang?: string;
+  // 같은 법적 고지의 언어판들. 둘 이상이면 hreflang으로 서로 잇는다
+  langAlternates?: readonly { hreflang: string; href: string }[];
 }
-const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath, ogType = 'website', jsonLd = [], htmlLang } = Astro.props;
+const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath, ogType = 'website', jsonLd = [], htmlLang, langAlternates = [] } = Astro.props;
 // 실제 주소를 대표 주소로 삼는다. 같은 글이 다른 주소로 퍼져도 점수가 한곳에 모인다
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogImage, Astro.site).href;
@@ -51,11 +54,12 @@ const nav = [
   <link rel="canonical" href={canonical}>
   {pairs.length > 1 && pairs.map((l) => <link rel="alternate" hreflang={l} href={new URL(localePath(l, targetOf(l)), Astro.site)}>)}
   {pairs.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localePath('ko', targetOf('ko')), Astro.site)}>}
+  {langAlternates.length > 1 && langAlternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={new URL(a.href, Astro.site)}>)}
   <link rel="alternate" type="application/rss+xml" title={`WaveWorks ${t.blog}`} href={rssHref}>
   <meta property="og:type" content={ogType}>
   <meta property="og:site_name" content="WaveWorks">
   <meta property="og:url" content={canonical}>
-  <meta property="og:locale" content={lang === 'ko' ? 'ko_KR' : 'en_US'}>
+  <meta property="og:locale" content={ogLocale(htmlLang ?? lang)}>
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:image" content={ogImageUrl}>
