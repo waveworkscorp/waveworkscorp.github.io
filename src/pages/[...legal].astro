@@ -9,6 +9,6 @@ export function getStaticPaths() {
 
 const { page } = Astro.props as { page: LegalPage };
 ---
-<Base lang={page.lang} title={`${page.title} | WaveWorks`} description={page.description}>
+<Base lang={page.lang} htmlLang={page.htmlLang} title={`${page.title} | WaveWorks`} description={page.description}>
   <LegalView page={page} />
 </Base>

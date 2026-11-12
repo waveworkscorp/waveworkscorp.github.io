@@ -19,8 +19,10 @@ interface Props {
   ogType?: 'website' | 'article';
   // 검색엔진·AI가 읽는 구조화 데이터(JSON-LD)
   jsonLd?: readonly JsonLd[];
+  // 본문 언어가 화면 틀과 다를 때(ja·zh 법적 고지) <html lang>에 쓸 값
+  htmlLang?: string;
 }
-const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath, ogType = 'website', jsonLd = [] } = Astro.props;
+const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath, ogType = 'website', jsonLd = [], htmlLang } = Astro.props;
 // 실제 주소를 대표 주소로 삼는다. 같은 글이 다른 주소로 퍼져도 점수가 한곳에 모인다
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogImage, Astro.site).href;
@@ -40,7 +42,7 @@ const nav = [
 ];
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={htmlLang ?? lang}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -1,6 +1,8 @@
 export type Lang = 'ko' | 'en';
 export type Category = 'game' | 'app' | 'web';
 type Text = Record<Lang, string>;
+// 법적 고지 링크. ja·zh 주소는 그 언어 문서가 있을 때만 있다(site:sync가 채움)
+export type DocLinks = Text & Partial<Record<'ja' | 'zh-hans' | 'zh-hant', string>>;
 export interface InfoBox { title: Text; rows: readonly { label: Text; value: Text }[] }
 
 export interface Work {
@@ -26,11 +28,11 @@ export interface Work {
   accent: string;
   banner?: string;
   // 공개 앱은 sync 검사에서 처리방침이 필수라 항상 있다
-  privacy: Text;
-  terms?: Text;
-  deletion?: Text;
+  privacy: DocLinks;
+  terms?: DocLinks;
+  deletion?: DocLinks;
   // 미국 주 건강 데이터 법용 영문 방침. 영어 한 장이라 ko 주소도 영문 문서를 가리킨다
-  'health-data'?: Text;
+  'health-data'?: DocLinks;
   stores: { play?: string; appStore?: string };
 }
 

@@ -8,7 +8,7 @@ WaveWorks company site (Astro, ko/en), served at waveworkscorp.github.io. It liv
 
 - `src/data/works.json`
 - `public/works/<id>/`
-- `src/legal/{ko,en}/<id>/`
+- `src/legal/{ko,en,ja,zh-hans,zh-hant}/<id>/`
 
 Site-wide pages (home, about, contact, shared legal docs directly under `src/legal/{ko,en}/`) are edited here. Format and commands: `../../docs/platform/site-sync.md`.
 

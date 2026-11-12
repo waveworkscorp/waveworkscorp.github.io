@@ -6,8 +6,10 @@ import { localePath } from '../data/i18n';
 interface Props { page: LegalPage }
 const { page } = Astro.props;
 const backLabel = page.lang === 'ko' ? '이전으로' : 'Back';
+// 장식 글꼴에는 가나·한자가 없어 ja·zh 문서 제목은 본문 글꼴로 쓴다
+const isCjk = page.docLang !== 'ko' && page.docLang !== 'en';
 ---
-<main class="legal">
+<main class:list={['legal', { cjk: isCjk }]}>
   <section class="band">
     <img class="buddy" src="/img/mascot-about.png" alt="" width="640" height="640" aria-hidden="true" />
     <a class="back" href={page.back ?? localePath(page.lang, '/works/')} data-history={page.back ? undefined : ''}>
@@ -17,6 +19,11 @@ const backLabel = page.lang === 'ko' ? '이전으로' : 'Back';
     {page.links.length > 0 && (
       <nav class="docs">
         {page.links.map((l) => <a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a>)}
+      </nav>
+    )}
+    {page.langs.length > 0 && (
+      <nav class="docs langs" aria-label="Language">
+        {page.langs.map((l) => <a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a>)}
       </nav>
     )}
     <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
@@ -55,6 +62,7 @@ const backLabel = page.lang === 'ko' ? '이전으로' : 'Back';
   }
   @keyframes hop { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-16px) rotate(5deg); } }
   .docs { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; max-width: 70%; }
+  .langs { margin-top: 12px; }
   .docs a {
     font-weight: 800; font-size: 15px; text-decoration: none; background: #fff;
     border: var(--line); border-radius: 99px; padding: 6px 18px; box-shadow: 3px 3px 0 var(--ink);
@@ -84,6 +92,7 @@ const backLabel = page.lang === 'ko' ? '이전으로' : 'Back';
     text-decoration: underline var(--sun); text-decoration-thickness: .42em; text-underline-offset: -.3em; text-decoration-skip-ink: none;
   }
   :global(html[lang='en']) .sheet :global(h2) { font-family: var(--font-en-display); font-weight: 700; }
+  .cjk h1, .cjk .sheet :global(h2) { font-family: var(--font-body); font-weight: 800; }
   .sheet :global(h3) { position: relative; margin: 32px 0 6px; padding-left: 22px; font-size: 19px; font-weight: 800; }
   .sheet :global(h3)::before {
     content: ''; position: absolute; left: 0; top: .42em; width: 12px; height: 12px;
