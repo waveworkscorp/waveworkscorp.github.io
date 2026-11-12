@@ -13,6 +13,12 @@ export interface SitemapEntry {
   lastmod?: string;
 }
 
+// 한 페이지의 언어판들을 sitemap 항목으로 만든다. 언어 쌍은 함께 달고 lastmod는 언어판마다 따로 둔다
+export function langPairEntries(versions: readonly { lang: SeoLang; href: string; lastmod?: string }[]): SitemapEntry[] {
+  const alternates = versions.map(({ lang, href }) => ({ lang, href }));
+  return versions.map(({ href, lastmod }) => ({ loc: href, alternates, lastmod }));
+}
+
 export function sitemapXml(entries: readonly SitemapEntry[]): string {
   const urls = entries.map(({ loc, alternates = [], lastmod }) => {
     const links = alternates.length > 1

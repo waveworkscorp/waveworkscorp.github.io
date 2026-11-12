@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { blogPostingLd, faqPageLd, organizationLd, rssXml, sitemapXml, softwareLd, xmlEscape } from './seo-core.ts';
+import { blogPostingLd, faqPageLd, langPairEntries, organizationLd, rssXml, sitemapXml, softwareLd, xmlEscape } from './seo-core.ts';
 
 const SITE = 'https://example.com';
 
@@ -22,6 +22,15 @@ test('sitemapXml: 주소와 언어 쌍을 적는다', () => {
 test('sitemapXml: 언어 쌍이 하나뿐이면 hreflang을 달지 않는다', () => {
   const xml = sitemapXml([{ loc: `${SITE}/x/`, alternates: [{ lang: 'ko', href: `${SITE}/x/` }] }]);
   assert.doesNotMatch(xml, /hreflang/);
+});
+
+test('langPairEntries: 언어판마다 자기 lastmod를 쓰고 언어 쌍은 함께 단다', () => {
+  const entries = langPairEntries([
+    { lang: 'ko', href: `${SITE}/p/`, lastmod: '2026-10-31' },
+    { lang: 'en', href: `${SITE}/en/p/`, lastmod: '2026-11-12' },
+  ]);
+  assert.deepEqual(entries.map((e) => [e.loc, e.lastmod]), [[`${SITE}/p/`, '2026-10-31'], [`${SITE}/en/p/`, '2026-11-12']]);
+  assert.deepEqual(entries[1].alternates, [{ lang: 'ko', href: `${SITE}/p/` }, { lang: 'en', href: `${SITE}/en/p/` }]);
 });
 
 test('rssXml: 채널과 글을 날짜 내림차순 RFC 822 형식으로 적는다', () => {

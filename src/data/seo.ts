@@ -27,9 +27,7 @@ export function homeLd(site: URL | undefined, lang: Lang): JsonLd[] {
 
 export function workLd(site: URL | undefined, lang: Lang, work: Work): JsonLd[] {
   const url = abs(site, localePath(lang, `/${work.slug}/`));
-  const { entries, unknownLabels } = buildFaq(work, lang);
-  // 새 앱이 질문표에 없는 info 라벨을 쓰면 빌드 때 알린다. 그 줄은 FAQ에서 빠지고 빌드는 계속된다
-  if (lang === 'ko') unknownLabels.forEach((label) => console.warn(`[faq] ${work.slug}: 질문표(src/lib/faq-core.ts)에 없는 info 라벨 "${label}"`));
+  const { entries } = buildFaq(work, lang);
   const software = softwareLd({
     site: origin(site),
     url,
