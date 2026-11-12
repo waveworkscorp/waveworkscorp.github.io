@@ -127,9 +127,12 @@ export interface BlogPostingInput {
   headline: string;
   description: string;
   date: string;
+  // 고친 날짜. 고친 적 없으면 date와 같다
+  dateModified: string;
   lang: SeoLang;
   image: string;
   keywords: readonly string[];
+  author: { name: string; url: string };
 }
 
 export function blogPostingLd(p: BlogPostingInput): JsonLd {
@@ -139,12 +142,13 @@ export function blogPostingLd(p: BlogPostingInput): JsonLd {
     headline: p.headline,
     description: p.description,
     datePublished: p.date,
+    dateModified: p.dateModified,
     inLanguage: p.lang,
     image: p.image,
     keywords: p.keywords.join(', '),
     url: p.url,
     mainEntityOfPage: { '@type': 'WebPage', '@id': p.url },
-    author: orgRef(p.site),
+    author: { '@type': 'Person', name: p.author.name, url: p.author.url },
     publisher: orgRef(p.site),
   };
 }

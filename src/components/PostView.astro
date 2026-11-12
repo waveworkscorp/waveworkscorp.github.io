@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import type { Lang } from '../data/works';
 import { localePath } from '../data/i18n';
-import { BLOG_STRINGS, CATEGORIES, getPosts, minutesOf, postMeta, postName, postUrl, relatedWorks, type BlogEntry } from '../data/blog';
+import { AUTHORS, BLOG_STRINGS, CATEGORIES, getPosts, minutesOf, postMeta, postName, postUrl, relatedWorks, type BlogEntry } from '../data/blog';
 import { formatDate, relatedPosts } from '../lib/blog-core.ts';
 import PostToc from './PostToc.astro';
 import PostCard from './PostCard.astro';
@@ -13,7 +13,8 @@ import '../styles/prose.css';
 interface Props { lang: Lang; entry: BlogEntry }
 const { lang, entry } = Astro.props;
 const s = BLOG_STRINGS[lang];
-const { title, date, category, tags, cover, coverAlt } = entry.data;
+const { title, date, updated, author, category, tags, cover, coverAlt } = entry.data;
+const writer = AUTHORS[author];
 const cat = CATEGORIES[category];
 const { Content, headings } = await render(entry);
 const all = await getPosts(lang);
@@ -30,7 +31,11 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
     {cover && <Image class="bg" src={cover} alt="" widths={[800, 1600]} sizes="100vw" loading="eager" aria-hidden="true" />}
     <a class="badge" href={`${listHref}?cat=${category}`}>{cat.name[lang]}</a>
     <h1>{title}</h1>
-    <p class="meta">{formatDate(date, lang)} · {s.minRead.replace('{n}', String(minutesOf(entry)))}</p>
+    <p class="meta">
+      <time datetime={date}>{formatDate(date, lang)}</time>
+      {updated && <> · <time datetime={updated}>{s.updatedOn.replace('{d}', formatDate(updated, lang))}</time></>}
+      {' · '}{s.minRead.replace('{n}', String(minutesOf(entry)))} · {writer.name[lang]}
+    </p>
     <svg class="edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="#fff" d="M0 80V40c120-36 240-36 360 0s240 36 360 0 240-36 360 0 240 36 360 0v40z" />
     </svg>
@@ -49,6 +54,11 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
     </div>
 
     <footer class="foot">
+      <aside class="author" aria-label={s.writtenBy}>
+        <span class="who">{s.writtenBy}</span>
+        <b>{writer.name[lang]}</b>
+        <p>{writer.bio[lang]}</p>
+      </aside>
       <ul class="tags" aria-label={s.tags}>
         {tags.map((tag) => <li><a href={`${listHref}?tag=${encodeURIComponent(tag)}`}>#{tag}</a></li>)}
       </ul>
@@ -121,6 +131,10 @@ const xHref = `https://x.com/intent/post?${new URLSearchParams({ text: title, ur
   .layout { display: grid; grid-template-columns: minmax(0, 720px); justify-content: center; }
   .head + .wrap .layout:first-child { margin-top: 48px; }
   .foot { max-width: 720px; margin: 48px auto 0; display: grid; gap: 28px; }
+  .author { display: grid; gap: 2px; padding: 18px 22px; margin-bottom: 18px; border: var(--line); border-radius: 22px; background: var(--foam); }
+  .author .who { font-size: 13px; font-weight: 700; opacity: .65; }
+  .author b { font-size: 19px; }
+  .author p { margin: 0; font-weight: 600; opacity: .8; }
   .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
   .tags a { font-weight: 700; text-decoration: none; border: 2px solid var(--ink); border-radius: 99px; padding: 3px 12px; background: var(--foam); }
   .tags a:hover { background: var(--ink); color: #fff; }

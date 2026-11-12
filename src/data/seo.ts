@@ -1,5 +1,5 @@
 import type { BlogEntry } from './blog';
-import { postName, postUrl } from './blog';
+import { AUTHORS, postName, postUrl } from './blog';
 import { COMPANY, DEVELOPER_STORES, localePath } from './i18n';
 import { buildFaq } from '../lib/faq-core';
 import { isAvailable, platformsOf, type Lang, type Work } from './works';
@@ -51,8 +51,10 @@ export function postLd(site: URL | undefined, lang: Lang, entry: BlogEntry, imag
     headline: entry.data.title,
     description: entry.data.excerpt,
     date: entry.data.date,
+    dateModified: entry.data.updated ?? entry.data.date,
     lang,
     image: abs(site, image ?? '/img/logo1.png'),
     keywords: entry.data.tags,
+    author: { name: AUTHORS[entry.data.author].name[lang], url: abs(site, localePath(lang, '/about/')) },
   })];
 }

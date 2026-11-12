@@ -3,7 +3,7 @@ import type { Lang, Work } from './works';
 import { WORKS } from './works';
 import { localePath } from './i18n';
 import { findOrphans, hiddenPostNames, readMinutes, sortPosts, type PostMeta, type SearchEntry } from '../lib/blog-core.ts';
-import type { BLOG_CATEGORY_KEYS } from '../content.config';
+import type { AUTHOR_KEYS, BLOG_CATEGORY_KEYS } from '../content.config';
 
 export type BlogCategory = (typeof BLOG_CATEGORY_KEYS)[number];
 export type BlogEntry = CollectionEntry<'blog'>;
@@ -13,6 +13,14 @@ export const CATEGORIES: Record<BlogCategory, { name: Text; desc: Text; color: s
   making: { name: { ko: '제작기', en: 'Making' }, desc: { ko: '게임과 앱을 만든 과정', en: 'How we build our games and apps' }, color: 'var(--wave)' },
   news: { name: { ko: '소식', en: 'News' }, desc: { ko: '출시와 업데이트 소식', en: 'Launches and updates' }, color: 'var(--tang)' },
   culture: { name: { ko: '문화', en: 'Culture' }, desc: { ko: '우리가 일하는 방식', en: 'How we work' }, color: 'var(--coral)' },
+};
+
+// 실명 대신 닉네임으로 적는다(사용자 결정 2026-11-12)
+export const AUTHORS: Record<(typeof AUTHOR_KEYS)[number], { name: Text; bio: Text }> = {
+  hongmacho: {
+    name: { ko: '홍마초', en: 'Hongmacho' },
+    bio: { ko: '웨이브웍스에서 게임과 앱을 만듭니다.', en: 'Makes games and apps at WaveWorks.' },
+  },
 };
 
 export const BLOG_STRINGS = {
@@ -34,6 +42,8 @@ export const BLOG_STRINGS = {
     shareX: 'X에 공유',
     backToList: '블로그 목록으로',
     minRead: '{n}분',
+    updatedOn: '{d} 수정',
+    writtenBy: '글쓴이',
     workPosts: '이 작품 이야기',
   },
   en: {
@@ -54,6 +64,8 @@ export const BLOG_STRINGS = {
     shareX: 'Share on X',
     backToList: 'Back to the blog',
     minRead: '{n} min read',
+    updatedOn: 'Updated {d}',
+    writtenBy: 'Written by',
     workPosts: 'Stories about this work',
   },
 } as const;

@@ -16,7 +16,7 @@ export const GET: APIRoute = async ({ site }) => {
   const posts = await Promise.all((await getPosts('ko')).map(async (e) => {
     const name = postName(e);
     const langs: Lang[] = (await hasTranslation(name, 'en')) ? ['ko', 'en'] : ['ko'];
-    return pair(`/blog/${name}/`, langs, e.data.date);
+    return pair(`/blog/${name}/`, langs, e.data.updated ?? e.data.date);
   }));
   const body = sitemapXml([...PAGES.flatMap((p) => pair(p, ['ko', 'en'])), ...posts.flat()]);
   return new Response(body, { headers: { 'Content-Type': 'application/xml; charset=utf-8' } });

@@ -71,13 +71,16 @@ test('softwareLd: 출시 전 작품은 운영체제·설치 주소를 빼고 앱
 });
 
 test('blogPostingLd: 제목·날짜·언어·대표 이미지를 담는다', () => {
-  const ld = blogPostingLd({ site: SITE, url: `${SITE}/blog/p/`, headline: 'H', description: 'd', date: '2026-11-01', lang: 'ko', image: `${SITE}/c.jpg`, keywords: ['a', 'b'] });
+  const ld = blogPostingLd({ site: SITE, url: `${SITE}/blog/p/`, headline: 'H', description: 'd', date: '2026-11-01', dateModified: '2026-11-12', lang: 'ko', image: `${SITE}/c.jpg`, keywords: ['a', 'b'], author: { name: '홍마초', url: `${SITE}/about/` } });
   assert.equal(ld['@type'], 'BlogPosting');
   assert.equal(ld.datePublished, '2026-11-01');
   assert.equal(ld.inLanguage, 'ko');
   assert.equal(ld.image, `${SITE}/c.jpg`);
   assert.equal(ld.keywords, 'a, b');
   assert.deepEqual(ld.mainEntityOfPage, { '@type': 'WebPage', '@id': `${SITE}/blog/p/` });
+  assert.equal(ld.dateModified, '2026-11-12');
+  assert.deepEqual(ld.author, { '@type': 'Person', name: '홍마초', url: `${SITE}/about/` });
+  assert.equal((ld.publisher as Record<string, unknown>)['@type'], 'Organization');
 });
 
 test('faqPageLd: 문답을 Question과 acceptedAnswer로 담는다', () => {
