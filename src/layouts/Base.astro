@@ -3,6 +3,7 @@ import type { Lang } from '../data/works';
 import { STRINGS, localePath } from '../data/i18n';
 import '../styles/global.css';
 import { CF_BEACON_TOKEN, ANALYTICS_HOST } from '../data/analytics';
+import type { JsonLd } from '../lib/seo-core';
 
 interface Props {
   lang: Lang;
@@ -14,8 +15,16 @@ interface Props {
   ogImage?: string;
   // 언어판이 없는 페이지는 그 언어로 바꿀 때 갈 경로를 따로 준다. 준 언어는 hreflang을 달지 않는다
   altPath?: Partial<Record<Lang, string>>;
+  // 블로그 글은 article, 나머지는 website
+  ogType?: 'website' | 'article';
+  // 검색엔진·AI가 읽는 구조화 데이터(JSON-LD)
+  jsonLd?: readonly JsonLd[];
 }
-const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath } = Astro.props;
+const { lang, title, description, path, bodyClass, ogImage = '/img/logo1.png', altPath, ogType = 'website', jsonLd = [] } = Astro.props;
+// 실제 주소를 대표 주소로 삼는다. 같은 글이 다른 주소로 퍼져도 점수가 한곳에 모인다
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const rssHref = localePath(lang, '/rss.xml');
 const LANGS: readonly Lang[] = ['ko', 'en'];
 const t = STRINGS[lang];
 const targetOf = (l: Lang): string => altPath?.[l] ?? path ?? '/';
@@ -37,10 +46,22 @@ const nav = [
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
   {pairs.length > 1 && pairs.map((l) => <link rel="alternate" hreflang={l} href={new URL(localePath(l, targetOf(l)), Astro.site)}>)}
+  {pairs.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localePath('ko', targetOf('ko')), Astro.site)}>}
+  <link rel="alternate" type="application/rss+xml" title={`WaveWorks ${t.blog}`} href={rssHref}>
+  <meta property="og:type" content={ogType}>
+  <meta property="og:site_name" content="WaveWorks">
+  <meta property="og:url" content={canonical}>
+  <meta property="og:locale" content={lang === 'ko' ? 'ko_KR' : 'en_US'}>
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
-  <meta property="og:image" content={new URL(ogImage, Astro.site)}>
+  <meta property="og:image" content={ogImageUrl}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={ogImageUrl}>
+  {jsonLd.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d).replace(/</g, '\\u003c')} />)}
   <link rel="icon" href="/img/ww3.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">

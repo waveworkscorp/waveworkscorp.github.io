@@ -3,12 +3,13 @@ import type { GetStaticPaths } from 'astro';
 import Base from '../layouts/Base.astro';
 import WorkDetail from '../components/WorkDetail.astro';
 import { WORKS, type Work } from '../data/works';
+import { workLd } from '../data/seo';
 
 export const getStaticPaths = (() => WORKS.map((work) => ({ params: { slug: work.slug }, props: { work } }))) satisfies GetStaticPaths;
 
 interface Props { work: Work }
 const { work } = Astro.props;
 ---
-<Base lang="ko" title={`${work.name.ko} | WaveWorks`} description={work.about.ko} path={`/${work.slug}/`}>
+<Base lang="ko" title={`${work.name.ko} | WaveWorks`} description={work.about.ko} path={`/${work.slug}/`} jsonLd={workLd(Astro.site, 'ko', work)}>
   <WorkDetail lang="ko" work={work} />
 </Base>

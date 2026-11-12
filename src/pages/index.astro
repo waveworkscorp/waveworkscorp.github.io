@@ -3,10 +3,11 @@ import Base from '../layouts/Base.astro';
 import HomeIntro from '../components/HomeIntro.astro';
 import Home from '../components/Home.astro';
 import { STRINGS } from '../data/i18n';
+import { homeLd } from '../data/seo';
 
 const t = STRINGS.ko;
 ---
-<Base lang="ko" title={t.homeTitle} description={t.homeDesc} path="/">
+<Base lang="ko" title={t.homeTitle} description={t.homeDesc} path="/" jsonLd={homeLd(Astro.site, 'ko')}>
   <HomeIntro lang="ko" />
   <Home lang="ko" />
 </Base>
