@@ -22,7 +22,7 @@ since: 2026-11-14
 
 ## 진행
 
-## 데모 대기
+## 검토 대기
 
 ## 백로그
 - WS-001 콘셉트·목표 · serves: plan.concept-brief
