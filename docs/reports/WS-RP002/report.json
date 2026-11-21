@@ -1,0 +1,23 @@
+{
+  "key": "WS-RP002",
+  "type": "시안",
+  "title": "블로그 원고 비교",
+  "milestone": "기획",
+  "card": null,
+  "createdAt": "2026-10-31",
+  "updatedAt": "2026-10-31",
+  "imported": true,
+  "origin": "docs/compare/blog-rewrite.html",
+  "supersededBy": null,
+  "versions": [
+    {
+      "v": 1,
+      "date": "2026-10-31",
+      "note": "가져옴(PF-400)",
+      "request": null,
+      "status": "검토 중",
+      "decision": [],
+      "path": "docs/compare/blog-rewrite.html"
+    }
+  ]
+}
