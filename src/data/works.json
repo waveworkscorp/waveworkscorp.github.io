@@ -841,8 +841,8 @@
               "en": "Storage"
             },
             "value": {
-              "ko": "기본은 휴대폰 안. 보호자 공유나 백업을 켜면 Google Cloud 서울 리전에 저장합니다. 아기 사진과 설정은 서버로 보내지 않습니다",
-              "en": "On your phone by default. Turning on sharing or backup stores records in Google Cloud (Seoul). Baby photos and settings never leave the phone"
+              "ko": "기본은 휴대폰 안. 보호자 공유나 백업을 켜면 Google Cloud 서울 리전에 저장합니다. 설정은 서버로 보내지 않고, 아기 프로필 사진은 보호자 공유에서 사진 공유에 동의한 경우에만 작게 줄인 1장을 올립니다",
+              "en": "On your phone by default. Turning on sharing or backup stores records in Google Cloud (Seoul). Settings never leave the phone; a small copy of the baby profile photo is shared only if you agree to photo sharing in caregiver sharing"
             }
           },
           {
