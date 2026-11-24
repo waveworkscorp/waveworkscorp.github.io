@@ -547,12 +547,12 @@
       },
       {
         "title": {
-          "ko": "힌트와 되돌리기",
-          "en": "Hints and undo"
+          "ko": "힌트",
+          "en": "Hints"
         },
         "body": {
-          "ko": "막히면 힌트, 실수하면 되돌리기",
-          "en": "A hint when stuck, undo when you slip"
+          "ko": "막히면 힌트",
+          "en": "A hint when stuck"
         }
       }
     ],
